@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Smartphone, Sparkles, ArrowRight, ShieldCheck, Truck, Download, QrCode } from 'lucide-react';
+import { Smartphone, Sparkles, ArrowRight, ShieldCheck, Truck, Flame } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 export const AppDownloadSection = () => {
@@ -27,11 +27,11 @@ export const AppDownloadSection = () => {
             </div>
 
             <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
-              Fresh Groceries Are Just A Tap Away.
+              Gourmet Non-Veg Snacks Are Just A Tap Away.
             </h2>
 
             <p className="text-xs sm:text-sm text-gray-300 max-w-lg leading-relaxed">
-              Order fresh organic vegetables, cold-pressed juices, pure dairy, and marinated kebabs with live delivery tracking in under 2 hours.
+              Order fresh chicken Galouti kebabs, Malai tikkas, Peri-Peri wings, and mutton Kakori skewers with live sub-zero delivery tracking in under 2 hours.
             </p>
 
             {/* App Store Buttons */}
@@ -82,7 +82,7 @@ export const AppDownloadSection = () => {
               <span>•</span>
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
-                Live Slot Booking
+                Sub-Zero -18°C Insulated Pack
               </span>
             </div>
           </div>
@@ -94,12 +94,12 @@ export const AppDownloadSection = () => {
               <div className="rounded-[24px] overflow-hidden bg-forest-900 border border-leaf-500/20 p-3 space-y-3">
                 <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 border-b border-forest-800">
                   <span className="font-bold text-white">Akira Fresh App</span>
-                  <span className="text-leaf-400 font-bold">● 2-Hr Slot</span>
+                  <span className="text-leaf-400 font-bold">● -18°C Slot</span>
                 </div>
                 <div className="rounded-xl overflow-hidden h-32">
                   <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80"
-                    alt="App screen preview"
+                    src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80"
+                    alt="App screen preview with Chicken Kebabs"
                     className="w-full h-full object-cover"
                   />
                 </div>

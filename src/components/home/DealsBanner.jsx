@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, Clock, Percent, Leaf, Check, Copy } from 'lucide-react';
+import { Sparkles, ArrowRight, Clock, Percent, Flame, Check, Copy } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useCart } from '../../context/CartContext';
 
@@ -9,7 +9,6 @@ export const DealsBanner = () => {
   const { applyCoupon } = useCart();
   const [copied, setCopied] = useState(false);
 
-  // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
     hours: 8,
     minutes: 42,
@@ -50,14 +49,14 @@ export const DealsBanner = () => {
             
             {/* Tag badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest-900 border border-leaf-500/40 text-xs font-bold text-lime-300">
-              <Sparkles className="w-3.5 h-3.5 text-lime-400" />
-              <span>LIMITED TIME HARVEST SPECIAL</span>
+              <Flame className="w-3.5 h-3.5 text-orange-400" />
+              <span>WEEKEND NON-VEG PARTY SPECIAL</span>
             </div>
 
             {/* Headline */}
             <div className="space-y-1">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
-                Fresh Picks. <br />
+                Gourmet Party Packs. <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-leaf-400 to-lime-300 italic font-serif">
                   Better Prices.
                 </span>
@@ -66,14 +65,14 @@ export const DealsBanner = () => {
 
             {/* Subtitle */}
             <p className="text-sm sm:text-base text-gray-300 max-w-lg leading-relaxed">
-              Save more on your everyday kitchen essentials, exotic fruits, and cold-pressed staples. Handpicked this morning and delivered direct to you.
+              Save more on restaurant-grade Galouti kebabs, fiery Peri-Peri wings, and royal Awadhi mutton platters. Ready to pan-sear in 5 minutes.
             </p>
 
             {/* Countdown Box */}
             <div className="flex items-center gap-3 pt-1">
               <div className="flex items-center gap-1.5 text-xs text-leaf-300 font-semibold">
                 <Clock className="w-4 h-4 text-lime-400 animate-pulse" />
-                <span>Offers Expire In:</span>
+                <span>Special Combos Expire In:</span>
               </div>
               <div className="flex items-center gap-1.5 font-mono text-xs sm:text-sm font-black">
                 <span className="px-2.5 py-1 rounded-lg bg-forest-800 border border-leaf-500/30 text-white">
@@ -96,7 +95,7 @@ export const DealsBanner = () => {
                 to="/offers"
                 className="px-8 py-3.5 bg-leaf-gradient hover:brightness-110 text-forest-950 font-bold text-xs sm:text-sm rounded-full shadow-leaf-glow hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
               >
-                <span>Explore Offers</span>
+                <span>Explore Non-Veg Combos</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
@@ -112,12 +111,12 @@ export const DealsBanner = () => {
 
           </div>
 
-          {/* Right Column: Visual Organic Produce Box (Col Span 5) */}
+          {/* Right Column: Visual Non-Veg Platter (Col Span 5) */}
           <div className="lg:col-span-5 relative flex items-center justify-center">
             <div className="relative w-full max-w-sm rounded-3xl overflow-hidden border-2 border-leaf-500/40 shadow-2xl group">
               <img
-                src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=700&auto=format&fit=crop&q=85"
-                alt="Fresh Organic Box"
+                src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=700&auto=format&fit=crop&q=85"
+                alt="Akira Fresh Kebab Platter"
                 className="w-full h-72 sm:h-80 object-cover group-hover:scale-108 transition-transform duration-700"
               />
               
@@ -129,11 +128,11 @@ export const DealsBanner = () => {
               {/* Bottom Tag */}
               <div className="absolute bottom-3 left-3 right-3 p-3 rounded-2xl bg-forest-950/85 backdrop-blur-md border border-leaf-500/30 flex items-center justify-between text-xs">
                 <div>
-                  <div className="font-bold text-white">Daily Farm Basket</div>
-                  <div className="text-[10px] text-leaf-300">10 Essential Veggies + Free Herbs</div>
+                  <div className="font-bold text-white">Grand Kebab Platter</div>
+                  <div className="text-[10px] text-leaf-300">Galouti (8) + Wings (10) + Dips</div>
                 </div>
                 <span className="text-xs font-bold text-leaf-400 bg-forest-900 px-2 py-1 rounded-lg">
-                  ₹299 <span className="line-through text-[10px] text-gray-400">₹450</span>
+                  ₹549 <span className="line-through text-[10px] text-gray-400">₹799</span>
                 </span>
               </div>
             </div>

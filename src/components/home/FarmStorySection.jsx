@@ -1,42 +1,42 @@
 import React from 'react';
-import { Leaf, ShieldCheck, Sparkles, Truck, Home, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Sparkles, Truck, Flame, Snowflake, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export const FarmStorySection = () => {
   const steps = [
     {
       step: '01',
-      title: 'Partner Organic Farms',
-      desc: 'Direct harvest partnerships with certified organic farms across Himachal, Punjab & Haryana.',
-      icon: Leaf,
-      badge: 'Ethical Sourcing',
+      title: 'Antibiotic-Free Sourcing',
+      desc: '100% certified bio-secure poultry and government-verified pasture-raised lamb with zero hormone additives.',
+      icon: ShieldCheck,
+      badge: 'Certified Safe',
     },
     {
       step: '02',
-      title: '24-Point Quality Check',
-      desc: 'Every batch is inspected for ripeness, pesticide residues, crispness, and aroma.',
-      icon: ShieldCheck,
-      badge: 'Zero Chemicals',
+      title: 'Chef Secret Marinade',
+      desc: 'Steeped for 12 hours in small batches with cold-ground whole spices, hung curd, and pure desi ghee.',
+      icon: Sparkles,
+      badge: 'Authentic Taste',
     },
     {
       step: '03',
-      title: 'Hygienic Cold Packing',
-      desc: 'Ozone-washed and packed in breathable, eco-friendly food-grade boxes in clean facilities.',
-      icon: Sparkles,
-      badge: 'Bio-Packed',
+      title: 'Blast Freezing at -18°C',
+      desc: 'Rapid IQF blast freezing locks in cellular moisture, natural meat juices, and tenderness without preservatives.',
+      icon: Snowflake,
+      badge: 'Juice Retention',
     },
     {
       step: '04',
-      title: 'Cold-Chain Delivery',
-      desc: 'Dispatched in insulated chill-packs maintaining 2°C–6°C throughout transit.',
+      title: 'Sub-Zero Cold Transit',
+      desc: 'Dispatched in specialized insulated thermal boxes maintaining sub-zero cold chain across Delhi NCR.',
       icon: Truck,
-      badge: 'Chilled Transit',
+      badge: '-18°C Guarded',
     },
     {
       step: '05',
-      title: 'Fresh to Your Table',
-      desc: 'Delivered in under 12 hours from harvest for unmatched nutritional density and crunch.',
-      icon: Home,
-      badge: 'Peak Freshness',
+      title: 'Pan-Sear & Savor (5m)',
+      desc: 'Straight from freezer to pan or air-fryer. No defrosting needed for royal melt-in-mouth kebabs.',
+      icon: Flame,
+      badge: 'Zero Prep Hassle',
     },
   ];
 
@@ -50,17 +50,17 @@ export const FarmStorySection = () => {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 border border-leaf-500/30 text-xs font-bold text-leaf-300 uppercase tracking-widest mb-3">
-            <Leaf className="w-3.5 h-3.5 text-leaf-400" />
-            <span>The Akira Fresh Standard</span>
+            <Flame className="w-3.5 h-3.5 text-orange-400" />
+            <span>The Akira Fresh Cold-Chain Standard</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-            From Trusted Farms <br className="hidden sm:block" />
+            From Master Chef Kitchens <br className="hidden sm:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-leaf-400 to-lime-300 italic font-serif">
-              To Your Family Table.
+              To Your Sizzling Pan.
             </span>
           </h2>
           <p className="text-xs sm:text-sm text-gray-300 mt-3 leading-relaxed">
-            We eliminated middlemen and complex storage yards to build a lightning cold-chain network that delivers the true taste of nature within hours of picking.
+            We revolutionized ready-to-cook non-veg snacks with artisanal recipes, 100% antibiotic-free meats, and sub-zero blast-freeze cold chains.
           </p>
         </div>
 

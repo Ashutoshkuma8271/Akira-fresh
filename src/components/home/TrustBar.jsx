@@ -1,31 +1,31 @@
 import React from 'react';
-import { Leaf, ShieldCheck, Sparkles, Truck, RotateCcw, Award } from 'lucide-react';
+import { ShieldCheck, Snowflake, Flame, Truck, RotateCcw } from 'lucide-react';
 
 export const TrustBar = () => {
   const promises = [
     {
-      icon: Leaf,
-      title: 'Farm Fresh',
-      desc: 'Sourced directly from verified orchards & local farms',
-    },
-    {
       icon: ShieldCheck,
-      title: 'Quality Checked',
-      desc: '24-point quality inspection for ripeness & hygiene',
+      title: '100% Antibiotic-Free',
+      desc: 'Certified safe poultry & pasture-raised lamb',
     },
     {
-      icon: Sparkles,
-      title: 'Hygienically Packed',
-      desc: 'Ozone-washed & sealed in eco-friendly boxes',
+      icon: Snowflake,
+      title: 'Blast Frozen at -18°C',
+      desc: 'Locks in juiciness & natural flavors',
+    },
+    {
+      icon: Flame,
+      title: 'Chef Secret Marinade',
+      desc: 'Steeped in authentic whole spices & ghee',
     },
     {
       icon: Truck,
-      title: 'Cold-Chain Fast',
+      title: 'Sub-Zero Cold Chain',
       desc: 'Delivered chilled in 2 hours across Delhi NCR',
     },
     {
       icon: RotateCcw,
-      title: '100% Fresh Guarantee',
+      title: '100% Taste Guarantee',
       desc: 'Instant no-questions-asked refund or replacement',
     },
   ];
