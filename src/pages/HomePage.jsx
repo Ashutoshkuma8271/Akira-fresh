@@ -1,39 +1,49 @@
 import React from 'react';
-import { HeroSection } from '../components/home/HeroSection';
-import { TrustBar } from '../components/home/TrustBar';
+import { HeroSlider } from '../components/home/HeroSlider';
 import { CategorySection } from '../components/home/CategorySection';
-import { FeaturedSection } from '../components/home/FeaturedSection';
-import { FarmStorySection } from '../components/home/FarmStorySection';
+import { BestsellersSection } from '../components/home/BestsellersSection';
 import { DealsBanner } from '../components/home/DealsBanner';
+import { FamilyPacksSection } from '../components/home/FamilyPacksSection';
+import { CategoryCollectionsSection } from '../components/home/CategoryCollectionsSection';
+import { FarmStorySection } from '../components/home/FarmStorySection';
+import { WhyChooseUsSection } from '../components/home/WhyChooseUsSection';
 import { TestimonialsSection } from '../components/home/TestimonialsSection';
-import { AppDownloadSection } from '../components/home/AppDownloadSection';
+import { NewsletterSection } from '../components/home/NewsletterSection';
 
 export const HomePage = () => {
   return (
-    <div className="space-y-2 sm:space-y-4 animate-fadeIn pb-12">
-      {/* 1. Hero Section — Asymmetric Editorial 3D Produce Visual */}
-      <HeroSection />
+    <div className="space-y-4 sm:space-y-6 animate-fadeIn pb-12">
+      {/* 1. 4-Slide Cinematic Hero Section */}
+      <HeroSlider />
 
-      {/* 2. Trust & Quality Promises Bar */}
-      <TrustBar />
-
-      {/* 3. Quick Category Navigation (Organic Circular Cards) */}
+      {/* 2. Shop by Category (8 Rounded Cards, Mobile Horizontal Scroll) */}
       <CategorySection />
 
-      {/* 4. "Fresh Today" Product Showcase with Category Tabs */}
-      <FeaturedSection />
+      {/* 3. Bestsellers Showcase (Top-Rated Delicacies) */}
+      <BestsellersSection />
 
-      {/* 5. Farm-to-Home Story Section (5-Step Visual Journey) */}
-      <FarmStorySection />
-
-      {/* 6. Seasonal Promotional Deals & Countdown Flash Banner */}
+      {/* 4. Flash Sale / Weekend Offers with Live Ticking Countdown */}
       <DealsBanner />
 
-      {/* 7. Community Customer Reviews & Verified Testimonials */}
+      {/* 5. Family & Value Packs Editorial Section */}
+      <FamilyPacksSection />
+
+      {/* 6. Curated Category Product Collections (Tabbed Interactive Showcase) */}
+      <CategoryCollectionsSection />
+
+      {/* 7. Premium Brand Story & 5-Step Quality Journey */}
+      <FarmStorySection />
+
+      {/* 8. Why Choose Us (4 Pillar Distinction Cards) */}
+      <WhyChooseUsSection />
+
+      {/* 9. Customer Testimonials & Verified Reviews */}
       <TestimonialsSection />
 
-      {/* 8. Mobile App & Express 2-Hour Delivery Section */}
-      <AppDownloadSection />
+      {/* 10. VIP Harvest Club / Newsletter Section */}
+      <NewsletterSection />
     </div>
   );
 };
+
+

@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import { useToast } from '../context/ToastContext';
-import { Mail, Phone, MapPin, Send, HelpCircle, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, HelpCircle, ShieldCheck, Truck, RotateCcw, Snowflake, Flame } from 'lucide-react';
 
 export const HelpPage = () => {
   const [openFaq, setOpenFaq] = useState(0);
 
   const faqs = [
     {
-      q: 'How can I track my A_S Commerce consignment?',
-      a: 'Navigate to our Track Order page and input your 8-character Order ID (e.g. AS-884219) or Bluedart tracking number to check real-time courier milestones.'
+      q: 'How does Akira Fresh sub-zero cold chain delivery work?',
+      a: 'All our gourmet ready-to-cook delicacies are IQF blast-frozen at -18°C directly after chef preparation and packed in specialized thermal insulation boxes with food-grade dry ice packs to ensure 100% frozen freshness right to your doorstep.'
     },
     {
-      q: 'What is the standard delivery duration?',
-      a: 'Standard deliveries are fulfilled via Bluedart Express within 3-4 business days. VIP Air Express orders are delivered within 24-48 hours.'
+      q: 'Do I need to defrost the kebabs and snacks before cooking?',
+      a: 'No defrosting needed! You can place them straight from the freezer into a hot pan with a dab of desi ghee/oil or into an air fryer. They cook to golden perfection in 5 to 7 minutes.'
     },
     {
-      q: 'What is the return and refund policy?',
-      a: 'We extend an effortless 30-day return policy on all eligible unblemished luxury pieces with original packaging intact. Refunds are initiated instantly via your original payment mode.'
+      q: 'What is your delivery timeframe across Delhi NCR?',
+      a: 'We offer express 2-hour sub-zero delivery in major NCR hubs and same-day scheduled delivery slots across all 500+ supported pin codes.'
     },
     {
-      q: 'Are all products authentic?',
-      a: 'Yes, 100% of our catalogue is handcrafted and guaranteed authentic, complete with bespoke authentication serial codes.'
+      q: 'Are your meats 100% antibiotic and preservative-free?',
+      a: 'Yes, absolutely. We source exclusively from bio-secure certified farms and government-inspected pasture lamb with strict zero antibiotic and zero synthetic preservative policies.'
     }
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn space-y-8 text-charcoal-900 dark:text-ivory-100">
       <div className="text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-gold-600">Client Concierge</span>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 mt-1">
+        <span className="text-xs font-bold uppercase tracking-widest text-leaf-700 dark:text-lime-400">Customer Support & FAQs</span>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-charcoal-950 dark:text-white mt-1">
           Frequently Asked Questions
         </h1>
       </div>
@@ -37,17 +37,17 @@ export const HelpPage = () => {
         {faqs.map((f, i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden"
+            className="bg-white dark:bg-forest-900 rounded-2xl border border-gray-200 dark:border-forest-800 shadow-sm overflow-hidden"
           >
             <button
               onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
-              className="w-full text-left p-5 flex items-center justify-between font-bold text-sm text-navy-950 hover:text-gold-600 transition-colors"
+              className="w-full text-left p-5 flex items-center justify-between font-bold text-sm text-charcoal-950 dark:text-white hover:text-leaf-600 dark:hover:text-leaf-400 transition-colors cursor-pointer"
             >
               <span>{f.q}</span>
-              <span className="text-lg">{openFaq === i ? '−' : '+'}</span>
+              <span className="text-lg text-leaf-600 dark:text-lime-400">{openFaq === i ? '−' : '+'}</span>
             </button>
             {openFaq === i && (
-              <div className="px-5 pb-5 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+              <div className="px-5 pb-5 text-xs sm:text-sm text-charcoal-600 dark:text-gray-300 leading-relaxed border-t border-gray-100 dark:border-forest-800 pt-3">
                 {f.a}
               </div>
             )}
@@ -64,18 +64,18 @@ export const ContactPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addToast('Your inquiry has been received. Our VIP Concierge will respond within 2 hours.', 'success');
+    addToast('Thank you! Your message has been received. Our team will contact you shortly.', 'success');
     setMsg({ name: '', email: '', message: '' });
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
-      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200/80 shadow-sm space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+      <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-6">
         <div className="text-center max-w-md mx-auto">
-          <span className="text-xs font-bold uppercase tracking-widest text-gold-600">24/7 Dedicated Support</span>
-          <h1 className="font-serif text-3xl font-bold text-navy-950 mt-1">Contact Our Concierge</h1>
-          <p className="text-xs text-gray-500 mt-2">
-            Reach out for bespoke styling guidance, consignment inquiries, or order status assistance.
+          <span className="text-xs font-bold uppercase tracking-widest text-leaf-700 dark:text-lime-400">Direct Support</span>
+          <h1 className="font-serif text-3xl font-bold text-charcoal-950 dark:text-white mt-1">Contact Akira Fresh</h1>
+          <p className="text-xs text-charcoal-600 dark:text-gray-400 mt-2">
+            Have questions about party catering, bulk orders, or cold-chain delivery? We are here to help.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export const ContactPage = () => {
             placeholder="Your Full Name"
             value={msg.name}
             onChange={(e) => setMsg({ ...msg, name: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-gold-500"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-forest-850 text-charcoal-950 dark:text-white rounded-xl border border-gray-200 dark:border-forest-700 focus:outline-none focus:border-leaf-500"
           />
           <input
             type="email"
@@ -94,24 +94,25 @@ export const ContactPage = () => {
             placeholder="Email Address"
             value={msg.email}
             onChange={(e) => setMsg({ ...msg, email: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-gold-500"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-forest-850 text-charcoal-950 dark:text-white rounded-xl border border-gray-200 dark:border-forest-700 focus:outline-none focus:border-leaf-500"
           />
           <textarea
             required
             rows="4"
-            placeholder="How may our concierge assist you today?"
+            placeholder="How can our culinary team help you today?"
             value={msg.message}
             onChange={(e) => setMsg({ ...msg, message: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-gold-500"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-forest-850 text-charcoal-950 dark:text-white rounded-xl border border-gray-200 dark:border-forest-700 focus:outline-none focus:border-leaf-500"
           />
           <button
             type="submit"
-            className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105"
+            className="w-full py-3.5 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-xl shadow-sm cursor-pointer hover:scale-102 transition-all"
           >
-            Submit Inquiry
+            Send Message
           </button>
         </form>
       </div>
     </div>
   );
 };
+

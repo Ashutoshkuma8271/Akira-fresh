@@ -24,10 +24,11 @@ export const ProductCard = ({ product }) => {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, 1);
-    setJustAdded(true);
-    addToast(`${product.name} (${product.weight || '1 pack'}) added to basket!`, 'success');
-    setTimeout(() => setJustAdded(false), 2000);
+    const success = addToCart(product, 1);
+    if (success) {
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 2000);
+    }
   };
 
   const handleIncrement = (e) => {

@@ -22,12 +22,14 @@ export const QuickViewModal = ({ product, isOpen, onClose }) => {
   const isFavorite = isInWishlist(product.id);
 
   const handleAddToCart = () => {
-    addToCart(product, quantity, '', selectedSize, true);
-    setIsAdded(true);
-    setTimeout(() => {
-      setIsAdded(false);
-      onClose();
-    }, 600);
+    const success = addToCart(product, quantity, '', selectedSize, true);
+    if (success) {
+      setIsAdded(true);
+      setTimeout(() => {
+        setIsAdded(false);
+        onClose();
+      }, 600);
+    }
   };
 
   return (

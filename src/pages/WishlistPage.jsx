@@ -17,20 +17,20 @@ export const WishlistPage = () => {
 
   if (wishlistCount === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn">
-        <div className="max-w-md mx-auto bg-white rounded-3xl p-10 border border-gray-200 shadow-sm space-y-4">
-          <div className="w-20 h-20 rounded-full bg-cream-100 mx-auto flex items-center justify-center border border-gold-500/20">
-            <Heart className="w-10 h-10 text-gold-600" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+        <div className="max-w-md mx-auto bg-white dark:bg-forest-900 rounded-3xl p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
+          <div className="w-20 h-20 rounded-full bg-sage-100 dark:bg-forest-800 mx-auto flex items-center justify-center border border-leaf-500/20">
+            <Heart className="w-10 h-10 text-leaf-600 dark:text-leaf-400" />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-navy-950">Your Wishlist is Empty</h2>
-          <p className="text-xs sm:text-sm text-gray-500">
-            Keep track of all your favorite luxury pieces by tapping the heart icon on any product.
+          <h2 className="font-serif text-2xl font-bold text-charcoal-950 dark:text-white">Your Wishlist is Empty</h2>
+          <p className="text-xs sm:text-sm text-charcoal-600 dark:text-gray-400">
+            Keep track of your favorite ready-to-cook delicacies and kebabs by tapping the heart icon on any product.
           </p>
           <Link
             to="/shop"
-            className="inline-block px-8 py-3 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-2xl shadow-gold-sm hover:brightness-105 transition-all"
+            className="inline-block px-8 py-3 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-2xl shadow-sm hover:scale-105 transition-all cursor-pointer"
           >
-            Discover Products
+            Discover Delicacies
           </Link>
         </div>
       </div>
@@ -38,30 +38,30 @@ export const WishlistPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-gray-200 dark:border-forest-800">
         <div>
-          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-navy-950">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-charcoal-950 dark:text-white">
             My Saved Wishlist
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            You have <strong className="text-navy-950">{wishlistCount}</strong> handcrafted luxury {wishlistCount === 1 ? 'item' : 'items'} saved
+          <p className="text-xs text-charcoal-600 dark:text-gray-400 mt-1">
+            You have <strong className="text-charcoal-950 dark:text-white font-bold">{wishlistCount}</strong> delicious {wishlistCount === 1 ? 'item' : 'items'} saved
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={handleAddAllToCart}
-            className="px-4 py-2.5 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105 flex items-center gap-1.5"
+            className="px-4 py-2.5 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5 cursor-pointer hover:scale-102 transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Add All to Bag</span>
           </button>
           <button
             onClick={clearWishlist}
-            className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 hover:text-red-500 text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 bg-white dark:bg-forest-900 border border-gray-300 dark:border-forest-700 text-charcoal-700 dark:text-gray-300 hover:text-red-500 text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
             <span>Clear</span>
@@ -79,3 +79,4 @@ export const WishlistPage = () => {
     </div>
   );
 };
+

@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const Logo = ({ size = 'normal', showTagline = true, className = '' }) => {
+export const Logo = ({ size = 'normal', showTagline = true, variant = 'default', className = '' }) => {
+  const isHeader = variant === 'header';
+
   return (
-    <Link to="/" className={`inline-flex items-center gap-2.5 group select-none ${className}`}>
-      {/* Organic Akira Fresh Leaf Emblem */}
-      <div className="relative flex items-center justify-center">
-        {/* Ambient green glow */}
-        <div className="absolute inset-0 bg-leaf-500/20 rounded-2xl blur-md group-hover:bg-leaf-500/35 transition-all duration-300"></div>
-        
-        <div className={`relative rounded-2xl bg-gradient-to-br from-forest-800 to-forest-900 border border-leaf-500/40 p-2 flex items-center justify-center shadow-leaf-sm group-hover:scale-105 group-hover:border-leaf-400 transition-all duration-300 ${
-          size === 'large' ? 'w-13 h-13' : size === 'small' ? 'w-9 h-9' : 'w-11 h-11'
+    <Link to="/" className={`inline-flex items-center gap-2.5 sm:gap-3 group select-none ${className}`}>
+      {/* Organic Green Leaf Emblem */}
+      <div className="relative flex items-center justify-center shrink-0">
+        <div className={`relative rounded-2xl bg-gradient-to-br from-[#1b4332] via-[#2d5f38] to-[#15803d] p-2 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-105 ${
+          size === 'large' ? 'w-12 h-12 sm:w-14 sm:h-14' : size === 'small' ? 'w-8 h-8 sm:w-9 sm:h-9' : 'w-10 h-10 sm:w-11 sm:h-11'
         }`}>
           <svg
             viewBox="0 0 32 32"
@@ -18,64 +17,51 @@ export const Logo = ({ size = 'normal', showTagline = true, className = '' }) =>
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Primary organic leaf shape */}
+            {/* Organic leaf */}
             <path
-              d="M8 24C6 16 12 7 24 6C24 18 16 26 8 24Z"
-              fill="url(#akiraLeafGrad)"
-              className="group-hover:rotate-3 origin-bottom-left transition-transform duration-300"
+              d="M7 25C5 17 11 6 25 5C25 19 17 27 7 25Z"
+              fill="#FFFFFF"
+              className="group-hover:rotate-2 origin-bottom-left transition-transform duration-300"
             />
-            {/* Inner delicate leaf vein */}
+            {/* Delicate leaf spine */}
             <path
-              d="M9 23C13 19 17 14 23 7"
-              stroke="#FBF9F4"
-              strokeWidth="1.5"
+              d="M8 24C12 20 17 14 24 6"
+              stroke="#2d5f38"
+              strokeWidth="1.6"
               strokeLinecap="round"
-              opacity="0.9"
             />
             <path
-              d="M13 19C16 18 18 19 20 20"
-              stroke="#FBF9F4"
-              strokeWidth="1.2"
+              d="M13 19C16 18 19 19 21 21"
+              stroke="#2d5f38"
+              strokeWidth="1.3"
               strokeLinecap="round"
-              opacity="0.75"
             />
             <path
-              d="M16 15C18 13 21 14 22 15"
-              stroke="#FBF9F4"
-              strokeWidth="1.2"
+              d="M16 14C19 13 22 14 23 15"
+              stroke="#2d5f38"
+              strokeWidth="1.3"
               strokeLinecap="round"
-              opacity="0.75"
             />
-            {/* Little golden dewdrop */}
-            <circle cx="20" cy="11" r="1.5" fill="#BEF264" />
-
-            <defs>
-              <linearGradient id="akiraLeafGrad" x1="6" y1="24" x2="24" y2="6" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#15803D" />
-                <stop offset="60%" stopColor="#22C55E" />
-                <stop offset="100%" stopColor="#4ADE80" />
-              </linearGradient>
-            </defs>
           </svg>
         </div>
       </div>
 
       {/* Brand Typography */}
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1.5 leading-none">
-          <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-leaf-400 transition-colors">
-            Akira
-          </span>
-          <span className="font-sans text-xl sm:text-2xl font-light tracking-wide text-leaf-400">
-            Fresh
+      <div className="flex flex-col text-left">
+        <div className="flex items-center leading-none">
+          <span className="font-serif text-2xl sm:text-[26px] font-extrabold tracking-tight text-[#111827] dark:text-white group-hover:text-[#1b4332] dark:group-hover:text-[#84CC16] transition-colors">
+            FreshNest
           </span>
         </div>
         {showTagline && (
-          <span className="text-[10px] sm:text-[11px] font-medium tracking-widest text-leaf-400/90 uppercase mt-0.5 font-sans">
-            Farm Fresh • Naturally Better
+          <span className="text-[9px] sm:text-[10px] font-bold tracking-widest text-[#4b5563] dark:text-[#a3b899] uppercase mt-0.5 font-sans">
+            GOOD FOOD. BETTER LIVING.
           </span>
         )}
       </div>
     </Link>
   );
 };
+
+
+

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, ArrowRight, ShieldCheck, Heart, Leaf, Award, Truck, Check, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight, ShieldCheck, Heart, Leaf, Award, Truck, Check, Sparkles, MessageCircle, Lock } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { CATEGORIES } from '../../data/categories';
 import { useToast } from '../../context/ToastContext';
@@ -36,21 +36,21 @@ export const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <Logo size="normal" />
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed pr-4">
-              Akira Fresh delivers handpicked farm produce, certified organic vegetables, pure A2 dairy, cold-pressed oils, and signature ready-to-cook delicacies directly to your kitchen table across Delhi NCR.
+              Akira Fresh delivers restaurant-grade Awadhi Galouti kebabs, Afghani tikkas, gourmet patties, and sub-zero cold-chain delicacies directly to your kitchen across Delhi NCR.
             </p>
 
             {/* Newsletter Subscription */}
             <div className="pt-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-leaf-400 mb-2 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-lime-400" />
-                Get Fresh Offers & Harvest Alerts
+                Get Gourmet Drops & Member Deals
               </h4>
               <form onSubmit={handleSubscribe} className="relative flex items-center max-w-sm">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email for 15% OFF..."
+                  placeholder="Enter email for 15% OFF..."
                   className="w-full pl-4 pr-24 py-2.5 bg-forest-900 text-ivory-100 placeholder-gray-500 text-xs rounded-full border border-forest-700 focus:outline-none focus:border-leaf-400 focus:ring-1 focus:ring-leaf-400/30 transition-all shadow-inner"
                 />
                 <button
@@ -70,22 +70,22 @@ export const Footer = () => {
             </div>
 
             {/* Certifications / Food Safety */}
-            <div className="flex items-center gap-3 pt-3">
+            <div className="flex items-center gap-3 pt-2">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-forest-900 border border-forest-800 text-[11px] text-gray-300">
                 <ShieldCheck className="w-3.5 h-3.5 text-leaf-400" />
-                <span>FSSAI Certified</span>
+                <span>100% Antibiotic-Free</span>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-forest-900 border border-forest-800 text-[11px] text-gray-300">
                 <Leaf className="w-3.5 h-3.5 text-leaf-400" />
-                <span>100% Organic India</span>
+                <span>FSSAI Certified Safe</span>
               </div>
             </div>
           </div>
 
-          {/* Col 2: Shop Produce Categories (Col span 3) */}
+          {/* Col 2: Shop Delicacies Categories (Col span 3) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold text-white tracking-wide border-b border-forest-800/80 pb-2">
-              Fresh Categories
+              Shop Categories
             </h4>
             <ul className="space-y-2 text-xs text-gray-300">
               {CATEGORIES.slice(0, 6).map((cat) => (
@@ -95,7 +95,7 @@ export const Footer = () => {
                     className="hover:text-leaf-400 transition-colors flex items-center justify-between group"
                   >
                     <span>{cat.name}</span>
-                    <span className="text-[10px] text-gray-500 group-hover:text-leaf-400/80">→</span>
+                    <span className="text-[10px] text-gray-500 group-hover:text-leaf-400/80">&rarr;</span>
                   </Link>
                 </li>
               ))}
@@ -115,22 +115,22 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/help" className="hover:text-leaf-400 transition-colors">
-                  Delivery & Slot Info
+                  Cold-Chain & Delivery
                 </Link>
               </li>
               <li>
                 <Link to="/returns" className="hover:text-leaf-400 transition-colors">
-                  100% Fresh Guarantee
+                  100% Taste Guarantee
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-leaf-400 transition-colors">
-                  Help & Support
+                  Contact Support
                 </Link>
               </li>
               <li>
                 <Link to="/offers" className="hover:text-leaf-400 transition-colors">
-                  Coupons & Bundles
+                  Party Combos & Coupons
                 </Link>
               </li>
             </ul>
@@ -139,12 +139,12 @@ export const Footer = () => {
           {/* Col 4: Reach Us / Delivery Zones (Col span 3) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold text-white tracking-wide border-b border-forest-800/80 pb-2">
-              Akira Fresh Hub
+              Akira Cold Hub
             </h4>
             <div className="space-y-2.5 text-xs text-gray-300">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-leaf-400 shrink-0 mt-0.5" />
-                <span>Central Cold Facility, Okhla Phase III, New Delhi 110020</span>
+                <span>Central Cold Logistics, Okhla Phase III, New Delhi 110020</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-leaf-400 shrink-0" />
@@ -154,10 +154,14 @@ export const Footer = () => {
                 <Mail className="w-4 h-4 text-leaf-400 shrink-0" />
                 <span>support@akirafresh.in</span>
               </div>
+              <div className="flex items-center gap-2.5">
+                <MessageCircle className="w-4 h-4 text-lime-400 shrink-0" />
+                <span className="text-lime-300 font-medium">WhatsApp: +91 98765 43210</span>
+              </div>
               <div className="pt-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-forest-900 border border-leaf-500/30 text-[11px] text-leaf-300 font-semibold">
                   <Truck className="w-3.5 h-3.5 text-lime-400" />
-                  Express 2-Hr Delivery Active
+                  Express 2-Hr Sub-Zero Delivery Active
                 </span>
               </div>
             </div>
@@ -167,13 +171,16 @@ export const Footer = () => {
 
         {/* Bottom Bar: Copyright & Payment Badges */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
-          <p>© {new Date().getFullYear()} Akira Fresh Private Limited. All rights reserved. Crafted with care for fresh living.</p>
+          <div className="flex items-center gap-2">
+            <Lock className="w-3.5 h-3.5 text-leaf-400" />
+            <span>&copy; {new Date().getFullYear()} Akira Fresh Private Limited. All rights reserved.</span>
+          </div>
           
           <div className="flex items-center gap-4 text-gray-400">
             <Link to="/help" className="hover:text-leaf-400 transition-colors">Privacy Policy</Link>
-            <span>•</span>
+            <span>&bull;</span>
             <Link to="/help" className="hover:text-leaf-400 transition-colors">Terms of Service</Link>
-            <span>•</span>
+            <span>&bull;</span>
             <Link to="/help" className="hover:text-leaf-400 transition-colors">FSSAI Compliance</Link>
           </div>
         </div>
@@ -182,3 +189,4 @@ export const Footer = () => {
     </footer>
   );
 };
+

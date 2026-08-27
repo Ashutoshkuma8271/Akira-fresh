@@ -60,20 +60,20 @@ export const CartPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn">
-        <div className="max-w-md mx-auto bg-white rounded-3xl p-10 border border-gray-200 shadow-sm space-y-4">
-          <div className="w-20 h-20 rounded-full bg-cream-100 mx-auto flex items-center justify-center border border-gold-500/20">
-            <ShoppingBag className="w-10 h-10 text-gold-600" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+        <div className="max-w-md mx-auto bg-white dark:bg-forest-900 rounded-3xl p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
+          <div className="w-20 h-20 rounded-full bg-sage-50 dark:bg-forest-800 mx-auto flex items-center justify-center border border-leaf-500/20 text-[#1b4332] dark:text-lime-400">
+            <ShoppingBag className="w-10 h-10" />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-navy-950">Your Shopping Bag is Empty</h2>
-          <p className="text-xs sm:text-sm text-gray-500">
-            Looks like you haven't added any luxury pieces yet. Explore our premier collections and discover handcrafted essentials.
+          <h2 className="font-serif text-2xl font-bold text-charcoal-950 dark:text-white">Your Fresh Basket is Empty</h2>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+            Explore our curated non-veg delicacies, farm-fresh mutton, Awadhi kebabs, and juicy momos.
           </p>
           <Link
             to="/shop"
-            className="inline-block px-8 py-3 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-2xl shadow-gold-sm hover:brightness-105 transition-all"
+            className="inline-block px-8 py-3 bg-[#18392b] hover:bg-[#112a1f] text-white font-bold text-xs sm:text-sm rounded-full shadow-md hover:scale-105 active:scale-95 transition-all"
           >
-            Start Exploring
+            Start Exploring Delicacies
           </Link>
         </div>
       </div>
@@ -81,23 +81,23 @@ export const CartPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
       
       {/* Title */}
-      <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-200">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-forest-800">
         <div>
-          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-navy-950">
-            Shopping Bag
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-charcoal-950 dark:text-white">
+            Fresh Basket ({totalItemsCount})
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Review your selected pieces and apply member discount codes
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Review your selected cuts and enjoy -18°C temperature controlled delivery
           </p>
         </div>
         <button
           onClick={clearCart}
-          className="text-xs text-red-500 font-semibold hover:underline flex items-center gap-1"
+          className="text-xs text-red-500 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
         >
-          <Trash2 className="w-3.5 h-3.5" /> Clear Bag
+          <Trash2 className="w-3.5 h-3.5" /> Clear Basket
         </button>
       </div>
 
@@ -109,34 +109,34 @@ export const CartPage = () => {
           {cartItems.map((item) => (
             <div
               key={item.cartItemId}
-              className="bg-white rounded-3xl p-4 sm:p-6 border border-gray-200/80 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between transition-all hover:border-gold-500/30"
+              className="bg-white dark:bg-forest-900 rounded-3xl p-4 sm:p-6 border border-gray-200 dark:border-forest-800 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between transition-all hover:border-leaf-500/40"
             >
               {/* Product Info */}
               <div className="flex gap-4 items-center">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-gray-200 bg-gray-50 shrink-0"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-gray-200 dark:border-forest-700 bg-gray-50 shrink-0"
                 />
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-gold-600 uppercase tracking-wider">
-                    {item.brand || 'A_S Signature'}
+                  <span className="text-[10px] font-bold text-leaf-700 dark:text-lime-400 uppercase tracking-wider">
+                    {item.brand || 'Akira Fresh Original'}
                   </span>
                   <Link
                     to={`/product/${item.id}`}
-                    className="block font-bold text-sm sm:text-base text-navy-950 hover:text-gold-600 transition-colors"
+                    className="block font-bold text-sm sm:text-base text-charcoal-950 dark:text-white hover:text-leaf-700 dark:hover:text-lime-300 transition-colors"
                   >
                     {item.name}
                   </Link>
-                  <div className="flex flex-wrap gap-2 text-xs text-gray-500">
-                    {item.selectedColor && (
-                      <span className="bg-gray-100 px-2.5 py-0.5 rounded-lg border border-gray-200 text-[11px]">
-                        Color: <strong>{item.selectedColor}</strong>
+                  <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    {item.weight && (
+                      <span className="bg-gray-100 dark:bg-forest-800 text-charcoal-800 dark:text-gray-200 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold">
+                        Weight: {item.weight}
                       </span>
                     )}
                     {item.selectedSize && (
-                      <span className="bg-gray-100 px-2.5 py-0.5 rounded-lg border border-gray-200 text-[11px]">
-                        Size: <strong>{item.selectedSize}</strong>
+                      <span className="bg-gray-100 dark:bg-forest-800 text-charcoal-800 dark:text-gray-200 px-2.5 py-0.5 rounded-lg text-[11px]">
+                        Cut: {item.selectedSize}
                       </span>
                     )}
                   </div>
@@ -144,19 +144,19 @@ export const CartPage = () => {
               </div>
 
               {/* Price & Controls */}
-              <div className="flex items-center justify-between w-full sm:w-auto gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+              <div className="flex items-center justify-between w-full sm:w-auto gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-forest-800">
                 {/* Quantity */}
-                <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-gray-50">
+                <div className="flex items-center border border-gray-300 dark:border-forest-700 rounded-xl overflow-hidden bg-gray-50 dark:bg-forest-850">
                   <button
                     onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
-                    className="px-3 py-1 text-base font-bold text-gray-600 hover:bg-gray-200"
+                    className="px-3 py-1 text-base font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-forest-800 cursor-pointer"
                   >
                     -
                   </button>
-                  <span className="px-3 text-xs font-bold text-navy-950">{item.quantity}</span>
+                  <span className="px-3 text-xs font-bold text-charcoal-950 dark:text-white">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                    className="px-3 py-1 text-base font-bold text-gray-600 hover:bg-gray-200"
+                    className="px-3 py-1 text-base font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-forest-800 cursor-pointer"
                   >
                     +
                   </button>
@@ -164,7 +164,7 @@ export const CartPage = () => {
 
                 {/* Price */}
                 <div className="text-right min-w-[90px]">
-                  <div className="text-base font-bold text-navy-950 font-serif">
+                  <div className="text-base font-bold text-charcoal-950 dark:text-white font-serif">
                     {formatINR(item.price * item.quantity)}
                   </div>
                   {item.originalPrice && (
@@ -178,14 +178,14 @@ export const CartPage = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleSaveForLater(item)}
-                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-forest-800 transition-colors cursor-pointer"
                     title="Save to Wishlist"
                   >
                     <Heart className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => removeFromCart(item.cartItemId)}
-                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-forest-800 transition-colors cursor-pointer"
                     title="Remove"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -197,16 +197,16 @@ export const CartPage = () => {
           ))}
 
           {/* Free Shipping Alert */}
-          <div className="p-4 bg-cream-100 rounded-2xl border border-gold-500/30 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2 text-navy-900 font-medium">
-              <Truck className="w-4 h-4 text-gold-600" />
+          <div className="p-4 bg-sage-50 dark:bg-forest-900 rounded-2xl border border-leaf-500/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 text-charcoal-900 dark:text-gray-200 font-medium">
+              <Truck className="w-4 h-4 text-leaf-600 dark:text-lime-400" />
               <span>
                 {subtotal >= 999
-                  ? 'Your order qualifies for FREE Express Shipping!'
-                  : `Add ${formatINR(999 - subtotal)} more to qualify for Free Shipping.`}
+                  ? '🎉 Your basket qualifies for FREE Express Cold Delivery!'
+                  : `Add ${formatINR(999 - subtotal)} more to qualify for Free Delivery.`}
               </span>
             </div>
-            <Link to="/shop" className="text-gold-700 font-bold hover:underline">
+            <Link to="/shop" className="text-leaf-700 dark:text-lime-400 font-bold hover:underline">
               Add More Items →
             </Link>
           </div>
@@ -214,25 +214,25 @@ export const CartPage = () => {
 
         {/* Right: Order Summary Box (Col 4) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-sm space-y-5">
-            <h3 className="font-serif text-lg font-bold text-navy-950 pb-3 border-b border-gray-100">
-              Order Summary
+          <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 border border-gray-200 dark:border-forest-800 shadow-sm space-y-5">
+            <h3 className="font-serif text-lg font-bold text-charcoal-950 dark:text-white pb-3 border-b border-gray-100 dark:border-forest-800">
+              Basket Summary
             </h3>
 
             {/* Coupon Code Applicator */}
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+              <label className="block text-xs font-bold text-charcoal-700 dark:text-gray-300 uppercase tracking-wide mb-2">
                 Have a Promo Code?
               </label>
               {appliedCoupon ? (
-                <div className="flex items-center justify-between p-3 bg-gold-500/10 border border-gold-500/30 rounded-xl text-xs">
+                <div className="flex items-center justify-between p-3 bg-leaf-500/10 border border-leaf-500/30 rounded-xl text-xs">
                   <div className="flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-gold-600" />
-                    <span className="font-bold text-navy-950">{appliedCoupon.code} applied</span>
+                    <Tag className="w-4 h-4 text-leaf-600 dark:text-lime-400" />
+                    <span className="font-bold text-charcoal-950 dark:text-white">{appliedCoupon.code} applied</span>
                   </div>
                   <button
                     onClick={removeCoupon}
-                    className="text-xs text-red-500 font-bold hover:underline"
+                    className="text-xs text-red-500 font-bold hover:underline cursor-pointer"
                   >
                     Remove
                   </button>
@@ -243,12 +243,12 @@ export const CartPage = () => {
                     type="text"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    placeholder="Try: WELCOME10"
-                    className="flex-1 pl-3 pr-2 py-2.5 bg-gray-50 text-xs rounded-xl border border-gray-300 focus:outline-none focus:border-gold-500 uppercase font-semibold"
+                    placeholder="Try: FRESH15"
+                    className="flex-1 pl-3 pr-2 py-2.5 bg-gray-50 dark:bg-forest-850 text-xs rounded-xl border border-gray-300 dark:border-forest-700 focus:outline-none focus:border-leaf-500 uppercase font-semibold text-charcoal-900 dark:text-white"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 bg-navy-900 text-gold-400 font-bold text-xs rounded-xl hover:bg-navy-850 transition-colors"
+                    className="px-4 py-2.5 bg-[#18392b] hover:bg-[#112a1f] text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
                   >
                     Apply
                   </button>
@@ -257,41 +257,37 @@ export const CartPage = () => {
             </div>
 
             {/* Price Calculations */}
-            <div className="space-y-2.5 text-xs text-gray-600 pt-2 border-t border-gray-100">
+            <div className="space-y-2.5 text-xs text-gray-600 dark:text-gray-300 pt-2 border-t border-gray-100 dark:border-forest-800">
               <div className="flex justify-between">
                 <span>Original Price</span>
                 <span className="text-gray-500 line-through">{formatINR(originalSubtotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Cart Subtotal</span>
-                <span className="font-semibold text-navy-950">{formatINR(subtotal)}</span>
+                <span>Basket Subtotal</span>
+                <span className="font-semibold text-charcoal-950 dark:text-white">{formatINR(subtotal)}</span>
               </div>
               {couponDiscount > 0 && (
-                <div className="flex justify-between text-green-700 font-bold">
+                <div className="flex justify-between text-leaf-700 dark:text-lime-400 font-bold">
                   <span>Coupon Discount ({appliedCoupon?.code})</span>
                   <span>-{formatINR(couponDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span>Estimated Shipping</span>
-                <span className="font-semibold text-navy-950">
-                  {shippingFee === 0 ? <span className="text-green-700 font-bold">FREE</span> : formatINR(shippingFee)}
+                <span>Cold Delivery Fee</span>
+                <span className="font-semibold text-charcoal-950 dark:text-white">
+                  {shippingFee === 0 ? <span className="text-leaf-700 dark:text-lime-400 font-bold">FREE</span> : formatINR(shippingFee)}
                 </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Estimated GST & Taxes</span>
-                <span className="text-gray-500">Included in prices</span>
               </div>
 
               {/* Total Row */}
-              <div className="flex justify-between items-baseline pt-4 border-t border-gray-200 text-base font-bold text-navy-950">
+              <div className="flex justify-between items-baseline pt-4 border-t border-gray-200 dark:border-forest-800 text-base font-bold text-charcoal-950 dark:text-white">
                 <span>Total Amount</span>
-                <span className="text-2xl text-gold-700 font-serif">{formatINR(total)}</span>
+                <span className="text-2xl text-[#18392b] dark:text-lime-400 font-serif">{formatINR(total)}</span>
               </div>
 
               {totalSavings > 0 && (
-                <p className="text-center text-xs font-bold text-green-700 bg-green-50 py-2 rounded-xl border border-green-200 mt-2">
-                  🎉 You are saving a total of {formatINR(totalSavings)} on this order!
+                <p className="text-center text-xs font-bold text-leaf-800 dark:text-lime-300 bg-leaf-50 dark:bg-forest-800 py-2 rounded-xl border border-leaf-200 dark:border-forest-700 mt-2">
+                  🎉 You are saving a total of {formatINR(totalSavings)} on this fresh order!
                 </p>
               )}
             </div>
@@ -299,16 +295,16 @@ export const CartPage = () => {
             {/* Checkout Button */}
             <button
               onClick={handleProceedToCheckout}
-              className="w-full py-4 bg-gold-gradient text-navy-950 font-bold text-sm rounded-2xl shadow-gold-sm hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-sm rounded-2xl shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Proceed to Checkout</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Proceed to Secure Checkout</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
 
             {/* Trust Badges */}
-            <div className="flex items-center justify-center gap-2 text-[11px] text-gray-400 pt-2">
-              <ShieldCheck className="w-4 h-4 text-gold-600" />
-              <span>Razorpay Secured 256-Bit Encryption</span>
+            <div className="flex items-center justify-center gap-2 text-[11px] text-gray-500 dark:text-gray-400 pt-2">
+              <ShieldCheck className="w-4 h-4 text-leaf-600 dark:text-lime-400" />
+              <span>-18°C Sealed & 100% Encrypted Checkout</span>
             </div>
           </div>
         </div>

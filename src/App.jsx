@@ -11,10 +11,13 @@ import { OrderProvider } from './context/OrderContext';
 import { Layout } from './components/layout/Layout';
 import { ScrollToTop } from './components/common/ScrollToTop';
 import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Lazy Loaded Customer Storefront Pages for high-speed performance & code splitting
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const ShopPage = lazy(() => import('./pages/ShopPage').then(m => ({ default: m.ShopPage })));
+const CategoriesHubPage = lazy(() => import('./pages/CategoriesHubPage').then(m => ({ default: m.CategoriesHubPage })));
+const BestsellersPage = lazy(() => import('./pages/BestsellersPage').then(m => ({ default: m.BestsellersPage })));
 const CategoryPage = lazy(() => import('./pages/CategoryPage').then(m => ({ default: m.CategoryPage })));
 const ProductDetailsPage = lazy(() => import('./pages/ProductDetailsPage').then(m => ({ default: m.ProductDetailsPage })));
 const CartPage = lazy(() => import('./pages/CartPage').then(m => ({ default: m.CartPage })));
@@ -120,41 +123,51 @@ export function App() {
                           path="/*"
                           element={
                             <Layout>
-                              <Suspense fallback={<PageLoader />}>
-                                <Routes>
-                                  <Route path="/" element={<HomePage />} />
-                                  <Route path="/shop" element={<ShopPage />} />
-                                  <Route path="/category/:slug" element={<CategoryPage />} />
-                                  <Route path="/product/:id" element={<ProductDetailsPage />} />
-                                  <Route path="/cart" element={<CartPage />} />
-                                  <Route path="/wishlist" element={<WishlistPage />} />
-                                  <Route path="/checkout" element={<CheckoutPage />} />
-                                  <Route path="/order-success" element={<OrderSuccessPage />} />
-                                  <Route path="/track-order" element={<TrackOrderPage />} />
-                                  
-                                  {/* Account & Password Recovery Routes */}
-                                  <Route path="/reset-password" element={<CustomerResetPasswordPage />} />
-                                  <Route path="/account" element={<AccountPage />} />
-                                  <Route path="/account/orders" element={<AccountPage />} />
-                                  <Route path="/account/addresses" element={<AccountPage />} />
-                                  <Route path="/account/profile" element={<AccountPage />} />
-                                  <Route path="/account/security" element={<AccountPage />} />
-                                  <Route path="/account/wishlist" element={<WishlistPage />} />
+                              <ErrorBoundary>
+                                <Suspense fallback={<PageLoader />}>
+                                  <Routes>
+                                    <Route path="/" element={<HomePage />} />
+                                    <Route path="/shop" element={<ShopPage />} />
+                                    <Route path="/collections/all" element={<ShopPage />} />
+                                    <Route path="/categories" element={<CategoriesHubPage />} />
+                                    <Route path="/collections" element={<CategoriesHubPage />} />
+                                    <Route path="/bestsellers" element={<BestsellersPage />} />
+                                    <Route path="/collections/bestsellers" element={<BestsellersPage />} />
+                                    <Route path="/category/:slug" element={<CategoryPage />} />
+                                    <Route path="/product/:id" element={<ProductDetailsPage />} />
+                                    <Route path="/cart" element={<CartPage />} />
+                                    <Route path="/wishlist" element={<WishlistPage />} />
+                                    <Route path="/checkout" element={<CheckoutPage />} />
+                                    <Route path="/order-success" element={<OrderSuccessPage />} />
+                                    <Route path="/track-order" element={<TrackOrderPage />} />
+                                    
+                                    {/* Account & Password Recovery Routes */}
+                                    <Route path="/reset-password" element={<CustomerResetPasswordPage />} />
+                                    <Route path="/account" element={<AccountPage />} />
+                                    <Route path="/account/orders" element={<AccountPage />} />
+                                    <Route path="/account/addresses" element={<AccountPage />} />
+                                    <Route path="/account/profile" element={<AccountPage />} />
+                                    <Route path="/account/security" element={<AccountPage />} />
+                                    <Route path="/account/wishlist" element={<WishlistPage />} />
 
-                                  {/* Offers & New Arrivals */}
-                                  <Route path="/offers" element={<OffersPage />} />
-                                  <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+                                    {/* Offers & New Arrivals */}
+                                    <Route path="/offers" element={<OffersPage />} />
+                                    <Route path="/new-arrivals" element={<NewArrivalsPage />} />
 
-                                  {/* Static / Customer Care */}
-                                  <Route path="/help" element={<HelpPage />} />
-                                  <Route path="/shipping" element={<HelpPage />} />
-                                  <Route path="/returns" element={<HelpPage />} />
-                                  <Route path="/contact" element={<ContactPage />} />
+                                    {/* Static / Customer Care */}
+                                    <Route path="/help" element={<HelpPage />} />
+                                    <Route path="/pages/about-akira-fresh" element={<HelpPage />} />
+                                    <Route path="/about" element={<HelpPage />} />
+                                    <Route path="/shipping" element={<HelpPage />} />
+                                    <Route path="/returns" element={<HelpPage />} />
+                                    <Route path="/contact" element={<ContactPage />} />
+                                    <Route path="/pages/contact" element={<ContactPage />} />
 
-                                  {/* Fallback */}
-                                  <Route path="*" element={<NotFoundPage />} />
-                                </Routes>
-                              </Suspense>
+                                    {/* Fallback */}
+                                    <Route path="*" element={<NotFoundPage />} />
+                                  </Routes>
+                                </Suspense>
+                              </ErrorBoundary>
                             </Layout>
                           }
                         />

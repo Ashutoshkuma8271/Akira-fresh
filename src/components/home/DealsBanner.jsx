@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, Clock, Percent, Flame, Check, Copy } from 'lucide-react';
+import { ArrowRight, Clock, Flame, Check, Copy } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useCart } from '../../context/CartContext';
 
@@ -36,106 +36,59 @@ export const DealsBanner = () => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 select-none">
-      <div className="relative rounded-3xl sm:rounded-[36px] overflow-hidden bg-gradient-to-r from-forest-950 via-forest-900 to-forest-850 border border-leaf-500/30 text-white shadow-2xl p-6 sm:p-10 lg:p-14">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 select-none">
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-[#0A2618] border border-leaf-500/40 text-white shadow-xl p-5 sm:p-7">
         
         {/* Decorative background radial glow */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-leaf-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-72 h-72 bg-leaf-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
           
-          {/* Left Column: Offer Content (Col Span 7) */}
-          <div className="lg:col-span-7 space-y-5 text-left">
-            
-            {/* Tag badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest-900 border border-leaf-500/40 text-xs font-bold text-lime-300">
+          {/* Left: Offer Details */}
+          <div className="space-y-2 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#071d12] border border-leaf-500/40 text-[11px] font-bold text-lime-300">
               <Flame className="w-3.5 h-3.5 text-orange-400" />
-              <span>WEEKEND NON-VEG PARTY SPECIAL</span>
+              <span>SPECIAL WEEKEND DEAL</span>
             </div>
 
-            {/* Headline */}
-            <div className="space-y-1">
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
-                Gourmet Party Packs. <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-leaf-400 to-lime-300 italic font-serif">
-                  Better Prices.
-                </span>
-              </h2>
-            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Get 15% OFF on Gourmet Party Combos
+            </h3>
 
-            {/* Subtitle */}
-            <p className="text-sm sm:text-base text-gray-300 max-w-lg leading-relaxed">
-              Save more on restaurant-grade Galouti kebabs, fiery Peri-Peri wings, and royal Awadhi mutton platters. Ready to pan-sear in 5 minutes.
+            <p className="text-xs sm:text-sm text-gray-300 max-w-lg leading-relaxed font-sans">
+              Save more on restaurant-grade Galouti kebabs, fiery Peri-Peri wings & mutton platters.
             </p>
-
-            {/* Countdown Box */}
-            <div className="flex items-center gap-3 pt-1">
-              <div className="flex items-center gap-1.5 text-xs text-leaf-300 font-semibold">
-                <Clock className="w-4 h-4 text-lime-400 animate-pulse" />
-                <span>Special Combos Expire In:</span>
-              </div>
-              <div className="flex items-center gap-1.5 font-mono text-xs sm:text-sm font-black">
-                <span className="px-2.5 py-1 rounded-lg bg-forest-800 border border-leaf-500/30 text-white">
-                  {String(timeLeft.hours).padStart(2, '0')}h
-                </span>
-                <span className="text-leaf-400 font-bold">:</span>
-                <span className="px-2.5 py-1 rounded-lg bg-forest-800 border border-leaf-500/30 text-white">
-                  {String(timeLeft.minutes).padStart(2, '0')}m
-                </span>
-                <span className="text-leaf-400 font-bold">:</span>
-                <span className="px-2.5 py-1 rounded-lg bg-forest-800 border border-leaf-500/30 text-white">
-                  {String(timeLeft.seconds).padStart(2, '0')}s
-                </span>
-              </div>
-            </div>
-
-            {/* Coupon and Actions */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Link
-                to="/offers"
-                className="px-8 py-3.5 bg-leaf-gradient hover:brightness-110 text-forest-950 font-bold text-xs sm:text-sm rounded-full shadow-leaf-glow hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <span>Explore Non-Veg Combos</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              {/* Coupon Box */}
-              <button
-                onClick={handleCopyCoupon}
-                className="px-4 py-2.5 rounded-full bg-forest-900/90 border border-dashed border-leaf-400/80 hover:bg-forest-800 text-xs font-bold text-leaf-300 flex items-center gap-2 transition-all cursor-pointer shadow-sm"
-              >
-                <span>Code: <strong className="text-white tracking-wider">FRESH15</strong></span>
-                {copied ? <Check className="w-3.5 h-3.5 text-leaf-400" /> : <Copy className="w-3.5 h-3.5 text-leaf-400" />}
-              </button>
-            </div>
-
           </div>
 
-          {/* Right Column: Visual Non-Veg Platter (Col Span 5) */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            <div className="relative w-full max-w-sm rounded-3xl overflow-hidden border-2 border-leaf-500/40 shadow-2xl group">
-              <img
-                src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=700&auto=format&fit=crop&q=85"
-                alt="Akira Fresh Kebab Platter"
-                className="w-full h-72 sm:h-80 object-cover group-hover:scale-108 transition-transform duration-700"
-              />
-              
-              {/* Badge */}
-              <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-forest-950/90 backdrop-blur-md border border-leaf-400 text-xs font-black text-lime-300 shadow-lg">
-                SAVE UP TO 35%
-              </div>
-
-              {/* Bottom Tag */}
-              <div className="absolute bottom-3 left-3 right-3 p-3 rounded-2xl bg-forest-950/85 backdrop-blur-md border border-leaf-500/30 flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-bold text-white">Grand Kebab Platter</div>
-                  <div className="text-[10px] text-leaf-300">Galouti (8) + Wings (10) + Dips</div>
-                </div>
-                <span className="text-xs font-bold text-leaf-400 bg-forest-900 px-2 py-1 rounded-lg">
-                  ₹549 <span className="line-through text-[10px] text-gray-400">₹799</span>
-                </span>
-              </div>
+          {/* Center: Countdown Timer */}
+          <div className="flex items-center gap-2 bg-[#06180E] px-4 py-2.5 rounded-2xl border border-leaf-500/30">
+            <Clock className="w-4 h-4 text-lime-400 shrink-0" />
+            <div className="flex items-center gap-1 font-mono text-xs font-bold text-white">
+              <span>{String(timeLeft.hours).padStart(2, '0')}h</span>
+              <span className="text-lime-400">:</span>
+              <span>{String(timeLeft.minutes).padStart(2, '0')}m</span>
+              <span className="text-lime-400">:</span>
+              <span>{String(timeLeft.seconds).padStart(2, '0')}s</span>
             </div>
+          </div>
+
+          {/* Right: Coupon & CTA */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={handleCopyCoupon}
+              className="px-3.5 py-2.5 rounded-xl bg-black/60 border border-dashed border-leaf-400/80 hover:bg-black text-xs font-bold text-leaf-300 flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+            >
+              <span>Code: <strong className="text-white">FRESH15</strong></span>
+              {copied ? <Check className="w-3.5 h-3.5 text-leaf-400" /> : <Copy className="w-3.5 h-3.5 text-leaf-400" />}
+            </button>
+
+            <Link
+              to="/offers"
+              className="px-5 py-2.5 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs rounded-xl shadow-sm hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Claim Offer</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            </Link>
           </div>
 
         </div>
@@ -144,3 +97,4 @@ export const DealsBanner = () => {
     </section>
   );
 };
+

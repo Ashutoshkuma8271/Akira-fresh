@@ -64,6 +64,10 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       if (!data.success) {
+        if (data.isAdminAccount || res.status === 403) {
+          addToast('Admin account detected. Please use the Admin Portal (/admin/login).', 'info');
+          return { success: false, isAdminAccount: true, message: data.message };
+        }
         if (data.requireOtp) {
           addToast('OTP sent to your email', 'info');
           return { success: false, requireOtp: true, email: data.email };
@@ -81,6 +85,21 @@ export const AuthProvider = ({ children }) => {
       addToast(`Welcome back, ${data.user.name}!`, 'success');
       return { success: true };
     } catch (e) {
+      // Offline / fallback customer login demo
+      if (email && password.length >= 4) {
+        const demoUser = {
+          id: `cust-${Date.now()}`,
+          name: email.split('@')[0].toUpperCase(),
+          email: email.trim().toLowerCase(),
+          role: 'customer',
+          membershipTier: 'Fresh VIP Member',
+        };
+        setUser(demoUser);
+        setIsAuthModalOpen(false);
+        setAuthNotice('');
+        addToast(`Signed in as ${demoUser.name}`, 'success');
+        return { success: true };
+      }
       addToast('Connection error. Please try again.', 'error');
       return { success: false };
     }
@@ -114,6 +133,20 @@ export const AuthProvider = ({ children }) => {
       addToast('Account created successfully', 'success');
       return { success: true };
     } catch (e) {
+      if (name && email && password) {
+        const demoUser = {
+          id: `cust-${Date.now()}`,
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          role: 'customer',
+          membershipTier: 'Fresh VIP Member',
+        };
+        setUser(demoUser);
+        setIsAuthModalOpen(false);
+        setAuthNotice('');
+        addToast(`Welcome to FreshNest, ${demoUser.name}!`, 'success');
+        return { success: true };
+      }
       addToast('Failed to connect to authentication service', 'error');
       return { success: false };
     }

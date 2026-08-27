@@ -1,82 +1,84 @@
 export const CATEGORIES = [
   {
-    id: 'chicken-kebabs',
-    slug: 'chicken-kebabs',
-    name: 'Chicken Kebabs',
-    itemCount: '24+ Varieties',
-    image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&auto=format&fit=crop&q=80',
-    description: 'Melt-in-mouth Galouti, Afghani Malai Tikka & Tandoori Spiced Kebabs',
-    color: '#0B2B1B',
-    subcategories: ['Galouti Kebabs', 'Malai Chicken Tikka', 'Tandoori Seekh', 'Herb Marinated Skewers']
+    id: 'bestsellers',
+    slug: 'bestsellers',
+    name: 'Bestsellers',
+    itemCount: '24+ Items',
+    image: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=500&auto=format&fit=crop&q=85',
+    description: 'Our all-time highest rated chef specialties and customer favorites.',
+    subcategories: ['Galouti Kebabs', 'Chicken Tikka', 'Herb Breasts', 'Crispy Nuggets']
   },
   {
-    id: 'mutton-delights',
-    slug: 'mutton-delights',
-    name: 'Mutton Specialties',
-    itemCount: '18+ Items',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
-    description: 'Royal Awadhi Kakori, Shami Kebabs & Spiced Mutton Keema Patties',
-    color: '#0E3723',
-    subcategories: ['Kakori Kebabs', 'Shami Kebabs', 'Mutton Seekh', 'Keema Patties']
+    id: 'flash-sale',
+    slug: 'flash-sale',
+    name: 'Flash Sale',
+    itemCount: '16+ Deals',
+    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=85',
+    description: 'Limited-time special prices on crunchy snacks, wings, and tikkas.',
+    subcategories: ['Chicken Popcorn', 'Peri Peri Wings', 'Crispy Tenders', 'Hot Bites']
   },
   {
-    id: 'crispy-snacks',
-    slug: 'crispy-snacks',
-    name: 'Crispy & Fried',
+    id: 'chicken-snacks',
+    slug: 'chicken-snacks',
+    name: 'Chicken Snacks',
     itemCount: '20+ Snacks',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80',
-    description: 'Crunchy Chicken Popcorn, Golden Nuggets, Crispy Strips & Fries',
-    color: '#0B2B1B',
-    subcategories: ['Chicken Popcorn', 'Crispy Nuggets', 'Zesty Tenders', 'Herb Breaded Cutlets']
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=85',
+    description: 'Golden burger patties, crispy cutlets, fingers, and easy party snacks.',
+    subcategories: ['Chicken Patties', 'Crispy Cutlets', 'Finger Bites', 'Cheese Bombs']
   },
   {
-    id: 'wings-drumsticks',
-    slug: 'wings-drumsticks',
-    name: 'Wings & Drumsticks',
-    itemCount: '16+ Cuts',
-    image: 'https://images.unsplash.com/photo-1527477321055-43615b65171d?w=600&auto=format&fit=crop&q=80',
-    description: 'Peri-Peri Wings, Smoky BBQ Drumsticks, Buffalo Glazed & Hot Wings',
-    color: '#0E3723',
-    subcategories: ['Peri-Peri Wings', 'Smoked BBQ Drumsticks', 'Buffalo Wings', 'Chicken Lollipops']
+    id: 'kebabs',
+    slug: 'kebabs',
+    name: 'Kebabs',
+    itemCount: '18+ Kebabs',
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=85',
+    description: 'Authentic melt-in-mouth Awadhi Galouti, Kakori, Seekh, and Malai Kebabs.',
+    subcategories: ['Galouti Kebabs', 'Chicken Seekh', 'Mutton Kakori', 'Afghani Malai']
   },
   {
-    id: 'burgers-patties',
-    slug: 'burgers-patties',
-    name: 'Burgers & Patties',
-    itemCount: '14+ Packs',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80',
-    description: 'Juicy Grilled Burger Patties, Herb Stuffed Chicken Breasts & Sliders',
-    color: '#0B2B1B',
-    subcategories: ['Classic Chicken Patties', 'Cheese Stuffed Patties', 'Mutton Burger Patties', 'Spicy Fillets']
+    id: 'momos',
+    slug: 'momos',
+    name: 'Momos',
+    itemCount: '12+ Varieties',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500&auto=format&fit=crop&q=85',
+    description: 'Juicy steamed Himalayan chicken and mutton momos with spicy garlic dip.',
+    subcategories: ['Classic Chicken Momos', 'Mutton Steamed Momos', 'Cheese Momos', 'Crispy Fried Momos']
   },
   {
-    id: 'sausages-salami',
-    slug: 'sausages-salami',
+    id: 'sausages-cold-cuts',
+    slug: 'sausages-cold-cuts',
     name: 'Sausages & Cold Cuts',
     itemCount: '15+ Delights',
-    image: 'https://images.unsplash.com/photo-1585325701165-351af916e581?w=600&auto=format&fit=crop&q=80',
-    description: 'German-style Frankfurters, Smoked Chicken Sausages & Pepper Salami',
-    color: '#0E3723',
-    subcategories: ['Smoked Frankfurters', 'Cocktail Sausages', 'Chicken Salami', 'Herb Breakfast Links']
+    image: 'https://images.unsplash.com/photo-1585325701165-351af916e581?w=500&auto=format&fit=crop&q=85',
+    description: 'German-style Frankfurters, smoked chicken sausages, and pepper salami.',
+    subcategories: ['Smoked Frankfurters', 'Chicken Salami', 'Breakfast Sausages', 'Cocktail Bites']
   },
   {
-    id: 'marinated-cuts',
-    slug: 'marinated-cuts',
-    name: 'Marinated Raw Cuts',
-    itemCount: '22+ Packs',
-    image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=600&auto=format&fit=crop&q=80',
-    description: 'Tandoori Marinated Curry Cut, Boneless Breast & Biryani Cuts',
-    color: '#0B2B1B',
-    subcategories: ['Tandoori Whole Legs', 'Biryani Cut Marinated', 'Boneless Tikka Cuts', 'Diced Keema']
+    id: 'mutton',
+    slug: 'mutton',
+    name: 'Mutton',
+    itemCount: '14+ Cuts',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=85',
+    description: 'Tender pasture-reared mutton curry cuts, chops, seekh kebabs, and minced keema.',
+    subcategories: ['Mutton Curry Cut', 'Lamb Chops', 'Mutton Seekh', 'Minced Keema']
   },
   {
-    id: 'seafood-fish',
-    slug: 'seafood-fish',
-    name: 'Fish & Prawns',
-    itemCount: '12+ Varieties',
-    image: 'https://images.unsplash.com/photo-1535400255456-984241443b29?w=600&auto=format&fit=crop&q=80',
-    description: 'Crispy Butterflied Prawns, Amritsari Fish Tikka & Salmon Fillets',
-    color: '#0E3723',
-    subcategories: ['Crispy Prawns', 'Amritsari Fish Fillets', 'Fish Fingers', 'Garlic Butter Prawns']
+    id: 'delicacies-ready-to-grill',
+    slug: 'delicacies-ready-to-grill',
+    name: 'Delicacies / Ready-to-Grill',
+    itemCount: '22+ Platters',
+    image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=85',
+    description: 'Chef-marinated skewers, tandoori marinades, and ready-to-sear gourmet platters.',
+    subcategories: ['Tandoori Skewers', 'BBQ Marinated', 'Pahari Tikka', 'Grill Platters']
+  },
+  {
+    id: 'family-packs',
+    slug: 'family-packs',
+    name: 'Family Packs',
+    itemCount: '10+ Combos',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&auto=format&fit=crop&q=85',
+    description: 'Mega non-veg celebration boxes and combo bundles for gatherings.',
+    subcategories: ['Weekend Feast Box', 'Kebab Party Bundle', 'Snack Mania Box', 'Mega Platter']
   }
 ];
+
