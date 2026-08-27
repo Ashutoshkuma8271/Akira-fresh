@@ -557,6 +557,11 @@ export const db = {
     return memoryDB.products || [];
   },
 
+  getProductById: (id) => {
+    loadFromDisk();
+    return (memoryDB.products || []).find(p => p.id === id);
+  },
+
   createProduct: async (productData) => {
     loadFromDisk();
     const id = `prod-${Date.now()}`;

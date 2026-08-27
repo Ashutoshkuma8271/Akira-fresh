@@ -7,6 +7,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createServer as createViteServer } from 'vite';
 import { db, initDB } from './db.js';
 import adminAuthRouter from './routes/adminAuth.js';
 import adminDashboardRouter from './routes/adminDashboard.js';
@@ -18,8 +21,12 @@ import { sendSignupOtpEmail, sendPasswordResetEmail } from './utils/emailService
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Security: Rate Limiters against Brute-Force & DoS attacks
 const authLimiter = rateLimit({
@@ -63,11 +70,11 @@ const upload = multer({
 app.use(compression());
 
 // Security Middlewares
-app.use(helmet());
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://localhost:5177'],
-  credentials: true
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
 }));
+app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use('/api', apiLimiter);
@@ -565,12 +572,25 @@ async function startServer() {
     await initDB();
     await testSupabaseConnection();
 
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[A_S Commerce Backend] Server running securely on http://localhost:${PORT}`);
-    });
+    // Mount Vite dev middleware in development or static assets in production
+    if (process.env.NODE_ENV !== 'production') {
+      const vite = await createViteServer({
+        root: rootDir,
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } else {
+      const distPath = path.join(rootDir, 'dist');
+      app.use(express.static(distPath));
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
 
-    // Keep event loop active
-    setInterval(() => {}, 1000 * 60 * 60);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`[Akira Fresh Server] Server running on http://localhost:${PORT}`);
+    });
   } catch (err) {
     console.error('Failed to start server:', err);
   }
