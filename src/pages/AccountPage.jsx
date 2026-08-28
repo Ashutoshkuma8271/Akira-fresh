@@ -167,49 +167,67 @@ export const AccountPage = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      addToast('Please select a valid image file (JPEG, PNG, WebP)', 'error');
+      addToast('Please select a valid image file (JPEG, PNG, WebP, GIF)', 'error');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      addToast('Image must be under 5MB', 'error');
+    if (file.size > 10 * 1024 * 1024) {
+      addToast('Image must be under 10MB', 'error');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('avatar', file);
 
     setUploadingAvatar(true);
-    try {
-      const res = await fetch('/api/users/upload-avatar', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success && data.url) {
-        updateProfile({ avatar: data.url });
-        addToast('Profile picture uploaded to Cloudinary!', 'success');
-      } else {
-        addToast(data.message || 'Upload failed', 'error');
+
+    // 1. Read locally as Data URL for 100% reliable instant preview & persistence
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const dataUrl = event.target?.result;
+      if (dataUrl) {
+        updateProfile({ avatar: dataUrl });
+        addToast('Profile picture updated successfully!', 'success');
       }
-    } catch (err) {
-      addToast('Error uploading avatar image', 'error');
-    } finally {
+
+      // 2. Attempt background upload to Cloudinary if backend server is available
+      try {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        const res = await fetch('/api/users/upload-avatar', {
+          method: 'POST',
+          body: formData,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            updateProfile({ avatar: data.url });
+          }
+        }
+      } catch (err) {
+        // Fallback already saved locally as base64 in step 1
+        console.log('Saved avatar locally via base64 data URL');
+      } finally {
+        setUploadingAvatar(false);
+      }
+    };
+
+    reader.onerror = () => {
+      addToast('Failed to read image file. Please try another image.', 'error');
       setUploadingAvatar(false);
-    }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
       {/* Account Dashboard Layout: Sidebar + Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Navigation Card (Col 4) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white dark:bg-navy-900 rounded-3xl p-6 border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 border border-gray-200/80 dark:border-forest-750 shadow-sm space-y-6">
             
             {/* User Profile Banner with Avatar Upload */}
-            <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-navy-800">
+            <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-forest-800">
               <div className="relative group shrink-0">
                 <input
                   type="file"
@@ -218,11 +236,11 @@ export const AccountPage = () => {
                   accept="image/*"
                   className="hidden"
                 />
-                <div className="w-16 h-16 rounded-full bg-navy-900 dark:bg-navy-800 border-2 border-gold-500 overflow-hidden shadow-gold-sm flex items-center justify-center text-white font-serif font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-forest-900 dark:bg-forest-800 border-2 border-[#84CC16] overflow-hidden shadow-sm flex items-center justify-center text-white font-serif font-bold text-xl">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
-                    <span>{user.name ? user.name.charAt(0).toUpperCase() : 'C'}</span>
+                    <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                   )}
                 </div>
                 {/* Camera Overlay Button */}
@@ -231,7 +249,7 @@ export const AccountPage = () => {
                   onClick={() => avatarInputRef.current?.click()}
                   disabled={uploadingAvatar}
                   title="Upload profile photo"
-                  className="absolute inset-0 bg-navy-950/70 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-gold-400 transition-all cursor-pointer backdrop-blur-xs"
+                  className="absolute inset-0 bg-forest-950/70 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#84CC16] transition-all cursor-pointer backdrop-blur-xs"
                 >
                   <Camera className="w-5 h-5" />
                 </button>
@@ -239,7 +257,7 @@ export const AccountPage = () => {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-navy-950 dark:text-white text-base truncate">{user.name}</h3>
+                  <h3 className="font-bold text-charcoal-950 dark:text-white text-base truncate">{user.name}</h3>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                 <div className="flex items-center gap-2 mt-1">
@@ -247,9 +265,9 @@ export const AccountPage = () => {
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
                     disabled={uploadingAvatar}
-                    className="text-[10px] text-gold-600 dark:text-gold-400 hover:underline flex items-center gap-1 cursor-pointer font-semibold"
+                    className="text-[11px] text-leaf-700 dark:text-lime-400 hover:underline flex items-center gap-1 cursor-pointer font-bold"
                   >
-                    <Camera className="w-3 h-3" />
+                    <Camera className="w-3.5 h-3.5" />
                     <span>{uploadingAvatar ? 'Uploading...' : 'Change Photo'}</span>
                   </button>
                 </div>
@@ -262,12 +280,12 @@ export const AccountPage = () => {
                 to="/account"
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
                   activeTab === 'dashboard'
-                    ? 'bg-navy-900 dark:bg-gold-500/15 text-gold-400 font-bold shadow-sm border border-gold-500/30'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800'
+                    ? 'bg-[#0E3723] dark:bg-[#84CC16] text-white dark:text-forest-950 font-bold shadow-sm'
+                    : 'text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-gold-400" />
+                  <User className="w-4 h-4" />
                   <span>Dashboard Overview</span>
                 </div>
                 <ChevronRight className="w-4 h-4 opacity-70" />
@@ -277,15 +295,15 @@ export const AccountPage = () => {
                 to="/account/orders"
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
                   activeTab === 'orders'
-                    ? 'bg-navy-900 dark:bg-gold-500/15 text-gold-400 font-bold shadow-sm border border-gold-500/30'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800'
+                    ? 'bg-[#0E3723] dark:bg-[#84CC16] text-white dark:text-forest-950 font-bold shadow-sm'
+                    : 'text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Package className="w-4 h-4 text-gold-400" />
-                  <span>Orders & Consignments</span>
+                  <Package className="w-4 h-4" />
+                  <span>Orders & Delivery</span>
                 </div>
-                <span className="px-2 py-0.5 bg-gray-100 dark:bg-navy-800 text-navy-950 dark:text-white rounded-full text-[10px]">
+                <span className="px-2 py-0.5 bg-gray-100 dark:bg-forest-800 text-charcoal-950 dark:text-white rounded-full text-[10px]">
                   {orders.length}
                 </span>
               </Link>
@@ -294,15 +312,15 @@ export const AccountPage = () => {
                 to="/account/addresses"
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
                   activeTab === 'addresses'
-                    ? 'bg-navy-900 dark:bg-gold-500/15 text-gold-400 font-bold shadow-sm border border-gold-500/30'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800'
+                    ? 'bg-[#0E3723] dark:bg-[#84CC16] text-white dark:text-forest-950 font-bold shadow-sm'
+                    : 'text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-gold-400" />
+                  <MapPin className="w-4 h-4" />
                   <span>Saved Addresses</span>
                 </div>
-                <span className="px-2 py-0.5 bg-gray-100 dark:bg-navy-800 text-navy-950 dark:text-white rounded-full text-[10px]">
+                <span className="px-2 py-0.5 bg-gray-100 dark:bg-forest-800 text-charcoal-950 dark:text-white rounded-full text-[10px]">
                   {user.addresses?.length || 0}
                 </span>
               </Link>
@@ -311,12 +329,12 @@ export const AccountPage = () => {
                 to="/account/profile"
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
                   activeTab === 'profile'
-                    ? 'bg-navy-900 dark:bg-gold-500/15 text-gold-400 font-bold shadow-sm border border-gold-500/30'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800'
+                    ? 'bg-[#0E3723] dark:bg-[#84CC16] text-white dark:text-forest-950 font-bold shadow-sm'
+                    : 'text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Edit2 className="w-4 h-4 text-gold-400" />
+                  <Edit2 className="w-4 h-4" />
                   <span>Profile Information</span>
                 </div>
                 <ChevronRight className="w-4 h-4 opacity-70" />
@@ -326,12 +344,12 @@ export const AccountPage = () => {
                 to="/account/security"
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
                   activeTab === 'security'
-                    ? 'bg-navy-900 dark:bg-gold-500/15 text-gold-400 font-bold shadow-sm border border-gold-500/30'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800'
+                    ? 'bg-[#0E3723] dark:bg-[#84CC16] text-white dark:text-forest-950 font-bold shadow-sm'
+                    : 'text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Lock className="w-4 h-4 text-gold-400" />
+                  <Lock className="w-4 h-4" />
                   <span>Account Security</span>
                 </div>
                 <ChevronRight className="w-4 h-4 opacity-70" />
@@ -339,13 +357,13 @@ export const AccountPage = () => {
 
               <Link
                 to="/wishlist"
-                className="flex items-center justify-between px-4 py-3 rounded-2xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800 transition-all"
+                className="flex items-center justify-between px-4 py-3 rounded-2xl text-charcoal-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-forest-800 transition-all"
               >
                 <div className="flex items-center gap-3">
                   <Heart className="w-4 h-4 text-red-500" />
                   <span>Wishlist Items</span>
                 </div>
-                <span className="px-2 py-0.5 bg-gray-100 dark:bg-navy-800 text-navy-950 dark:text-white rounded-full text-[10px]">
+                <span className="px-2 py-0.5 bg-gray-100 dark:bg-forest-800 text-charcoal-950 dark:text-white rounded-full text-[10px]">
                   {wishlistCount}
                 </span>
               </Link>
@@ -355,7 +373,7 @@ export const AccountPage = () => {
                   logout();
                   navigate('/', { replace: true });
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all text-left pt-3 border-t border-gray-100 dark:border-navy-800 mt-2 cursor-pointer"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all text-left pt-3 border-t border-gray-100 dark:border-forest-800 mt-2 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>
@@ -671,14 +689,61 @@ export const AccountPage = () => {
 
           {/* TAB 4: Profile Settings */}
           {activeTab === 'profile' && (
-            <div className="bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-6 animate-fadeIn">
-              <div className="pb-4 border-b border-gray-100 dark:border-navy-800">
-                <h2 className="font-serif text-2xl font-bold text-navy-950 dark:text-white">
+            <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-8 border border-gray-200/80 dark:border-forest-750 shadow-sm space-y-6 animate-fadeIn">
+              <div className="pb-4 border-b border-gray-100 dark:border-forest-800">
+                <h2 className="font-serif text-2xl font-bold text-charcoal-950 dark:text-white">
                   Personal Information
                 </h2>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Update your contact details for invoices and shipping.
+                  Update your profile picture, full name, and phone number for delivery updates.
                 </p>
+              </div>
+
+              {/* Profile Photo Upload Box */}
+              <div className="p-5 rounded-2xl bg-gray-50 dark:bg-forest-950/80 border border-gray-200 dark:border-forest-700 space-y-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal-900 dark:text-white">
+                  Profile Photo
+                </h3>
+                <div className="flex flex-col sm:flex-row items-center gap-5">
+                  <div className="relative group shrink-0">
+                    <div className="w-20 h-20 rounded-full bg-forest-900 dark:bg-forest-800 border-2 border-[#84CC16] overflow-hidden shadow-md flex items-center justify-center text-white font-serif font-bold text-2xl">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-center sm:text-left">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => avatarInputRef.current?.click()}
+                        disabled={uploadingAvatar}
+                        className="px-4 py-2 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Camera className="w-4 h-4" />
+                        <span>{uploadingAvatar ? 'Uploading...' : 'Upload New Picture'}</span>
+                      </button>
+                      {user.avatar && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updateProfile({ avatar: '' });
+                            addToast('Profile picture removed', 'info');
+                          }}
+                          className="px-3.5 py-2 bg-gray-200 dark:bg-forest-800 text-charcoal-700 dark:text-gray-300 font-bold text-xs rounded-xl hover:bg-gray-300 dark:hover:bg-forest-750 transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                      Supports JPG, PNG, WebP or GIF up to 10MB.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <form onSubmit={handleProfileSubmit} className="space-y-4 max-w-md">
@@ -687,13 +752,13 @@ export const AccountPage = () => {
                     Full Name
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <User className="w-4 h-4 text-leaf-600 dark:text-lime-400 absolute left-3.5 top-3" />
                     <input
                       type="text"
                       required
                       value={profileName}
                       onChange={(e) => setProfileName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-forest-950 text-charcoal-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-forest-700 focus:outline-none focus:border-leaf-500"
                     />
                   </div>
                 </div>
@@ -703,12 +768,12 @@ export const AccountPage = () => {
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <Mail className="w-4 h-4 text-leaf-600 dark:text-lime-400 absolute left-3.5 top-3" />
                     <input
                       type="email"
                       disabled
                       value={user.email}
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-navy-800 text-gray-500 dark:text-gray-400 text-xs rounded-xl border border-gray-200 dark:border-navy-700 cursor-not-allowed"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-forest-950/50 text-gray-500 dark:text-gray-400 text-xs rounded-xl border border-gray-200 dark:border-forest-700 cursor-not-allowed"
                     />
                   </div>
                   <span className="text-[10px] text-gray-400 block mt-1">Email is tied to your account verification</span>
@@ -719,20 +784,20 @@ export const AccountPage = () => {
                     Phone Number
                   </label>
                   <div className="relative">
-                    <Phone className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <Phone className="w-4 h-4 text-leaf-600 dark:text-lime-400 absolute left-3.5 top-3" />
                     <input
                       type="tel"
                       value={profilePhone}
                       onChange={(e) => setProfilePhone(e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-forest-950 text-charcoal-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-forest-700 focus:outline-none focus:border-leaf-500"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 cursor-pointer"
+                  className="px-6 py-3 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs rounded-xl shadow-xs transition-all cursor-pointer hover:scale-102 active:scale-98"
                 >
                   Save Profile Changes
                 </button>

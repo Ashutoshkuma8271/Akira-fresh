@@ -40,15 +40,28 @@ export const MobileNav = ({ isOpen, onClose }) => {
           {/* User Section */}
           <div className="p-4 bg-gray-50 dark:bg-forest-950/80 border-b border-gray-100 dark:border-forest-800">
             {isAuthenticated ? (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Welcome back,</p>
-                  <p className="text-sm font-bold text-charcoal-950 dark:text-white truncate">{user.name}</p>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name || 'User'}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-leaf-500 shadow-xs shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-forest-900 dark:bg-forest-800 text-white font-bold flex items-center justify-center border border-leaf-500/40 shrink-0">
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Welcome back,</p>
+                    <p className="text-sm font-bold text-charcoal-950 dark:text-white truncate">{user.name}</p>
+                  </div>
                 </div>
                 <Link
                   to="/account"
                   onClick={onClose}
-                  className="px-3 py-1 bg-[#84CC16] text-forest-950 text-xs font-bold rounded-lg cursor-pointer shadow-xs"
+                  className="px-3 py-1.5 bg-[#84CC16] text-forest-950 text-xs font-bold rounded-xl cursor-pointer shadow-xs shrink-0"
                 >
                   Dashboard
                 </Link>

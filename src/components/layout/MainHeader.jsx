@@ -187,10 +187,20 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               <div ref={accountRef} className="relative">
                 <button
                   onClick={() => setIsAccountOpen(!isAccountOpen)}
-                  className="p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
+                  className="p-1 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center"
                   aria-label="Account"
                 >
-                  <User className="w-5 h-5 stroke-[1.9]" />
+                  {isAuthenticated && user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name || 'User'}
+                      className="w-7 h-7 rounded-full object-cover border border-[#1b4332]/40 dark:border-lime-400/40 shadow-xs"
+                    />
+                  ) : (
+                    <div className="p-0.5">
+                      <User className="w-5 h-5 stroke-[1.9]" />
+                    </div>
+                  )}
                 </button>
 
                 {isAccountOpen && (
