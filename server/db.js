@@ -189,6 +189,60 @@ export async function initDB() {
     // Supabase table sync fallback
   }
 
+  // Product Synchronization & Auto-Seed with Supabase
+  try {
+    const { data: supaProducts, error: prodErr } = await supabase.from('products').select('*');
+    if (!prodErr && supaProducts && supaProducts.length > 0) {
+      memoryDB.products = supaProducts.map(p => ({
+        id: p.id,
+        name: p.name,
+        brand: p.brand || 'A_S FOODY',
+        category: p.category,
+        categoryName: p.category_name || p.category,
+        price: Number(p.price),
+        originalPrice: p.original_price ? Number(p.original_price) : null,
+        discount: p.discount ? Number(p.discount) : 0,
+        stockCount: Number(p.stock_count ?? 15),
+        inStock: Boolean(p.in_stock !== false),
+        badge: p.badge || '',
+        description: p.description || '',
+        images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' && p.images.startsWith('[') ? JSON.parse(p.images) : [p.images || 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800']),
+        isFeatured: true,
+        isTrending: true,
+        createdAt: p.created_at,
+        updatedAt: p.updated_at
+      }));
+      saveToDisk();
+      console.log(`⚡ Loaded ${supaProducts.length} Products from Supabase Cloud`);
+    } else if (!prodErr && (!supaProducts || supaProducts.length === 0)) {
+      // Seed default products into Supabase so table is populated
+      memoryDB.products = INITIAL_PRODUCTS;
+      saveToDisk();
+      for (const prod of INITIAL_PRODUCTS) {
+        await supabase.from('products').insert({
+          id: prod.id,
+          name: prod.name,
+          brand: prod.brand,
+          category: prod.category,
+          category_name: prod.categoryName,
+          price: prod.price,
+          original_price: prod.originalPrice,
+          discount: prod.discount ? prod.discount.toString() : '0',
+          stock_count: prod.stockCount,
+          in_stock: prod.inStock,
+          badge: prod.badge,
+          description: prod.description,
+          images: Array.isArray(prod.images) ? JSON.stringify(prod.images) : prod.images,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+      }
+      console.log('⚡ Auto-seeded INITIAL_PRODUCTS into Supabase public.products table');
+    }
+  } catch (e) {
+    console.warn('Supabase product sync note:', e.message);
+  }
+
   if (!memoryDB.products || memoryDB.products.length === 0) {
     memoryDB.products = INITIAL_PRODUCTS;
     saveToDisk();
@@ -768,6 +822,7 @@ export const db = {
     saveToDisk();
 
     try {
+      const imgVal = Array.isArray(newProd.images) ? JSON.stringify(newProd.images) : (newProd.images || '');
       await supabase.from('products').insert({
         id: newProd.id,
         name: newProd.name,
@@ -776,18 +831,18 @@ export const db = {
         category_name: newProd.categoryName,
         price: newProd.price,
         original_price: newProd.originalPrice,
-        discount: newProd.discount,
+        discount: newProd.discount ? newProd.discount.toString() : '0',
         stock_count: newProd.stockCount,
         in_stock: newProd.inStock,
         badge: newProd.badge,
         description: newProd.description,
-        images: newProd.images,
+        images: imgVal,
         created_at: newProd.createdAt,
         updated_at: newProd.updatedAt
       });
       console.log('⚡ Saved Product into Supabase table public.products');
     } catch (e) {
-      // Supabase product insert note
+      console.warn('Supabase product insert note:', e.message);
     }
 
     return newProd;
@@ -802,15 +857,17 @@ export const db = {
     saveToDisk();
 
     try {
-      await supabase.from('products').update({
-        name: updates.name,
-        price: updates.price,
-        original_price: updates.originalPrice,
-        stock_count: updates.stockCount,
-        badge: updates.badge,
-        description: updates.description,
-        updated_at: now
-      }).eq('id', id);
+      const supaUpdates = { updated_at: now };
+      if (updates.name !== undefined) supaUpdates.name = updates.name;
+      if (updates.price !== undefined) supaUpdates.price = Number(updates.price);
+      if (updates.originalPrice !== undefined) supaUpdates.original_price = Number(updates.originalPrice);
+      if (updates.stockCount !== undefined) supaUpdates.stock_count = Number(updates.stockCount);
+      if (updates.badge !== undefined) supaUpdates.badge = updates.badge;
+      if (updates.description !== undefined) supaUpdates.description = updates.description;
+      if (updates.images !== undefined) {
+        supaUpdates.images = Array.isArray(updates.images) ? JSON.stringify(updates.images) : updates.images;
+      }
+      await supabase.from('products').update(supaUpdates).eq('id', id);
     } catch (e) {}
 
     return memoryDB.products[index];
@@ -818,15 +875,13 @@ export const db = {
 
   deleteProduct: async (id) => {
     loadFromDisk();
-    const index = memoryDB.products.findIndex(p => p.id === id);
-    if (index === -1) return false;
-    memoryDB.products.splice(index, 1);
+    memoryDB.products = memoryDB.products.filter(p => p.id !== id);
     saveToDisk();
 
     try {
       await supabase.from('products').delete().eq('id', id);
+      console.log('⚡ Deleted Product from Supabase public.products');
     } catch (e) {}
-
     return true;
   },
 

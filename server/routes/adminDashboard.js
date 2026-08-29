@@ -104,14 +104,14 @@ router.get('/products', (req, res) => {
 });
 
 // POST /api/admin/products — Create Product
-router.post('/products', (req, res) => {
+router.post('/products', async (req, res) => {
   try {
     const { name, brand, category, categoryName, price, originalPrice, discount, stockCount, inStock, badge, description, image } = req.body;
     if (!name || !price || !category) {
       return res.status(400).json({ success: false, message: 'Name, price and category are required.' });
     }
 
-    const created = db.createProduct({
+    const created = await db.createProduct({
       name,
       brand: brand || 'A_S Luxury',
       category,
@@ -143,7 +143,7 @@ router.post('/products', (req, res) => {
 });
 
 // PUT /api/admin/products/:id — Edit Product
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const existing = db.getProductById(id);
@@ -151,7 +151,7 @@ router.put('/products/:id', (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found.' });
     }
 
-    const updated = db.updateProduct(id, req.body);
+    const updated = await db.updateProduct(id, req.body);
 
     logAudit({
       action: 'Product updated',
@@ -170,7 +170,7 @@ router.put('/products/:id', (req, res) => {
 });
 
 // DELETE /api/admin/products/:id — Delete Product
-router.delete('/products/:id', (req, res) => {
+router.delete('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const existing = db.getProductById(id);
@@ -178,7 +178,7 @@ router.delete('/products/:id', (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found.' });
     }
 
-    db.deleteProduct(id);
+    await db.deleteProduct(id);
 
     logAudit({
       action: 'Product deleted',
