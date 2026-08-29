@@ -142,18 +142,18 @@ export const HeroSection = () => {
             <div className="relative z-20 w-full max-w-md h-[320px] sm:h-[380px] flex items-center justify-center">
               
               {/* Center Main Piece: Sizzling Chicken Kebabs & Tikkas */}
-              <div className="relative w-72 sm:w-88 rounded-3xl overflow-hidden shadow-[0_25px_50px_rgba(0,0,0,0.85)] border border-leaf-500/30 group">
+              <div className="relative w-72 sm:w-88 rounded-3xl overflow-hidden shadow-[0_25px_50px_rgba(0,0,0,0.85)] border border-leaf-500/30 group animate-float-3d">
                 <img
                   src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&auto=format&fit=crop&q=85"
                   alt="Sizzling Chicken Galouti & Tandoori Kebabs"
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 
-                {/* Overlay Badge on image: Akira Fresh Signature Box */}
+                {/* Overlay Badge on image: A_S FOODY Signature Box */}
                 <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-forest-950/85 backdrop-blur-md border border-leaf-500/30 flex items-center justify-between text-xs text-white">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-leaf-400 animate-ping" />
-                    <span className="font-bold text-leaf-300">Akira Cold Box</span>
+                    <span className="font-bold text-leaf-300">A_S FOODY Cold Box</span>
                   </div>
                   <span className="text-[10px] text-gray-300 bg-forest-900 px-2 py-0.5 rounded-full">
                     -18°C Insulated Pack

@@ -58,7 +58,7 @@ export const ProductCard = ({ product }) => {
   return (
     <>
       <div
-        className="group relative bg-white dark:bg-forest-900/90 rounded-3xl border border-sage-200/80 dark:border-leaf-500/20 overflow-hidden shadow-sm hover:shadow-soft-float transition-all duration-300 flex flex-col justify-between card-fresh"
+        className="group relative bg-white dark:bg-forest-900/90 rounded-3xl border border-sage-200/80 dark:border-leaf-500/20 overflow-hidden shadow-sm hover:shadow-soft-float transition-all duration-300 flex flex-col justify-between card-fresh tilt-3d"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

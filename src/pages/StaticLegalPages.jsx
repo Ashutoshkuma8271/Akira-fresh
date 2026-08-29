@@ -101,7 +101,7 @@ export const StaticLegalPages = () => {
             <div className="space-y-6">
               <p><strong>Effective Date:</strong> August 29, 2026</p>
               <p>
-                At Akira Fresh, we value your privacy and are committed to protecting your personal information. This Privacy Policy details how we collect, process, and secure user information when you place orders or create accounts on our direct-to-consumer storefront.
+                At A_S FOODY, we value your privacy and are committed to protecting your personal information. This Privacy Policy details how we collect, process, and secure user information when you place orders or create accounts on our direct-to-consumer storefront.
               </p>
               
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">1. Data We Collect</h3>
@@ -132,7 +132,7 @@ export const StaticLegalPages = () => {
             <div className="space-y-6">
               <p><strong>Effective Date:</strong> August 29, 2026</p>
               <p>
-                Welcome to Akira Fresh. These Terms of Service govern your purchase of gourmet ready-to-cook snacks, raw meats, and cold-chain items. By accessing or using our storefront, you agree to comply with these terms.
+                Welcome to A_S FOODY. These Terms of Service govern your purchase of gourmet ready-to-cook snacks, raw meats, and cold-chain items. By accessing or using our storefront, you agree to comply with these terms.
               </p>
 
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">1. Accounts & Ordering</h3>
@@ -142,14 +142,14 @@ export const StaticLegalPages = () => {
               <p>We strive to accurately describe all ready-to-cook snack items, ingredients, and pricing. All prices are displayed in Indian Rupees (INR) and are inclusive of standard local taxes unless specified otherwise.</p>
 
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">3. Delivery & Cold-Chain Integrity</h3>
-              <p>Our products are shipped blast-frozen and require immediate freezer storage upon receipt. Akira Fresh is not responsible for food spoilage caused by delivery delays due to inaccurate address data provided by the customer.</p>
+              <p>Our products are shipped blast-frozen and require immediate freezer storage upon receipt. A_S FOODY is not responsible for food spoilage caused by delivery delays due to inaccurate address data provided by the customer.</p>
             </div>
           )}
 
           {activeSection === 'cookies' && (
             <div className="space-y-6">
               <p>
-                Akira Fresh utilizes browser local storage to deliver a seamless and high-speed shopping experience. We do not use third-party advertising cookies or cross-site behavioral tracking scripts.
+                A_S FOODY utilizes browser local storage to deliver a seamless and high-speed shopping experience. We do not use third-party advertising cookies or cross-site behavioral tracking scripts.
               </p>
 
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">Essential Storage Items</h3>
@@ -230,7 +230,7 @@ export const StaticLegalPages = () => {
             <div className="space-y-6">
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white">Accessibility Statement</h3>
               <p>
-                Akira Fresh is committed to providing a digitally accessible storefront for all users, including those utilizing screen readers, keyboard navigation, or assistive devices. We continuously audit our contrast ratios, aria-labels, and page structural elements to meet the Web Content Accessibility Guidelines (WCAG 2.1 Level AA) standards.
+                A_S FOODY is committed to providing a digitally accessible storefront for all users, including those utilizing screen readers, keyboard navigation, or assistive devices. We continuously audit our contrast ratios, aria-labels, and page structural elements to meet the Web Content Accessibility Guidelines (WCAG 2.1 Level AA) standards.
               </p>
             </div>
           )}

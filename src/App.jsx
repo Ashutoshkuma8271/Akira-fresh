@@ -165,7 +165,7 @@ export function App() {
 
                                     {/* Static / Customer Care */}
                                     <Route path="/help" element={<HelpPage />} />
-                                    <Route path="/pages/about-akira-fresh" element={<HelpPage />} />
+                                    <Route path="/pages/about-as-foody" element={<HelpPage />} />
                                     <Route path="/about" element={<HelpPage />} />
                                     <Route path="/shipping" element={<StaticLegalPages />} />
                                     <Route path="/returns" element={<StaticLegalPages />} />

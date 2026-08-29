@@ -19,7 +19,7 @@ export const Footer = () => {
       return;
     }
     setIsSubscribed(true);
-    addToast('Welcome to Akira Fresh! 15% OFF coupon sent to your email.', 'success');
+    addToast('Welcome to A_S FOODY! 15% OFF coupon sent to your email.', 'success');
     setEmail('');
     setTimeout(() => setIsSubscribed(false), 5000);
   };
@@ -175,7 +175,7 @@ export const Footer = () => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div className="flex items-center gap-2">
             <Lock className="w-3.5 h-3.5 text-leaf-400" />
-            <span>&copy; {new Date().getFullYear()} Akira Fresh Private Limited. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} A_S FOODY Private Limited. All rights reserved.</span>
           </div>
           
           <div className="flex items-center gap-4 text-gray-400">

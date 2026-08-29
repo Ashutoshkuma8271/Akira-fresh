@@ -132,13 +132,13 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               <Link
                 to="/help"
                 className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
-                  isActive('/help') || isActive('/about') || isActive('/pages/about-akira-fresh')
+                  isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')
                     ? 'text-[#1b4332] dark:text-lime-400 font-bold'
                     : ''
                 }`}
               >
                 <span>About</span>
-                {(isActive('/help') || isActive('/about') || isActive('/pages/about-akira-fresh')) && (
+                {(isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
               </Link>

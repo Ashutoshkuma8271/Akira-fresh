@@ -93,7 +93,7 @@ export const AppDownloadSection = () => {
               {/* Screen Content Preview */}
               <div className="rounded-[24px] overflow-hidden bg-forest-900 border border-leaf-500/20 p-3 space-y-3">
                 <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 border-b border-forest-800">
-                  <span className="font-bold text-white">Akira Fresh App</span>
+                  <span className="font-bold text-white">A_S FOODY App</span>
                   <span className="text-leaf-400 font-bold">● -18°C Slot</span>
                 </div>
                 <div className="rounded-xl overflow-hidden h-32">

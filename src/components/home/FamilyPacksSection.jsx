@@ -41,7 +41,7 @@ export const FamilyPacksSection = () => {
             <div className="relative w-full max-w-md rounded-3xl overflow-hidden border-2 border-leaf-500/40 shadow-2xl group">
               <img
                 src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=85"
-                alt="Akira Fresh Mega Family Gathering Feast"
+                alt="A_S FOODY Mega Family Gathering Feast"
                 className="w-full h-80 sm:h-96 object-cover group-hover:scale-106 transition-transform duration-700"
               />
 
