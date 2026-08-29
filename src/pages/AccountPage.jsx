@@ -92,9 +92,9 @@ export const AccountPage = () => {
   if (!isAuthenticated || !user) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center animate-fadeIn">
-        <div className="max-w-md mx-auto bg-white dark:bg-navy-900 rounded-3xl p-10 border border-gray-200 dark:border-gold-500/20 shadow-xl space-y-5">
-          <div className="w-16 h-16 rounded-2xl bg-cream-100 dark:bg-navy-800 mx-auto flex items-center justify-center border border-gold-500/30 shadow-gold-sm">
-            <User className="w-8 h-8 text-gold-600 dark:text-gold-400" />
+        <div className="max-w-md mx-auto bg-white dark:bg-navy-900 rounded-3xl p-10 border border-gray-200 dark:border-emerald-500/20 shadow-xl space-y-5">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 dark:bg-navy-800 mx-auto flex items-center justify-center border border-emerald-500/30 shadow-sm">
+            <User className="w-8 h-8 text-emerald-500 dark:text-emerald-400" />
           </div>
           <h2 className="font-serif text-2xl font-bold text-navy-950 dark:text-white">Customer Account</h2>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -106,7 +106,7 @@ export const AccountPage = () => {
                 setAuthMode('login');
                 setIsAuthModalOpen(true);
               }}
-              className="flex-1 py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+              className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer"
             >
               Sign In
             </button>
@@ -115,7 +115,7 @@ export const AccountPage = () => {
                 setAuthMode('register');
                 setIsAuthModalOpen(true);
               }}
-              className="flex-1 py-3 bg-navy-900 dark:bg-navy-800 text-gold-400 font-bold text-xs rounded-xl hover:bg-navy-850 active:scale-98 transition-all cursor-pointer border border-gold-500/30"
+              className="flex-1 py-3 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold text-xs rounded-xl hover:bg-navy-850 active:scale-98 transition-all cursor-pointer border border-emerald-500/30"
             >
               Create Account
             </button>
@@ -389,9 +389,9 @@ export const AccountPage = () => {
           {activeTab === 'dashboard' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Customer Greeting Banner */}
-              <div className="rounded-3xl bg-navy-gradient text-white p-6 sm:p-8 border border-gold-500/30 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="rounded-3xl bg-navy-gradient text-white p-6 sm:p-8 border border-emerald-500/30 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-2 z-10">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Welcome to A_S FOODY</span>
                   </div>
@@ -404,7 +404,7 @@ export const AccountPage = () => {
                 </div>
                 <Link
                   to="/shop"
-                  className="z-10 px-5 py-2.5 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 shrink-0"
+                  className="z-10 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 shrink-0"
                 >
                   Explore Catalog →
                 </Link>
@@ -415,7 +415,7 @@ export const AccountPage = () => {
                 <div className="bg-white dark:bg-navy-900 p-5 rounded-3xl border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-1">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Orders</span>
                   <p className="text-2xl font-bold text-navy-950 dark:text-white font-serif">{orders.length}</p>
-                  <Link to="/account/orders" className="text-[11px] text-gold-600 dark:text-gold-400 font-bold hover:underline block pt-1">
+                  <Link to="/account/orders" className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline block pt-1">
                     View Orders →
                   </Link>
                 </div>
@@ -423,7 +423,7 @@ export const AccountPage = () => {
                 <div className="bg-white dark:bg-navy-900 p-5 rounded-3xl border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-1">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Saved Addresses</span>
                   <p className="text-2xl font-bold text-navy-950 dark:text-white font-serif">{user.addresses?.length || 0}</p>
-                  <Link to="/account/addresses" className="text-[11px] text-gold-600 dark:text-gold-400 font-bold hover:underline block pt-1">
+                  <Link to="/account/addresses" className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline block pt-1">
                     Manage Addresses →
                   </Link>
                 </div>
@@ -431,7 +431,7 @@ export const AccountPage = () => {
                 <div className="bg-white dark:bg-navy-900 p-5 rounded-3xl border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-1">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Wishlisted Items</span>
                   <p className="text-2xl font-bold text-navy-950 dark:text-white font-serif">{wishlistCount}</p>
-                  <Link to="/wishlist" className="text-[11px] text-gold-600 dark:text-gold-400 font-bold hover:underline block pt-1">
+                  <Link to="/wishlist" className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline block pt-1">
                     View Wishlist →
                   </Link>
                 </div>
@@ -441,14 +441,14 @@ export const AccountPage = () => {
               <div className="bg-white dark:bg-navy-900 rounded-3xl p-6 border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-navy-800">
                   <h3 className="font-serif text-lg font-bold text-navy-950 dark:text-white">Recent Orders</h3>
-                  <Link to="/account/orders" className="text-xs text-gold-600 dark:text-gold-400 font-bold hover:underline">
+                  <Link to="/account/orders" className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
                     View All →
                   </Link>
                 </div>
 
                 {orders.length === 0 ? (
                   <div className="text-center py-8 space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-cream-100 dark:bg-navy-800 text-gold-500 flex items-center justify-center mx-auto">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 dark:bg-navy-800 text-emerald-500 flex items-center justify-center mx-auto">
                       <ShoppingBag className="w-6 h-6" />
                     </div>
                     <p className="text-sm font-semibold text-navy-950 dark:text-white">No orders placed yet</p>
@@ -457,7 +457,7 @@ export const AccountPage = () => {
                     </p>
                     <Link
                       to="/shop"
-                      className="inline-block px-4 py-2 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110"
+                      className="inline-block px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
                     >
                       Start Shopping
                     </Link>
@@ -472,7 +472,7 @@ export const AccountPage = () => {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-mono font-bold text-navy-950 dark:text-white text-sm">#{ord.id}</span>
-                            <span className="px-2.5 py-0.5 bg-gold-500/15 text-gold-700 dark:text-gold-300 text-[10px] font-bold rounded-full border border-gold-500/30">
+                            <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-500/30">
                               {ord.status}
                             </span>
                           </div>
@@ -482,7 +482,7 @@ export const AccountPage = () => {
                         </div>
                         <Link
                           to={`/track-order?id=${ord.id}`}
-                          className="px-4 py-2 bg-navy-900 dark:bg-navy-800 text-gold-400 font-bold text-xs rounded-xl hover:bg-navy-850 border border-gold-500/30"
+                          className="px-4 py-2 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold text-xs rounded-xl hover:bg-navy-850 border border-emerald-500/30"
                         >
                           Track Order
                         </Link>
@@ -510,7 +510,7 @@ export const AccountPage = () => {
 
               {orders.length === 0 ? (
                 <div className="text-center py-12 space-y-4">
-                  <div className="w-16 h-16 rounded-3xl bg-cream-100 dark:bg-navy-850 text-gold-500 flex items-center justify-center mx-auto border border-gold-500/20 shadow-gold-sm">
+                  <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 dark:bg-navy-850 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/20 shadow-sm">
                     <Package className="w-8 h-8" />
                   </div>
                   <h3 className="font-serif text-xl font-bold text-navy-950 dark:text-white">No Orders Found</h3>
@@ -519,7 +519,7 @@ export const AccountPage = () => {
                   </p>
                   <Link
                     to="/shop"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
                   >
                     <span>Browse Luxury Catalog</span>
                     <ArrowRight className="w-4 h-4" />
@@ -530,7 +530,7 @@ export const AccountPage = () => {
                   {orders.map((ord) => (
                     <div
                       key={ord.id}
-                      className="p-5 rounded-2xl border border-gray-200 dark:border-navy-750 bg-gray-50/60 dark:bg-navy-850 space-y-4 transition-all hover:border-gold-500/40"
+                      className="p-5 rounded-2xl border border-gray-200 dark:border-navy-750 bg-gray-50/60 dark:bg-navy-850 space-y-4 transition-all hover:border-emerald-500/40"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-200/60 dark:border-navy-700 text-xs">
                         <div>
@@ -538,12 +538,12 @@ export const AccountPage = () => {
                           <p className="text-gray-500 dark:text-gray-400">Placed on {ord.date || new Date().toLocaleDateString()}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="px-3 py-1 bg-gold-500/15 text-gold-700 dark:text-gold-300 font-bold rounded-full text-xs border border-gold-500/30">
+                          <span className="px-3 py-1 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold rounded-full text-xs border border-emerald-500/30">
                             {ord.status}
                           </span>
                           <Link
                             to={`/track-order?id=${ord.id}`}
-                            className="px-3.5 py-1.5 bg-navy-900 dark:bg-navy-800 text-gold-400 font-bold rounded-xl hover:bg-navy-850 border border-gold-500/30"
+                            className="px-3.5 py-1.5 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold rounded-xl hover:bg-navy-850 border border-emerald-500/30"
                           >
                             Track Shipment
                           </Link>
@@ -570,7 +570,7 @@ export const AccountPage = () => {
 
                       <div className="pt-2 border-t border-gray-200 dark:border-navy-700 flex justify-between items-center text-xs">
                         <span className="text-gray-500 dark:text-gray-400">Payment: {ord.paymentMethod || 'Online Gateway'}</span>
-                        <span className="text-sm font-bold text-gold-600 dark:text-gold-400 font-serif">Total: {formatINR(ord.total)}</span>
+                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-serif">Total: {formatINR(ord.total)}</span>
                       </div>
                     </div>
                   ))}
@@ -593,7 +593,7 @@ export const AccountPage = () => {
                 </div>
                 <button
                   onClick={() => setIsAddressModalOpen(true)}
-                  className="px-4 py-2.5 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105 flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-105 flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Address</span>
@@ -602,7 +602,7 @@ export const AccountPage = () => {
 
               {!user.addresses || user.addresses.length === 0 ? (
                 <div className="text-center py-10 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-cream-100 dark:bg-navy-850 text-gold-500 flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 dark:bg-navy-850 text-emerald-500 flex items-center justify-center mx-auto">
                     <MapPin className="w-6 h-6" />
                   </div>
                   <p className="text-sm font-semibold text-navy-950 dark:text-white">No saved addresses yet</p>
@@ -611,7 +611,7 @@ export const AccountPage = () => {
                   </p>
                   <button
                     onClick={() => setIsAddressModalOpen(true)}
-                    className="inline-block px-4 py-2 bg-navy-900 dark:bg-navy-800 text-gold-400 font-bold text-xs rounded-xl border border-gold-500/30 cursor-pointer"
+                    className="inline-block px-4 py-2 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold text-xs rounded-xl border border-emerald-500/30 cursor-pointer"
                   >
                     + Add First Address
                   </button>
@@ -624,23 +624,23 @@ export const AccountPage = () => {
                     return (
                       <div
                         key={addr.id}
-                        className="p-5 rounded-2xl border border-gray-200 dark:border-navy-750 bg-gray-50/60 dark:bg-navy-850 space-y-3 relative transition-all hover:border-gold-500/40"
+                        className="p-5 rounded-2xl border border-gray-200 dark:border-navy-750 bg-gray-50/60 dark:bg-navy-850 space-y-3 relative transition-all hover:border-emerald-500/40"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="p-1.5 rounded-lg bg-gold-500/10 text-gold-500">
+                            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                               {isHome ? <Home className="w-3.5 h-3.5" /> : isOffice ? <Briefcase className="w-3.5 h-3.5" /> : <MapPin className="w-3.5 h-3.5" />}
                             </span>
-                            <span className="font-bold text-xs text-navy-950 dark:text-gold-400 uppercase tracking-wider">{addr.title || 'Address'}</span>
+                            <span className="font-bold text-xs text-navy-950 dark:text-emerald-400 uppercase tracking-wider">{addr.title || 'Address'}</span>
                           </div>
                           {addr.isDefault ? (
-                            <span className="px-2 py-0.5 bg-gold-500/15 text-gold-700 dark:text-gold-300 text-[10px] font-bold rounded-md border border-gold-500/30">
+                            <span className="px-2 py-0.5 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-md border border-emerald-500/30">
                               Default Address
                             </span>
                           ) : (
                             <button
                               onClick={() => setDefaultAddress(addr.id)}
-                              className="text-[10px] text-gray-400 hover:text-gold-400 underline cursor-pointer"
+                              className="text-[10px] text-gray-400 hover:text-emerald-400 underline cursor-pointer"
                             >
                               Set as default
                             </button>
@@ -823,14 +823,14 @@ export const AccountPage = () => {
                     Current Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <Lock className="w-4 h-4 text-emerald-500 absolute left-3.5 top-3" />
                     <input
                       type="password"
                       required
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
@@ -840,19 +840,19 @@ export const AccountPage = () => {
                     New Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <Lock className="w-4 h-4 text-emerald-500 absolute left-3.5 top-3" />
                     <input
                       type={showNewPassword ? 'text' : 'password'}
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 cursor-pointer"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 cursor-pointer"
                     >
                       {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -864,19 +864,19 @@ export const AccountPage = () => {
                     Confirm New Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                    <Lock className="w-4 h-4 text-emerald-500 absolute left-3.5 top-3" />
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       required
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 cursor-pointer"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 cursor-pointer"
                     >
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -885,7 +885,7 @@ export const AccountPage = () => {
 
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 cursor-pointer"
+                  className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 cursor-pointer"
                 >
                   Update Password
                 </button>
@@ -901,7 +901,7 @@ export const AccountPage = () => {
       {isAddressModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div onClick={() => setIsAddressModalOpen(false)} className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm" />
-          <div className="relative w-full max-w-md bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 z-10 border border-gray-200 dark:border-gold-500/30 shadow-2xl space-y-4 animate-fadeIn">
+          <div className="relative w-full max-w-md bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 z-10 border border-gray-200 dark:border-emerald-500/30 shadow-2xl space-y-4 animate-fadeIn">
             <h3 className="font-serif text-xl font-bold text-navy-950 dark:text-white">Add Delivery Address</h3>
             <form onSubmit={handleSaveAddress} className="space-y-3 text-xs">
               <div>
@@ -921,7 +921,7 @@ export const AccountPage = () => {
                         onClick={() => setNewAddr({ ...newAddr, title: t.id })}
                         className={`py-2 px-3 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all ${
                           isSelected
-                            ? 'bg-gold-gradient text-navy-950 shadow-gold-sm'
+                            ? 'bg-emerald-500 text-navy-950 shadow-sm'
                             : 'bg-gray-100 dark:bg-navy-850 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-navy-800'
                         }`}
                       >
@@ -941,7 +941,7 @@ export const AccountPage = () => {
                   placeholder="e.g. Alexander Wright"
                   value={newAddr.name}
                   onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -953,7 +953,7 @@ export const AccountPage = () => {
                   placeholder="+91 98765 43210"
                   value={newAddr.phone}
                   onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -965,7 +965,7 @@ export const AccountPage = () => {
                     placeholder="e.g. Acme Corp, Tower B, 4th Floor"
                     value={newAddr.company || ''}
                     onChange={(e) => setNewAddr({ ...newAddr, company: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               ) : (
@@ -976,7 +976,7 @@ export const AccountPage = () => {
                     placeholder="e.g. Near Royal Palms Gate #2"
                     value={newAddr.landmark || ''}
                     onChange={(e) => setNewAddr({ ...newAddr, landmark: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               )}
@@ -989,7 +989,7 @@ export const AccountPage = () => {
                   placeholder="e.g. Flat 402, Royal Palms, Marine Drive"
                   value={newAddr.street}
                   onChange={(e) => setNewAddr({ ...newAddr, street: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -1002,7 +1002,7 @@ export const AccountPage = () => {
                     placeholder="e.g. Mumbai"
                     value={newAddr.city}
                     onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -1013,7 +1013,7 @@ export const AccountPage = () => {
                     placeholder="e.g. Maharashtra"
                     value={newAddr.state}
                     onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -1026,7 +1026,7 @@ export const AccountPage = () => {
                   placeholder="e.g. 400020"
                   value={newAddr.pincode}
                   onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -1040,7 +1040,7 @@ export const AccountPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-110"
+                  className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-lg hover:brightness-110"
                 >
                   Save Address
                 </button>
