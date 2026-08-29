@@ -74,7 +74,7 @@ export const AdminAuthProvider = ({ children }) => {
     verifySession();
   }, [token]);
 
-  // 3. Signup first admin
+  // 3. Signup first admin (dispatches 6-digit OTP to email)
   const signup = async (name, email, password, confirmPassword) => {
     try {
       const res = await fetch('/api/admin/auth/signup', {
@@ -91,16 +91,35 @@ export const AdminAuthProvider = ({ children }) => {
         return { success: false, message: data.message };
       }
 
-      setToken(data.token);
-      setAdmin(data.admin);
-      localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
-      localStorage.setItem('as_admin_registered', 'true');
-      localStorage.setItem('as_admin_profile', JSON.stringify(data.admin));
-      await checkAdminStatus();
-      addToast('Administrator account created successfully!', 'success');
-      return { success: true };
+      addToast('Verification OTP sent to your email!', 'info');
+      return { success: true, requireOtp: true, email: data.email || email };
     } catch (err) {
       addToast('Connection error. Failed to create administrator account.', 'error');
+      return { success: false, message: 'Server connection error' };
+    }
+  };
+
+  // 3.5 Verify Admin 6-Digit Signup OTP
+  const verifySignupOtp = async (email, otp) => {
+    try {
+      const res = await fetch('/api/admin/auth/verify-signup-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), otp: otp.trim() })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        addToast(data.message || 'Verification failed. Please check the OTP.', 'error');
+        return { success: false, message: data.message };
+      }
+
+      await checkAdminStatus();
+      addToast('Administrator verified successfully! Please log in.', 'success');
+      return { success: true };
+    } catch (err) {
+      addToast('Connection error during verification.', 'error');
       return { success: false, message: 'Server connection error' };
     }
   };
@@ -235,6 +254,7 @@ export const AdminAuthProvider = ({ children }) => {
         loading,
         checkAdminStatus,
         signup,
+        verifySignupOtp,
         login,
         logout,
         forgotPassword,

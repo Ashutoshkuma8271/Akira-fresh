@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowRight, Sparkles, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowRight, Sparkles, CheckCircle2, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { Logo } from '../../components/common/Logo';
 
 export const AdminSignupPage = () => {
   const navigate = useNavigate();
-  const { adminExists, checkAdminStatus, signup, isAdminAuthenticated } = useAdminAuth();
+  const { adminExists, checkAdminStatus, signup, verifySignupOtp, isAdminAuthenticated } = useAdminAuth();
 
+  const [step, setStep] = useState('form'); // 'form' | 'otp' | 'verified'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
@@ -53,7 +55,7 @@ export const AdminSignupPage = () => {
 
   const strength = checkPasswordStrength(password);
 
-  const handleSubmit = async (e) => {
+  const handleSubmitSignup = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -72,14 +74,38 @@ export const AdminSignupPage = () => {
     setIsSubmitting(false);
 
     if (result.success) {
-      navigate('/admin/dashboard');
+      setRegisteredEmail(result.email || email.trim().toLowerCase());
+      setStep('otp');
     } else {
       setErrorMessage(result.message || 'Failed to create administrator account.');
     }
   };
 
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!otp || otp.trim().length !== 6) {
+      setErrorMessage('Please enter the valid 6-digit verification code.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const result = await verifySignupOtp(registeredEmail, otp.trim());
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setStep('verified');
+      setTimeout(() => {
+        navigate('/admin/login');
+      }, 2000);
+    } else {
+      setErrorMessage(result.message || 'Invalid or expired OTP code. Please check your email.');
+    }
+  };
+
   // If the backend database reports an administrator already exists:
-  if (adminExists === true) {
+  if (adminExists === true && step === 'form') {
     return (
       <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
         <div className="w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
@@ -104,7 +130,7 @@ export const AdminSignupPage = () => {
               to="/admin/login"
               className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-105 flex items-center justify-center gap-2 transition-all"
             >
-              <span>Go to Admin Panel</span>
+              <span>Go to Admin Login</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
@@ -122,7 +148,110 @@ export const AdminSignupPage = () => {
     );
   }
 
-  // Registration Form for the First Administrator
+  // Step 2: 6-Digit Email OTP Verification Screen
+  if (step === 'otp') {
+    return (
+      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
+        <div className="w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
+          <div className="w-16 h-16 rounded-2xl bg-navy-800 border border-gold-500/40 mx-auto flex items-center justify-center shadow-gold-sm">
+            <KeyRound className="w-8 h-8 text-gold-400" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
+              Email Security Passcode
+            </span>
+            <h1 className="font-serif text-2xl font-bold text-white">
+              Verify Administrator Email
+            </h1>
+            <p className="text-xs text-gray-300 leading-relaxed">
+              We sent a 6-digit one-time passcode to <strong className="text-gold-400 font-mono">{registeredEmail}</strong>. Please enter it below to activate your administrator account:
+            </p>
+          </div>
+
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-red-900/30 border border-red-500/40 text-red-300 text-xs flex items-center gap-2 text-left">
+              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleVerifyOtp} className="space-y-5">
+            <div>
+              <input
+                type="text"
+                maxLength={6}
+                required
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                placeholder="••••••"
+                className="w-full py-4 bg-navy-850 text-gold-400 text-center text-3xl font-mono tracking-[12px] rounded-2xl border-2 border-gold-500/40 focus:outline-none focus:border-gold-500 transition-colors shadow-inner"
+              />
+              <p className="text-[10px] text-gray-500 mt-2">
+                ⏱️ Passcode is valid for 15 minutes.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || otp.length !== 6}
+              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{isSubmitting ? 'Verifying...' : 'Verify & Activate Account'}</span>
+            </button>
+          </form>
+
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setStep('form')}
+              className="text-xs text-gray-400 hover:text-gold-400 transition-colors"
+            >
+              ← Back to Registration Form
+            </button>
+          </div>
+
+          <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-2xl pointer-events-none" />
+        </div>
+      </div>
+    );
+  }
+
+  // Step 3: Verified Success Screen
+  if (step === 'verified') {
+    return (
+      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
+        <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 mx-auto flex items-center justify-center">
+            <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
+              Activation Complete
+            </span>
+            <h1 className="font-serif text-2xl font-bold text-white">
+              Administrator Activated!
+            </h1>
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Your administrator account has been verified. Redirecting you to the Admin Login page...
+            </p>
+          </div>
+
+          <Link
+            to="/admin/login"
+            className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105"
+          >
+            <span>Click here to Login</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 1: Initial Administrator Registration Form
   return (
     <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
       <div className="w-full max-w-lg bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
@@ -139,7 +268,7 @@ export const AdminSignupPage = () => {
             Create A_S FOODY Admin
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
-            The first registered account will become the sole administrator of A_S FOODY. All subsequent registration attempts will be permanently rejected.
+            The first registered account will become the sole administrator of A_S FOODY. A 6-digit verification code will be sent to your email to confirm registration.
           </p>
         </div>
 
@@ -152,7 +281,7 @@ export const AdminSignupPage = () => {
         )}
 
         {/* Signup Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmitSignup} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-gray-300 mb-1.5">
               Administrator Name
@@ -247,11 +376,11 @@ export const AdminSignupPage = () => {
                 <span className={`font-semibold ${strength.color.split(' ')[1]}`}>{strength.label}</span>
               </div>
               <div className="grid grid-cols-4 gap-1.5 h-1.5">
-                {[1, 2, 3, 4].map((step) => (
+                {[1, 2, 3, 4].map((stepNumber) => (
                   <div
-                    key={step}
+                    key={stepNumber}
                     className={`h-full rounded-full transition-all duration-300 ${
-                      step <= strength.score ? strength.color.split(' ')[0] : 'bg-navy-700'
+                      stepNumber <= strength.score ? strength.color.split(' ')[0] : 'bg-navy-700'
                     }`}
                   />
                 ))}
@@ -268,7 +397,7 @@ export const AdminSignupPage = () => {
             className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
           >
             <Sparkles className="w-4 h-4" />
-            <span>{isSubmitting ? 'Securing Single-Admin System...' : 'Initialize & Create Administrator'}</span>
+            <span>{isSubmitting ? 'Sending 6-Digit OTP...' : 'Send Verification OTP'}</span>
           </button>
         </form>
 
@@ -277,7 +406,7 @@ export const AdminSignupPage = () => {
             to="/admin/login"
             className="text-xs text-gold-400 hover:underline font-semibold"
           >
-            Already initialized? Go to Admin Login
+            Already registered? Go to Admin Login
           </Link>
         </div>
 

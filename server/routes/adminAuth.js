@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { db } from '../db.js';
 import { JWT_SECRET, requireAdmin, logAudit, loginRateLimiter, signupRateLimiter } from '../middleware/auth.js';
-import { sendPasswordResetEmail } from '../utils/emailService.js';
+import { sendSignupOtpEmail, sendPasswordResetEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.get('/status', async (req, res) => {
   }
 });
 
-// 2. POST /api/admin/auth/signup — Bootstrap the Single Admin
+// 2. POST /api/admin/auth/signup — Bootstrap the Single Admin with 6-Digit Email OTP
 router.post('/signup', signupRateLimiter, async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
@@ -52,6 +52,15 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
 
     const cleanEmail = email.trim().toLowerCase();
 
+    // Check if customer account already exists with this email
+    const customerExisting = await db.getUserByEmailAsync(cleanEmail);
+    if (customerExisting) {
+      return res.status(403).json({
+        success: false,
+        message: 'This email is already registered as a customer. Please use a distinct email address for administrative duties.'
+      });
+    }
+
     // CRITICAL SECURITY RULE: Enforce that only ONE admin can ever exist in database
     const existingCount = await db.getAdminCountAsync();
     if (existingCount > 0) {
@@ -67,7 +76,9 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
       });
     }
 
-    // Hash password with strong bcrypt factor (12 rounds)
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = Date.now() + 15 * 60 * 1000;
     const passwordHash = await bcrypt.hash(password, 12);
     const adminId = `adm-${Date.now()}`;
 
@@ -78,7 +89,10 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
         email: cleanEmail,
         passwordHash,
         role: 'admin',
-        isActive: 1,
+        isActive: 0, // Inactive until verified via 6-digit OTP
+        isVerified: false,
+        verificationOtp: otp,
+        otpExpiresAt
       });
     } catch (err) {
       if (err.message === 'ADMIN_ALREADY_EXISTS') {
@@ -90,32 +104,26 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
       throw err;
     }
 
-    // Generate authenticated token for the new administrator
-    const token = jwt.sign(
-      { id: adminId, email: cleanEmail, role: 'admin' },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Send 6-digit luxury OTP verification email
+    try {
+      await sendSignupOtpEmail(cleanEmail, name.trim(), otp);
+    } catch (mailErr) {
+      console.warn('Admin OTP Email dispatch note:', mailErr.message);
+    }
 
     logAudit({
-      action: 'Admin signup',
+      action: 'Admin signup initiated',
       adminId,
       adminEmail: cleanEmail,
       ip: req.ip,
-      details: `First administrator (${name.trim()}) registered successfully`
+      details: `First administrator (${name.trim()}) registered. Awaiting OTP verification.`
     });
 
     return res.status(201).json({
       success: true,
-      message: 'Administrator account created successfully.',
-      token,
-      admin: {
-        id: adminId,
-        name: name.trim(),
-        email: cleanEmail,
-        role: 'admin',
-        isActive: 1,
-      }
+      requireOtp: true,
+      email: cleanEmail,
+      message: 'A 6-digit verification code has been sent to your email.'
     });
 
   } catch (err) {
@@ -123,6 +131,48 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Internal server error processing admin signup.'
+    });
+  }
+});
+
+// 2.5 POST /api/admin/auth/verify-signup-otp — Verify 6-digit Admin Signup OTP
+router.post('/verify-signup-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body || {};
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and 6-digit verification code are required.'
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const result = await db.verifyAdminOtpAsync(cleanEmail, otp.trim());
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.message || 'Invalid or expired verification code.'
+      });
+    }
+
+    logAudit({
+      action: 'Admin email verified',
+      adminId: result.admin.id,
+      adminEmail: cleanEmail,
+      ip: req.ip,
+      details: 'Administrator account activated via OTP verification.'
+    });
+
+    return res.json({
+      success: true,
+      message: 'Administrator verified successfully! Please log in.'
+    });
+  } catch (err) {
+    console.error('Admin verify OTP error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error during OTP verification.'
     });
   }
 });
@@ -141,7 +191,7 @@ router.post('/login', loginRateLimiter, async (req, res) => {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Query admin from database (strictly checks admins table)
+    // Query admin record asynchronously from Supabase
     const admin = await db.getAdminByEmailAsync(cleanEmail);
 
     if (!admin) {
@@ -149,7 +199,7 @@ router.post('/login', loginRateLimiter, async (req, res) => {
         action: 'Failed login',
         adminEmail: cleanEmail,
         ip: req.ip,
-        details: 'Invalid admin email'
+        details: 'Admin account not found'
       });
       return res.status(401).json({
         success: false,
@@ -159,14 +209,14 @@ router.post('/login', loginRateLimiter, async (req, res) => {
 
     if (!admin.isActive) {
       logAudit({
-        action: 'Deactivated Admin Login Attempt',
+        action: 'Unverified or Deactivated Admin Login Attempt',
         adminId: admin.id,
         adminEmail: admin.email,
         ip: req.ip
       });
       return res.status(403).json({
         success: false,
-        message: 'This administrator account is disabled.'
+        message: 'Administrator account is unverified or disabled. Please verify via email OTP.'
       });
     }
 

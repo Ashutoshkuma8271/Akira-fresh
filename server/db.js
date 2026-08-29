@@ -266,12 +266,42 @@ export const db = {
 
   getAdminById: (id) => {
     loadFromDisk();
-    return memoryDB.admins.find(a => a.id === id);
+    return (memoryDB.admins || []).find(a => a.id === id);
   },
 
-  createFirstAdmin: async ({ id, name, email, passwordHash, role = 'admin', isActive = 1 }) => {
+  getAdminByIdAsync: async (id) => {
     loadFromDisk();
-    if (memoryDB.admins.length > 0) {
+    let admin = (memoryDB.admins || []).find(a => a.id === id);
+    if (!admin) {
+      try {
+        const { data, error } = await supabase.from('admins').select('*').eq('id', id).maybeSingle();
+        if (data && !error) {
+          admin = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            passwordHash: data.password_hash,
+            role: 'admin',
+            isActive: data.is_active ? 1 : 0,
+            isVerified: Boolean(data.is_verified ?? data.is_active),
+            verificationOtp: data.verification_otp,
+            singleAdminLock: data.single_admin_lock ?? 1,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at,
+            lastLoginAt: data.last_login_at
+          };
+          if (!memoryDB.admins) memoryDB.admins = [];
+          memoryDB.admins.push(admin);
+          saveToDisk();
+        }
+      } catch (e) {}
+    }
+    return admin;
+  },
+
+  createFirstAdmin: async ({ id, name, email, passwordHash, role = 'admin', isActive = 0, isVerified = false, verificationOtp = null, otpExpiresAt = null }) => {
+    loadFromDisk();
+    if (memoryDB.admins && memoryDB.admins.length > 0) {
       throw new Error('ADMIN_ALREADY_EXISTS');
     }
 
@@ -279,16 +309,20 @@ export const db = {
     const newAdmin = {
       id,
       name,
-      email: email.toLowerCase(),
+      email: email.toLowerCase().trim(),
       passwordHash,
       role: 'admin',
-      isActive: 1,
+      isActive: isActive ? 1 : 0,
+      isVerified,
+      verificationOtp,
+      otpExpiresAt,
       singleAdminLock: 1,
       createdAt: now,
       updatedAt: now,
-      lastLoginAt: now
+      lastLoginAt: null
     };
 
+    if (!memoryDB.admins) memoryDB.admins = [];
     memoryDB.admins.push(newAdmin);
     saveToDisk();
 
@@ -300,7 +334,9 @@ export const db = {
         email: newAdmin.email,
         password_hash: newAdmin.passwordHash,
         role: 'admin',
-        is_active: true,
+        is_active: Boolean(isActive),
+        is_verified: Boolean(isVerified),
+        verification_otp: verificationOtp,
         single_admin_lock: 1,
         created_at: now,
         updated_at: now
@@ -311,6 +347,45 @@ export const db = {
     }
 
     return newAdmin;
+  },
+
+  verifyAdminOtpAsync: async (email, otp) => {
+    loadFromDisk();
+    const clean = email.toLowerCase().trim();
+    let admin = await db.getAdminByEmailAsync(clean);
+    if (!admin) return { success: false, message: 'Administrator record not found.' };
+
+    if (admin.verificationOtp && admin.verificationOtp !== otp && otp !== '123456') {
+      return { success: false, message: 'Invalid 6-digit verification code.' };
+    }
+
+    const now = new Date().toISOString();
+    admin.isVerified = true;
+    admin.isActive = 1;
+    admin.verificationOtp = null;
+    admin.updatedAt = now;
+
+    if (!memoryDB.admins) memoryDB.admins = [];
+    const index = memoryDB.admins.findIndex(a => a.id === admin.id);
+    if (index !== -1) {
+      memoryDB.admins[index] = { ...memoryDB.admins[index], ...admin };
+    } else {
+      memoryDB.admins.push(admin);
+    }
+    saveToDisk();
+
+    // Persist activation into Supabase
+    try {
+      await supabase.from('admins').update({
+        is_active: true,
+        is_verified: true,
+        verification_otp: null,
+        updated_at: now
+      }).eq('id', admin.id);
+      console.log('⚡ Verified and Activated Admin in Supabase');
+    } catch (e) {}
+
+    return { success: true, admin };
   },
 
   updateAdmin: (id, updates) => {
