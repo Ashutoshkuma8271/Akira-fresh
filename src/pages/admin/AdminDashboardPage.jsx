@@ -55,7 +55,7 @@ export const AdminDashboardPage = () => {
     heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
     heroDiscount: '15% OFF',
     supportPhone: '+91 63862 56770',
-    supportEmail: 'ashukumarfbg8271@gmail.com'
+    supportEmail: 'ashutoshgifthamper9334@gmail.com'
   });
   const [loading, setLoading] = useState(true);
 

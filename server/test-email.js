@@ -26,7 +26,7 @@ async function main() {
 
     const res = await transporter.sendMail({
       from: `"A_S Commerce" <${process.env.SMTP_FROM_EMAIL}>`,
-      to: 'ashukumarfbg8271@gmail.com',
+      to: 'ashutoshgifthamper9334@gmail.com',
       subject: '749201 is your A_S Commerce verification code',
       html: `
         <div style="background:#030B11; padding:40px 16px; font-family:sans-serif; text-align:center; color:#fff;">

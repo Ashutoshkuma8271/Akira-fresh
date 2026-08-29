@@ -72,7 +72,7 @@ export const StaticLegalPages = () => {
               </p>
               <div className="pt-2 text-xs font-extrabold space-y-1">
                 <p>📞 +91 63862 56770</p>
-                <p>✉️ ashukumarfbg8271@gmail.com</p>
+                <p>✉️ ashutoshgifthamper9334@gmail.com</p>
               </div>
             </div>
             <div className="absolute right-0 bottom-0 opacity-10 translate-x-4 translate-y-4">
@@ -124,7 +124,7 @@ export const StaticLegalPages = () => {
               </ul>
               
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">4. Data Deletion Rights</h3>
-              <p>You can request complete deletion of your account and personal data by contacting us directly at our privacy email desk: <strong>ashukumarfbg8271@gmail.com</strong>.</p>
+              <p>You can request complete deletion of your account and personal data by contacting us directly at our privacy email desk: <strong>ashutoshgifthamper9334@gmail.com</strong>.</p>
             </div>
           )}
 
@@ -171,7 +171,7 @@ export const StaticLegalPages = () => {
               </p>
 
               <h3 className="font-serif text-base font-bold text-charcoal-950 dark:text-white mt-4">Taste & Spoilage Guarantee</h3>
-              <p>If you receive a package where the cold-chain was compromised (e.g. thawed dry ice, broken seal, or stale product), you must submit a refund claim within **24 hours** of delivery. Contact our support desk at <strong>ashukumarfbg8271@gmail.com</strong> with photos of the package. Approved claims will receive store credit or direct bank refunds to the original payment card.</p>
+              <p>If you receive a package where the cold-chain was compromised (e.g. thawed dry ice, broken seal, or stale product), you must submit a refund claim within **24 hours** of delivery. Contact our support desk at <strong>ashutoshgifthamper9334@gmail.com</strong> with photos of the package. Approved claims will receive store credit or direct bank refunds to the original payment card.</p>
             </div>
           )}
 
@@ -242,7 +242,7 @@ export const StaticLegalPages = () => {
                 Security is core to our storefront. User session authentication is protected by JWT headers, and passwords are encrypted using Bcrypt with a high cost-factor. Database queries are sanitized to protect against SQL injections.
               </p>
               <h4 className="font-semibold text-charcoal-900 dark:text-white mt-4">Vulnerability Reporting</h4>
-              <p>If you are a security researcher and discover a vulnerability, please disclose it responsibly by contacting our security responses desk directly: <strong>ashukumarfbg8271@gmail.com</strong>. Do not perform public disclosures until we have addressed the issue.</p>
+              <p>If you are a security researcher and discover a vulnerability, please disclose it responsibly by contacting our security responses desk directly: <strong>ashutoshgifthamper9334@gmail.com</strong>. Do not perform public disclosures until we have addressed the issue.</p>
             </div>
           )}
 
