@@ -8,10 +8,9 @@ import { sendPasswordResetEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
-// 1. GET /api/admin/auth/status — Check if Single Admin exists
-router.get('/status', (req, res) => {
+router.get('/status', async (req, res) => {
   try {
-    const count = db.getAdminCount();
+    const count = await db.getAdminCountAsync();
     const exists = count > 0;
     return res.json({
       success: true,
@@ -54,7 +53,7 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
     const cleanEmail = email.trim().toLowerCase();
 
     // CRITICAL SECURITY RULE: Enforce that only ONE admin can ever exist in database
-    const existingCount = db.getAdminCount();
+    const existingCount = await db.getAdminCountAsync();
     if (existingCount > 0) {
       logAudit({
         action: 'Blocked Duplicate Admin Creation Attempt',
@@ -269,7 +268,7 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const admin = db.getAdminByEmail(cleanEmail);
+    const admin = await db.getAdminByEmailAsync(cleanEmail);
 
     if (!admin || !admin.isActive) {
       return res.json({
@@ -343,7 +342,7 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password reset token has expired. Please request a new one.' });
     }
 
-    const admin = db.getAdminByEmail(resetRecord.adminEmail);
+    const admin = await db.getAdminByEmailAsync(resetRecord.adminEmail);
     if (!admin) {
       return res.status(404).json({ success: false, message: 'Administrator account not found.' });
     }

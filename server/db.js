@@ -239,6 +239,22 @@ export const db = {
     return memoryDB.admins.filter(a => a.isActive === 1 || a.isActive === true).length;
   },
 
+  getAdminCountAsync: async () => {
+    loadFromDisk();
+    if (memoryDB.admins && memoryDB.admins.length > 0) {
+      return memoryDB.admins.filter(a => a.isActive === 1 || a.isActive === true).length;
+    }
+    try {
+      const { count, error } = await supabase.from('admins').select('*', { count: 'exact', head: true });
+      if (!error && count !== null) {
+        return count;
+      }
+    } catch (e) {
+      console.warn('Supabase admin count lookup note:', e.message);
+    }
+    return 0;
+  },
+
   getAdminByEmail: (email) => {
     loadFromDisk();
     return memoryDB.admins.find(a => a.email.toLowerCase() === email.toLowerCase());
