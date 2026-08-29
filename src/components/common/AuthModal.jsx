@@ -242,7 +242,7 @@ export const AuthModal = () => {
               : authMode === 'register'
               ? 'Create Customer Account'
               : authMode === 'verifyOtp'
-              ? 'Verify Your Email'
+              ? 'Verify Email'
               : 'Reset Your Password'}
           </h3>
           <p className="text-xs text-gray-400">
@@ -251,7 +251,7 @@ export const AuthModal = () => {
               : authMode === 'register'
               ? 'Create your account to start ordering gourmet delicacies'
               : authMode === 'verifyOtp'
-              ? 'Enter the 6-digit passcode sent to your inbox to activate your account'
+              ? 'Enter the 6-digit code sent to your email to continue'
               : 'Verify your identity and update your password securely'}
           </p>
         </div>
@@ -267,10 +267,9 @@ export const AuthModal = () => {
         {/* VERIFY SIGNUP OTP WORKFLOW */}
         {authMode === 'verifyOtp' ? (
           <div className="p-6 pt-2 space-y-4">
-            <div className="p-3.5 bg-navy-850 rounded-2xl border border-emerald-500/30 text-xs text-emerald-300">
-              <p className="font-semibold text-center text-white">Enter 6-Digit Email Passcode</p>
-              <p className="text-[11px] text-gray-300 mt-1 text-center leading-relaxed">
-                We sent a 6-digit code to <strong className="text-emerald-400">{verificationEmail}</strong>
+            <div className="text-center space-y-1">
+              <p className="text-xs text-gray-300">
+                Code sent to <strong className="text-emerald-400">{verificationEmail}</strong>
               </p>
             </div>
 
@@ -297,7 +296,7 @@ export const AuthModal = () => {
                 disabled={submitting || otpCode.length < 6}
                 className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50"
               >
-                {submitting ? 'Verifying Code...' : 'Verify & Activate Account'}
+                {submitting ? 'Verifying...' : 'Continue'}
               </button>
             </form>
 
@@ -308,7 +307,7 @@ export const AuthModal = () => {
                 disabled={resendCooldown > 0 || submitting}
                 className="text-emerald-400 hover:underline disabled:no-underline disabled:text-gray-600 cursor-pointer font-medium"
               >
-                {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend Code'}
+                {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend code'}
               </button>
 
               <button

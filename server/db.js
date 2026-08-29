@@ -595,16 +595,23 @@ export const db = {
             name: data.name,
             email: data.email,
             phone: data.phone || '',
-            passwordHash: data.password_hash,
-            role: 'customer',
-            isVerified: data.is_verified !== false,
+            passwordHash: data.password_hash || data.passwordHash,
+            role: data.role || 'customer',
+            isVerified: data.is_verified === true || data.isVerified === true,
+            verificationOtp: data.verification_otp || data.verificationOtp || null,
+            otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
             addresses: data.addresses || [],
             wishlist: data.wishlist || [],
-            createdAt: data.created_at,
-            updatedAt: data.updated_at
+            createdAt: data.created_at || new Date().toISOString(),
+            updatedAt: data.updated_at || new Date().toISOString()
           };
           if (!memoryDB.users) memoryDB.users = [];
-          memoryDB.users.push(user);
+          const existingIdx = memoryDB.users.findIndex(u => u.id === user.id);
+          if (existingIdx === -1) {
+            memoryDB.users.push(user);
+          } else {
+            memoryDB.users[existingIdx] = user;
+          }
           saveToDisk();
         }
       } catch (e) {
@@ -633,15 +640,23 @@ export const db = {
             id: data.id,
             name: data.name,
             email: data.email,
-            passwordHash: data.password_hash,
+            passwordHash: data.password_hash || data.passwordHash,
             role: 'admin',
             isActive: data.is_active ?? 1,
+            isVerified: data.is_verified === true || data.isVerified === true,
+            verificationOtp: data.verification_otp || data.verificationOtp || null,
+            otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
             singleAdminLock: data.single_admin_lock ?? 1,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at
+            createdAt: data.created_at || new Date().toISOString(),
+            updatedAt: data.updated_at || new Date().toISOString()
           };
           if (!memoryDB.admins) memoryDB.admins = [];
-          memoryDB.admins.push(admin);
+          const existingIdx = memoryDB.admins.findIndex(a => a.id === admin.id);
+          if (existingIdx === -1) {
+            memoryDB.admins.push(admin);
+          } else {
+            memoryDB.admins[existingIdx] = admin;
+          }
           saveToDisk();
         }
       } catch (e) {}
@@ -797,6 +812,9 @@ export const db = {
       if (updates.name) supaUpdates.name = updates.name;
       if (updates.phone) supaUpdates.phone = updates.phone;
       if (updates.passwordHash) supaUpdates.password_hash = updates.passwordHash;
+      if (updates.verificationOtp !== undefined) supaUpdates.verification_otp = updates.verificationOtp;
+      if (updates.otpExpiresAt !== undefined) supaUpdates.otp_expires_at = updates.otpExpiresAt;
+      if (updates.isVerified !== undefined) supaUpdates.is_verified = updates.isVerified;
       if (updates.addresses) supaUpdates.addresses = updates.addresses;
       if (updates.wishlist) supaUpdates.wishlist = updates.wishlist;
       if (updates.avatar) supaUpdates.avatar_url = updates.avatar;
@@ -815,6 +833,10 @@ export const db = {
       const supaUpdates = {};
       if (updates.name) supaUpdates.name = updates.name;
       if (updates.passwordHash) supaUpdates.password_hash = updates.passwordHash;
+      if (updates.verificationOtp !== undefined) supaUpdates.verification_otp = updates.verificationOtp;
+      if (updates.otpExpiresAt !== undefined) supaUpdates.otp_expires_at = updates.otpExpiresAt;
+      if (updates.isVerified !== undefined) supaUpdates.is_verified = updates.isVerified;
+      if (updates.isActive !== undefined) supaUpdates.is_active = updates.isActive;
       supaUpdates.updated_at = now;
 
       // Fast non-blocking async Supabase sync
