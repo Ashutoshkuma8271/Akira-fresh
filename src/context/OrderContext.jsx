@@ -125,7 +125,7 @@ export const OrderProvider = ({ children }) => {
       }).catch((err) => console.warn('Order database sync note:', err));
     } catch (e) {}
 
-    addToast(`Order #${orderId} placed successfully!`, 'success');
+    addToast(`Order #${orderId.slice(-6)} placed!`, 'success');
     return newOrder;
   };
 

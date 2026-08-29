@@ -210,32 +210,32 @@ export const CheckoutPage = () => {
     if (e && e.preventDefault) e.preventDefault();
 
     if (!formData.fullName.trim()) {
-      addToast('Please enter recipient full name', 'error');
+      addToast('Enter recipient name', 'error');
       return;
     }
 
     if (!isValidPhone(formData.phone)) {
-      addToast('Please enter a valid 10-digit mobile number (e.g. 9876543210)', 'error');
+      addToast('Invalid mobile number', 'error');
       return;
     }
 
     if (!isValidEmail(formData.email)) {
-      addToast('Please enter a valid email address for order confirmation', 'error');
+      addToast('Invalid email address', 'error');
       return;
     }
 
     if (!formData.street.trim() || formData.street.length < 5) {
-      addToast('Please provide complete street address / building name', 'error');
+      addToast('Enter street address', 'error');
       return;
     }
 
     if (!formData.city.trim() || !formData.state.trim()) {
-      addToast('City and State are required', 'error');
+      addToast('City & state required', 'error');
       return;
     }
 
     if (!isValidPincode(formData.pincode)) {
-      addToast('Please enter a valid 6-digit Indian Pincode', 'error');
+      addToast('Invalid 6-digit pincode', 'error');
       return;
     }
 
@@ -244,7 +244,7 @@ export const CheckoutPage = () => {
 
   const handleDeliverySubmit = () => {
     if (!deliveryMode) {
-      addToast('Please select a delivery tier to proceed', 'error');
+      addToast('Select delivery option', 'error');
       return;
     }
     setStep(3);
@@ -252,7 +252,7 @@ export const CheckoutPage = () => {
 
   const handleFinalPayment = async () => {
     if (!paymentMethod) {
-      addToast('Please select your preferred payment method', 'error');
+      addToast('Select payment method', 'error');
       return;
     }
 

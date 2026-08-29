@@ -130,7 +130,7 @@ export const CartProvider = ({ children }) => {
       ];
     });
 
-    addToast(`Added "${product.name}" to cart!`, 'success');
+    addToast('Added to cart', 'success');
     if (openDrawer) {
       setIsCartDrawerOpen(true);
     }
@@ -153,7 +153,7 @@ export const CartProvider = ({ children }) => {
     const removed = cartItems.find((i) => i.cartItemId === cartItemId);
     setCartItems((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
     if (removed) {
-      addToast(`Removed "${removed.name}" from cart`, 'info');
+      addToast('Removed from cart', 'info');
     }
   };
 
@@ -166,15 +166,15 @@ export const CartProvider = ({ children }) => {
     const cleanCode = couponCode.trim().toUpperCase();
     const found = COUPONS.find((c) => c.code === cleanCode);
     if (!found) {
-      addToast('Invalid coupon code. Try WELCOME10', 'error');
+      addToast('Invalid coupon code', 'error');
       return false;
     }
     if (found.minOrder && subtotal < found.minOrder) {
-      addToast(`Minimum order amount of ₹${found.minOrder} required for ${cleanCode}`, 'error');
+      addToast(`Min. order ₹${found.minOrder} required`, 'error');
       return false;
     }
     setAppliedCoupon(found);
-    addToast(`Coupon "${found.code}" applied successfully!`, 'success');
+    addToast(`Coupon ${found.code} applied`, 'success');
     return true;
   };
 
