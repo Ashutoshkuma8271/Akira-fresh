@@ -470,7 +470,7 @@ export const AdminDashboardPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-gold-gradient text-navy-950 shadow-gold-sm'
+                    ? 'bg-emerald-500 text-navy-950 shadow-md'
                     : 'bg-navy-900 text-gray-300 hover:bg-navy-850 hover:text-white border border-navy-800'
                 }`}
               >
@@ -482,7 +482,7 @@ export const AdminDashboardPage = () => {
 
           <button
             onClick={fetchDashboardData}
-            className="ml-auto p-2.5 rounded-xl bg-navy-900 text-gray-400 hover:text-gold-400 border border-navy-800 transition-colors"
+            className="ml-auto p-2.5 rounded-xl bg-navy-900 text-gray-400 hover:text-emerald-400 border border-navy-800 transition-colors"
             title="Refresh Real-Time Telemetry"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -493,20 +493,20 @@ export const AdminDashboardPage = () => {
         {activeTab === 'overview' && (
           <div className="space-y-8 animate-fadeIn">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-2">
+              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Gross Sales</span>
-                  <div className="w-10 h-10 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                     <TrendingUp className="w-5 h-5" />
                   </div>
                 </div>
                 <h3 className="font-serif text-3xl font-bold text-white">
-                  {formatINR(stats?.totalRevenue || 2249)}
+                  {formatINR(stats?.totalRevenue ?? orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0))}
                 </h3>
-                <span className="text-[11px] text-green-400 font-medium">✓ Razorpay Verified Revenue</span>
+                <span className="text-[11px] text-emerald-400 font-medium">✓ Razorpay Verified Revenue</span>
               </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-2">
+              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Total Consignments</span>
                   <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
@@ -516,10 +516,10 @@ export const AdminDashboardPage = () => {
                 <h3 className="font-serif text-3xl font-bold text-white">
                   {orders.length} Orders
                 </h3>
-                <span className="text-[11px] text-gold-400 font-medium">● Live Carrier Integration</span>
+                <span className="text-[11px] text-emerald-400 font-medium">● Live Carrier Integration</span>
               </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-2">
+              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Catalog Inventory</span>
                   <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
@@ -529,10 +529,10 @@ export const AdminDashboardPage = () => {
                 <h3 className="font-serif text-3xl font-bold text-white">
                   {products.length} Products
                 </h3>
-                <span className="text-[11px] text-gray-400 font-medium">Across 7 Main Departments</span>
+                <span className="text-[11px] text-gray-400 font-medium">Across Main Departments</span>
               </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-2">
+              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Security State</span>
                   <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
@@ -548,13 +548,13 @@ export const AdminDashboardPage = () => {
 
             {/* Quick Actions & Recent Orders */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-4">
+              <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
                 <div className="flex items-center justify-between border-b border-navy-800 pb-3">
                   <h4 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                    <ShoppingBag className="w-5 h-5 text-gold-400" />
+                    <ShoppingBag className="w-5 h-5 text-emerald-400" />
                     <span>Recent Customer Consignments</span>
                   </h4>
-                  <button onClick={() => setActiveTab('orders')} className="text-xs text-gold-400 hover:underline font-semibold">
+                  <button onClick={() => setActiveTab('orders')} className="text-xs text-emerald-400 hover:underline font-semibold">
                     Manage Orders →
                   </button>
                 </div>
@@ -563,13 +563,13 @@ export const AdminDashboardPage = () => {
                   {orders.slice(0, 4).map((order) => (
                     <div key={order.id} className="p-4 rounded-2xl bg-navy-850 border border-navy-800 flex items-center justify-between gap-4">
                       <div>
-                        <span className="text-xs font-mono font-bold text-gold-400">#{order.id}</span>
-                        <p className="text-xs text-white font-medium mt-0.5">{order.shippingAddress?.name}</p>
+                        <span className="text-xs font-mono font-bold text-emerald-400">#{order.id}</span>
+                        <p className="text-xs text-white font-medium mt-0.5">{order.shippingAddress?.name || order.shippingAddress?.fullName || 'Customer'}</p>
                         <span className="text-[10px] text-gray-400">{order.date} • {order.carrier}</span>
                       </div>
                       <div className="text-right space-y-1">
                         <span className="text-xs font-bold text-white block">{formatINR(order.total)}</span>
-                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/20 text-gold-400 border border-gold-500/30">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                           {order.status}
                         </span>
                       </div>
@@ -578,13 +578,13 @@ export const AdminDashboardPage = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-4">
+              <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
                 <div className="flex items-center justify-between border-b border-navy-800 pb-3">
                   <h4 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                    <History className="w-5 h-5 text-gold-400" />
+                    <History className="w-5 h-5 text-emerald-400" />
                     <span>Security Audit Feed</span>
                   </h4>
-                  <button onClick={() => setActiveTab('audit')} className="text-xs text-gold-400 hover:underline font-semibold">
+                  <button onClick={() => setActiveTab('audit')} className="text-xs text-emerald-400 hover:underline font-semibold">
                     Full Log →
                   </button>
                 </div>
@@ -593,7 +593,7 @@ export const AdminDashboardPage = () => {
                   {auditLogs.slice(0, 5).map((log) => (
                     <div key={log.id} className="p-3 rounded-xl bg-navy-850 border border-navy-800 text-xs space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold text-gold-400">{log.action}</span>
+                        <span className="font-semibold text-emerald-400">{log.action}</span>
                         <span className="text-[10px] text-gray-400 font-mono">
                           {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
@@ -609,7 +609,7 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 2: PRODUCTS CATALOG MANAGEMENT */}
         {activeTab === 'products' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-navy-800 pb-4">
               <div>
                 <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
@@ -622,7 +622,7 @@ export const AdminDashboardPage = () => {
 
               <button
                 onClick={handleOpenAddProduct}
-                className="flex items-center gap-2 px-5 py-2.5 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105 transition-all w-max cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-md hover:brightness-105 transition-all w-max cursor-pointer"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Add New Product</span>
@@ -638,14 +638,14 @@ export const AdminDashboardPage = () => {
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
                   placeholder="Search products by title or brand..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:border-emerald-500"
                 />
               </div>
 
               <select
                 value={productCategoryFilter}
                 onChange={(e) => setProductCategoryFilter(e.target.value)}
-                className="px-4 py-2.5 bg-navy-850 text-gold-400 rounded-xl border border-navy-700 text-xs font-semibold focus:border-gold-500 cursor-pointer"
+                className="px-4 py-2.5 bg-navy-850 text-emerald-400 rounded-xl border border-navy-700 text-xs font-semibold focus:border-emerald-500 cursor-pointer"
               >
                 <option value="all">All Departments</option>
                 <option value="men">Men Fashion</option>
@@ -688,7 +688,7 @@ export const AdminDashboardPage = () => {
                         </div>
                       </td>
                       <td className="p-3.5 font-medium text-gray-300">{prod.categoryName}</td>
-                      <td className="p-3.5 font-bold text-gold-400 font-mono">{formatINR(prod.price)}</td>
+                      <td className="p-3.5 font-bold text-emerald-400 font-mono">{formatINR(prod.price)}</td>
                       <td className="p-3.5">
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${prod.stockCount <= 5 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'}`}>
                           {prod.stockCount} in Stock
@@ -696,7 +696,7 @@ export const AdminDashboardPage = () => {
                       </td>
                       <td className="p-3.5">
                         {prod.badge && (
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gold-500/20 text-gold-400 border border-gold-500/30">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                             {prod.badge}
                           </span>
                         )}
@@ -704,7 +704,7 @@ export const AdminDashboardPage = () => {
                       <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
                         <button
                           onClick={() => handleOpenEditProduct(prod)}
-                          className="p-1.5 text-gray-300 hover:text-gold-400 hover:bg-navy-800 rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-gray-300 hover:text-emerald-400 hover:bg-navy-800 rounded-lg transition-colors cursor-pointer"
                           title="Edit Product"
                         >
                           <Edit className="w-4 h-4" />
@@ -727,18 +727,18 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 3: ORDERS & DELIVERY LOGISTICS */}
         {activeTab === 'orders' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
               <div>
                 <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                  <Truck className="w-6 h-6 text-gold-400" />
+                  <Truck className="w-6 h-6 text-emerald-400" />
                   <span>Order Fulfillment & Delivery Logistics</span>
                 </h3>
                 <p className="text-xs text-gray-400">
                   Update delivery stages, carrier tracking numbers, and address dossiers.
                 </p>
               </div>
-              <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30 w-max">
+              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max">
                 {orders.length} Total Shipments
               </span>
             </div>
@@ -749,11 +749,11 @@ export const AdminDashboardPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-navy-800 pb-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold font-mono text-gold-400">Order #{order.id}</span>
+                        <span className="text-sm font-bold font-mono text-emerald-400">Order #{order.id}</span>
                         <span className="text-xs text-gray-400">• {order.date}</span>
                       </div>
                       <p className="text-xs text-gray-300 mt-0.5">
-                        Client: <strong className="text-white">{order.shippingAddress?.name}</strong> ({order.shippingAddress?.phone})
+                        Client: <strong className="text-white">{order.shippingAddress?.name || order.shippingAddress?.fullName || 'Customer'}</strong> ({order.shippingAddress?.phone || 'No phone'})
                       </p>
                     </div>
 
@@ -762,7 +762,7 @@ export const AdminDashboardPage = () => {
                       
                       <button
                         onClick={() => handleOpenDeliveryModal(order)}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gold-gradient text-navy-950 font-bold text-xs shadow-gold-sm hover:brightness-105 cursor-pointer"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs shadow-md hover:brightness-105 cursor-pointer"
                       >
                         <Truck className="w-3.5 h-3.5" />
                         <span>Update Delivery ({order.status})</span>
@@ -781,7 +781,7 @@ export const AdminDashboardPage = () => {
                     <div>
                       <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Carrier Details</span>
                       <p className="leading-relaxed">
-                        Carrier: <strong className="text-white">{order.carrier}</strong> | Waybill Tracking: <span className="font-mono text-gold-400">{order.trackingNumber}</span>
+                        Carrier: <strong className="text-white">{order.carrier}</strong> | Waybill Tracking: <span className="font-mono text-emerald-400">{order.trackingNumber}</span>
                       </p>
                     </div>
                   </div>
@@ -793,10 +793,10 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 4: WEBSITE SECTIONS & CONTENT CUSTOMIZER */}
         {activeTab === 'settings' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
             <div className="border-b border-navy-800 pb-4">
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                <Sliders className="w-6 h-6 text-gold-400" />
+                <Sliders className="w-6 h-6 text-emerald-400" />
                 <span>Website Sections & Content Customizer</span>
               </h3>
               <p className="text-xs text-gray-400">
@@ -806,7 +806,7 @@ export const AdminDashboardPage = () => {
 
             <form onSubmit={handleSaveSettings} className="space-y-6 text-xs max-w-2xl">
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-gold-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
                   1. Announcement Bar
                 </h4>
                 <div>
@@ -815,7 +815,7 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.announcementText}
                     onChange={(e) => setSiteSettings({ ...siteSettings, announcementText: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -824,13 +824,13 @@ export const AdminDashboardPage = () => {
                     type="number"
                     value={siteSettings.freeShippingThreshold}
                     onChange={(e) => setSiteSettings({ ...siteSettings, freeShippingThreshold: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-gold-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
                   2. Hero Banner Section
                 </h4>
                 <div>
@@ -839,7 +839,7 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.heroBadge}
                     onChange={(e) => setSiteSettings({ ...siteSettings, heroBadge: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -848,7 +848,7 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.heroHeadline}
                     onChange={(e) => setSiteSettings({ ...siteSettings, heroHeadline: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500 font-serif text-sm"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500 font-serif text-sm"
                   />
                 </div>
                 <div>
@@ -857,7 +857,7 @@ export const AdminDashboardPage = () => {
                     rows={2}
                     value={siteSettings.heroSubheadline}
                     onChange={(e) => setSiteSettings({ ...siteSettings, heroSubheadline: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -866,13 +866,13 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.heroDiscount}
                     onChange={(e) => setSiteSettings({ ...siteSettings, heroDiscount: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-gold-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
                   3. Store Contact Information
                 </h4>
                 <div>
@@ -881,7 +881,7 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.supportPhone || ''}
                     onChange={(e) => setSiteSettings({ ...siteSettings, supportPhone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -890,7 +890,7 @@ export const AdminDashboardPage = () => {
                     type="email"
                     value={siteSettings.supportEmail || ''}
                     onChange={(e) => setSiteSettings({ ...siteSettings, supportEmail: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -898,7 +898,7 @@ export const AdminDashboardPage = () => {
               <button
                 type="submit"
                 disabled={settingsSubmitting}
-                className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
               >
                 <span>{settingsSubmitting ? 'Saving Website Changes...' : 'Save & Publish Live Changes'}</span>
               </button>
@@ -909,9 +909,9 @@ export const AdminDashboardPage = () => {
         {/* TAB 5: COUPONS & PROMOTIONS */}
         {activeTab === 'coupons' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
-            <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-5">
+            <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-5">
               <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                <Plus className="w-5 h-5 text-gold-400" />
+                <Plus className="w-5 h-5 text-emerald-400" />
                 <span>Create New Promo Voucher</span>
               </h3>
 
@@ -924,7 +924,7 @@ export const AdminDashboardPage = () => {
                     value={newCouponCode}
                     onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
                     placeholder="e.g. LUXURY25"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-gold-500 uppercase"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-emerald-500 uppercase"
                   />
                 </div>
 
@@ -936,7 +936,7 @@ export const AdminDashboardPage = () => {
                       value={newCouponDiscount}
                       onChange={(e) => setNewCouponDiscount(e.target.value)}
                       placeholder="e.g. 25"
-                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                     />
                   </div>
                   <div>
@@ -946,7 +946,7 @@ export const AdminDashboardPage = () => {
                       value={newCouponMinOrder}
                       onChange={(e) => setNewCouponMinOrder(e.target.value)}
                       placeholder="e.g. 2999"
-                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                     />
                   </div>
                 </div>
@@ -959,23 +959,23 @@ export const AdminDashboardPage = () => {
                     value={newCouponDesc}
                     onChange={(e) => setNewCouponDesc(e.target.value)}
                     placeholder="e.g. 25% Off on Summer Luxury Collection"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={couponSubmitting}
-                  className="w-full py-3 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
                 >
                   <span>{couponSubmitting ? 'Issuing Voucher...' : 'Publish Voucher Code'}</span>
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-4">
+            <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
               <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2 border-b border-navy-800 pb-3">
-                <Tag className="w-5 h-5 text-gold-400" />
+                <Tag className="w-5 h-5 text-emerald-400" />
                 <span>Active Store Coupons</span>
               </h3>
 
@@ -984,7 +984,7 @@ export const AdminDashboardPage = () => {
                   <div key={coupon.code} className="p-4 rounded-2xl bg-navy-850 border border-navy-800 flex items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-bold text-gold-400 bg-navy-950 px-2.5 py-0.5 rounded-lg border border-gold-500/30">
+                        <span className="font-mono text-sm font-bold text-emerald-400 bg-navy-950 px-2.5 py-0.5 rounded-lg border border-emerald-500/30">
                           {coupon.code}
                         </span>
                         <span className="text-xs font-bold text-green-400">
@@ -1010,18 +1010,18 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 6: SECURITY AUDIT LOG */}
         {activeTab === 'audit' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
               <div>
                 <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-6 h-6 text-gold-400" />
+                  <ShieldCheck className="w-6 h-6 text-emerald-400" />
                   <span>Immutable Security Audit Trail</span>
                 </h3>
                 <p className="text-xs text-gray-400 mt-0.5">
                   Chronological record of all administrative logins, product edits, delivery status changes, and site updates.
                 </p>
               </div>
-              <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30 w-max">
+              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max">
                 {auditLogs.length} Logged Events
               </span>
             </div>
@@ -1042,7 +1042,7 @@ export const AdminDashboardPage = () => {
                       <td className="p-3.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString()}
                       </td>
-                      <td className="p-3.5 font-bold text-gold-400 whitespace-nowrap">
+                      <td className="p-3.5 font-bold text-emerald-400 whitespace-nowrap">
                         {log.action}
                       </td>
                       <td className="p-3.5 font-mono text-gray-300 whitespace-nowrap">
@@ -1062,21 +1062,21 @@ export const AdminDashboardPage = () => {
         {/* TAB 7: ADMIN PROFILE & MASTER PASSWORD */}
         {activeTab === 'profile' && (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 animate-fadeIn">
-            <div className="md:col-span-5 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-6">
+            <div className="md:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6">
               <div className="text-center space-y-3">
-                <div className="w-20 h-20 rounded-full bg-navy-800 border-2 border-gold-500/40 mx-auto flex items-center justify-center shadow-gold-sm">
-                  <ShieldCheck className="w-10 h-10 text-gold-400" />
+                <div className="w-20 h-20 rounded-full bg-navy-800 border-2 border-emerald-500/40 mx-auto flex items-center justify-center shadow-sm">
+                  <ShieldCheck className="w-10 h-10 text-emerald-400" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-xl font-bold text-white">{admin?.name}</h4>
-                  <p className="text-xs font-mono text-gold-400">{admin?.email}</p>
+                  <h4 className="font-serif text-xl font-bold text-white">{admin?.name || 'Administrator'}</h4>
+                  <p className="text-xs font-mono text-emerald-400">{admin?.email}</p>
                 </div>
               </div>
 
               <div className="space-y-2.5 pt-2 border-t border-navy-800 text-xs">
                 <div className="flex justify-between py-1.5 border-b border-navy-800/60">
                   <span className="text-gray-400">Assigned Role:</span>
-                  <span className="font-bold text-gold-400 uppercase">Master Administrator</span>
+                  <span className="font-bold text-emerald-400 uppercase">Master Administrator</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-navy-800/60">
                   <span className="text-gray-400">Account Status:</span>
@@ -1089,9 +1089,9 @@ export const AdminDashboardPage = () => {
               </div>
             </div>
 
-            <div className="md:col-span-7 p-6 rounded-3xl bg-navy-900 border border-gold-500/20 shadow-xl space-y-5">
+            <div className="md:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-5">
               <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2 border-b border-navy-800 pb-3">
-                <KeyRound className="w-5 h-5 text-gold-400" />
+                <KeyRound className="w-5 h-5 text-emerald-400" />
                 <span>Update Master Admin Password</span>
               </h3>
 
@@ -1105,12 +1105,12 @@ export const AdminDashboardPage = () => {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowCurrentPass(!showCurrentPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                       title={showCurrentPass ? 'Hide password' : 'Show password'}
                     >
                       {showCurrentPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1127,12 +1127,12 @@ export const AdminDashboardPage = () => {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPass(!showNewPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                       title={showNewPass ? 'Hide password' : 'Show password'}
                     >
                       {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1149,12 +1149,12 @@ export const AdminDashboardPage = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPass(!showConfirmPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                       title={showConfirmPass ? 'Hide password' : 'Show password'}
                     >
                       {showConfirmPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1165,7 +1165,7 @@ export const AdminDashboardPage = () => {
                 <button
                   type="submit"
                   disabled={passSubmitting}
-                  className="w-full py-3 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
                 >
                   <span>{passSubmitting ? 'Updating Master Password...' : 'Save New Password'}</span>
                 </button>
@@ -1276,12 +1276,12 @@ export const AdminDashboardPage = () => {
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none animate-fadeIn">
           <div onClick={() => setIsProductModalOpen(false)} className="fixed inset-0 bg-navy-950/80 backdrop-blur-md" />
-          <div className="relative w-full max-w-2xl bg-navy-900 border border-gold-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto space-y-5">
+          <div className="relative w-full max-w-2xl bg-navy-900 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto space-y-5">
             <div className="flex items-center justify-between border-b border-navy-800 pb-3">
               <h3 className="font-serif text-lg font-bold text-white">
                 {editingProduct ? 'Edit Catalog Product' : 'Add New Luxury Product'}
               </h3>
-              <button onClick={() => setIsProductModalOpen(false)} className="p-1.5 text-gray-400 hover:text-white rounded-lg">
+              <button onClick={() => setIsProductModalOpen(false)} className="p-1.5 text-gray-400 hover:text-white rounded-lg cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1295,7 +1295,7 @@ export const AdminDashboardPage = () => {
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                   placeholder="e.g. Royal Chronograph Gold Wristwatch"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                 />
               </div>
 
@@ -1308,7 +1308,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.brand}
                     onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
                     placeholder="e.g. A_S FOODY"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
 
@@ -1318,10 +1318,10 @@ export const AdminDashboardPage = () => {
                     value={productForm.category}
                     onChange={(e) => {
                       const cat = e.target.value;
-                      const catNames = { men: 'Men Fashion', women: 'Women Fashion', electronics: 'Electronics', 'home-living': 'Home & Living', beauty: 'Beauty', accessories: 'Accessories', footwear: 'Footwear' };
+                      const catNames = { men: 'Men Fashion', women: 'Women Fashion', electronics: 'Electronics', 'home-living': 'Home & Living', beauty: 'Beauty & Fragrance', accessories: 'Accessories', footwear: 'Footwear' };
                       setProductForm({ ...productForm, category: cat, categoryName: catNames[cat] || cat });
                     }}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   >
                     <option value="men">Men Fashion</option>
                     <option value="women">Women Fashion</option>
@@ -1343,7 +1343,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.price}
                     onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                     placeholder="2499"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500 font-mono"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-emerald-400 rounded-xl border border-navy-700 focus:border-emerald-500 font-mono font-bold"
                   />
                 </div>
                 <div>
@@ -1353,7 +1353,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.originalPrice}
                     onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
                     placeholder="4999"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500 font-mono"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-gray-400 rounded-xl border border-navy-700 focus:border-emerald-500 font-mono"
                   />
                 </div>
                 <div>
@@ -1363,7 +1363,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.discount}
                     onChange={(e) => setProductForm({ ...productForm, discount: e.target.value })}
                     placeholder="50"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -1375,7 +1375,7 @@ export const AdminDashboardPage = () => {
                     type="number"
                     value={productForm.stockCount}
                     onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -1385,7 +1385,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.badge}
                     onChange={(e) => setProductForm({ ...productForm, badge: e.target.value })}
                     placeholder="e.g. BESTSELLER / 50% OFF"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -1397,7 +1397,7 @@ export const AdminDashboardPage = () => {
                 
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-navy-750 text-gold-400 border border-gold-500/30 text-xs font-semibold cursor-pointer transition-colors shrink-0">
+                    <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-navy-750 text-emerald-400 border border-emerald-500/30 text-xs font-semibold cursor-pointer transition-colors shrink-0">
                       <UploadCloud className={`w-4 h-4 ${uploadingImage ? 'animate-bounce' : ''}`} />
                       <span>{uploadingImage ? 'Uploading to Cloudinary...' : 'Upload File to Cloudinary'}</span>
                       <input
@@ -1417,7 +1417,7 @@ export const AdminDashboardPage = () => {
                     value={productForm.image}
                     onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                     placeholder="https://res.cloudinary.com/... or https://images.unsplash.com/..."
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500 text-xs"
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500 text-xs"
                   />
 
                   {productForm.image && (
@@ -1425,10 +1425,10 @@ export const AdminDashboardPage = () => {
                       <img
                         src={productForm.image}
                         alt="Preview"
-                        className="w-12 h-12 rounded-lg object-cover border border-gold-500/30"
+                        className="w-12 h-12 rounded-lg object-cover border border-emerald-500/30"
                       />
                       <div className="text-[11px] text-gray-300 truncate">
-                        <span className="text-green-400 font-semibold block">✓ Image Ready</span>
+                        <span className="text-emerald-400 font-semibold block">✓ Image Ready</span>
                         <span className="text-gray-400 truncate block max-w-xs">{productForm.image}</span>
                       </div>
                     </div>
@@ -1443,13 +1443,13 @@ export const AdminDashboardPage = () => {
                   value={productForm.description}
                   onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                   placeholder="Write description with luxury materials, craftsmanship..."
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-105 transition-all cursor-pointer"
+                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer"
               >
                 <span>{editingProduct ? 'Save Product Changes' : 'Create & Add to Catalog'}</span>
               </button>
@@ -1462,15 +1462,15 @@ export const AdminDashboardPage = () => {
       {editingOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none animate-fadeIn">
           <div onClick={() => setEditingOrder(null)} className="fixed inset-0 bg-navy-950/80 backdrop-blur-md" />
-          <div className="relative w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-6 shadow-2xl z-10 space-y-5">
+          <div className="relative w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-6 shadow-2xl z-10 space-y-5">
             <div className="flex items-center justify-between border-b border-navy-800 pb-3">
               <div>
                 <h3 className="font-serif text-base font-bold text-white">
                   Update Logistics for Order #{editingOrder.id}
                 </h3>
-                <p className="text-xs text-gray-400">Recipient: {editingOrder.shippingAddress?.name}</p>
+                <p className="text-xs text-gray-400">Recipient: {editingOrder.shippingAddress?.name || editingOrder.shippingAddress?.fullName || 'Customer'}</p>
               </div>
-              <button onClick={() => setEditingOrder(null)} className="p-1 text-gray-400 hover:text-white">
+              <button onClick={() => setEditingOrder(null)} className="p-1 text-gray-400 hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1481,7 +1481,7 @@ export const AdminDashboardPage = () => {
                 <select
                   value={orderDeliveryForm.status}
                   onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, status: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-gold-400 font-bold rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full px-3.5 py-2.5 bg-navy-850 text-emerald-400 font-bold rounded-xl border border-navy-700 focus:border-emerald-500 cursor-pointer"
                 >
                   <option value="Order Placed">1. Order Placed</option>
                   <option value="Payment Confirmed">2. Payment Confirmed</option>
@@ -1501,7 +1501,7 @@ export const AdminDashboardPage = () => {
                   value={orderDeliveryForm.carrier}
                   onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, carrier: e.target.value })}
                   placeholder="e.g. Bluedart Express / Delhivery"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
                 />
               </div>
 
@@ -1513,13 +1513,13 @@ export const AdminDashboardPage = () => {
                   value={orderDeliveryForm.trackingNumber}
                   onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, trackingNumber: e.target.value })}
                   placeholder="e.g. BD-889021482IN"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-gold-500"
+                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-emerald-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-gold-gradient text-navy-950 font-bold rounded-xl shadow-gold-sm hover:brightness-105 transition-all cursor-pointer"
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer"
               >
                 <span>Save & Update Logistics Milestone</span>
               </button>

@@ -144,27 +144,6 @@ export const AdminLoginPage = () => {
           </button>
         </form>
 
-        {/* Footer info & initial setup shortcut if no admin exists yet */}
-        <div className="pt-4 text-center border-t border-navy-800 space-y-2">
-          {adminExists === false && (
-            <Link
-              to="/admin/signup"
-              className="inline-block text-xs text-emerald-400 hover:underline font-semibold"
-            >
-              ⚡ First Time Setup: Create Master Admin →
-            </Link>
-          )}
-
-          <div>
-            <Link
-              to="/"
-              className="text-xs text-gray-400 hover:text-emerald-400 transition-colors"
-            >
-              Return to Customer Storefront
-            </Link>
-          </div>
-        </div>
-
         <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
       </div>
     </div>

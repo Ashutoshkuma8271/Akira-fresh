@@ -106,14 +106,14 @@ export const AdminSignupPage = () => {
   // If the backend database reports an administrator already exists:
   if (adminExists === true && step === 'form') {
     return (
-      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
-        <div className="w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
-          <div className="w-16 h-16 rounded-2xl bg-navy-800 border border-gold-500/40 mx-auto flex items-center justify-center shadow-gold-sm">
-            <ShieldAlert className="w-8 h-8 text-gold-400" />
+      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
+        <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
+          <div className="w-16 h-16 rounded-2xl bg-navy-800 border border-emerald-500/40 mx-auto flex items-center justify-center shadow-sm">
+            <ShieldAlert className="w-8 h-8 text-emerald-400" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
               Admin Portal Security Active
             </span>
             <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
@@ -150,21 +150,21 @@ export const AdminSignupPage = () => {
   // Step 2: 6-Digit Email OTP Verification Screen
   if (step === 'otp') {
     return (
-      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
-        <div className="w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
-          <div className="w-16 h-16 rounded-2xl bg-navy-800 border border-gold-500/40 mx-auto flex items-center justify-center shadow-gold-sm">
-            <KeyRound className="w-8 h-8 text-gold-400" />
+      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
+        <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
+          <div className="w-16 h-16 rounded-2xl bg-navy-800 border border-emerald-500/40 mx-auto flex items-center justify-center shadow-sm">
+            <KeyRound className="w-8 h-8 text-emerald-400" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
               Two-Factor Authentication
             </span>
             <h1 className="font-serif text-2xl font-bold text-white">
               Verify Administrator Email
             </h1>
             <p className="text-xs text-gray-300 leading-relaxed">
-              We sent a 6-digit one-time passcode to <strong className="text-gold-400 font-mono">{registeredEmail}</strong>. Enter it below to activate your account:
+              We sent a 6-digit one-time passcode to <strong className="text-emerald-400 font-mono">{registeredEmail}</strong>. Enter it below to activate your account:
             </p>
           </div>
 
@@ -212,7 +212,7 @@ export const AdminSignupPage = () => {
             </button>
           </div>
 
-          <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
         </div>
       </div>
     );
@@ -221,7 +221,7 @@ export const AdminSignupPage = () => {
   // Step 3: Verified Success Screen
   if (step === 'verified') {
     return (
-      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
+      <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
         <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-fadeIn relative overflow-hidden">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 mx-auto flex items-center justify-center">
             <CheckCircle2 className="w-8 h-8 text-emerald-400" />
