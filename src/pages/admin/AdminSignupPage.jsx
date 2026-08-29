@@ -184,10 +184,10 @@ export const AdminSignupPage = () => {
                 autoFocus
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="••••••"
-                className="w-full py-4 bg-navy-850 text-gold-400 text-center text-3xl font-mono tracking-[12px] rounded-2xl border-2 border-gold-500/40 focus:outline-none focus:border-gold-500 transition-colors shadow-inner"
+                placeholder="123456"
+                className="w-full py-4 bg-navy-850 text-emerald-400 text-center text-3xl font-mono tracking-[12px] font-bold rounded-2xl border-2 border-emerald-500/50 focus:outline-none focus:border-emerald-400 transition-colors shadow-inner placeholder:text-gray-600"
               />
-              <p className="text-[10px] text-gray-500 mt-2">
+              <p className="text-[11px] text-gray-400 mt-2">
                 ⏱️ Passcode is valid for 15 minutes.
               </p>
             </div>
@@ -195,10 +195,10 @@ export const AdminSignupPage = () => {
             <button
               type="submit"
               disabled={isSubmitting || otp.length !== 6}
-              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>{isSubmitting ? 'Verifying...' : 'Verify & Continue to Login'}</span>
+              <span>{isSubmitting ? 'Verifying Code...' : 'Verify & Continue to Login'}</span>
             </button>
           </form>
 
@@ -206,7 +206,7 @@ export const AdminSignupPage = () => {
             <button
               type="button"
               onClick={() => setStep('form')}
-              className="text-xs text-gray-400 hover:text-gold-400 transition-colors"
+              className="text-xs text-gray-400 hover:text-white transition-colors"
             >
               ← Back to Registration Form
             </button>

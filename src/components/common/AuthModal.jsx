@@ -227,11 +227,13 @@ export const AuthModal = () => {
 
         {/* Header */}
         <div className="p-6 pb-2 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-navy-800 border border-gold-500/40 mb-3 shadow-gold-sm">
-            {authMode === 'forgot' ? (
-              <KeyRound className="w-6 h-6 text-gold-400" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-3 shadow-sm">
+            {authMode === 'verifyOtp' ? (
+              <ShieldCheck className="w-6 h-6 text-emerald-400" />
+            ) : authMode === 'forgot' ? (
+              <KeyRound className="w-6 h-6 text-emerald-400" />
             ) : (
-              <Sparkles className="w-6 h-6 text-gold-400" />
+              <Sparkles className="w-6 h-6 text-emerald-400" />
             )}
           </div>
           <h3 className="font-serif text-2xl font-bold text-white mb-1">
@@ -239,21 +241,25 @@ export const AuthModal = () => {
               ? 'Sign In to Your Account'
               : authMode === 'register'
               ? 'Create Customer Account'
+              : authMode === 'verifyOtp'
+              ? 'Verify Your Email'
               : 'Reset Your Password'}
           </h3>
           <p className="text-xs text-gray-400">
             {authMode === 'login'
               ? 'Enter your credentials to access your cart, orders & wishlist'
               : authMode === 'register'
-              ? 'Create your account to start shopping luxury collections'
+              ? 'Create your account to start ordering gourmet delicacies'
+              : authMode === 'verifyOtp'
+              ? 'Enter the 6-digit passcode sent to your inbox to activate your account'
               : 'Verify your identity and update your password securely'}
           </p>
         </div>
 
         {/* Action Notice Alert */}
         {authNotice && authMode !== 'forgot' && (
-          <div className="mx-6 my-2 p-3 rounded-2xl bg-gold-500/15 border border-gold-500/40 text-gold-300 text-xs flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-gold-400 shrink-0" />
+          <div className="mx-6 my-2 p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="font-medium leading-tight">{authNotice}</span>
           </div>
         )}
@@ -261,10 +267,10 @@ export const AuthModal = () => {
         {/* VERIFY SIGNUP OTP WORKFLOW */}
         {authMode === 'verifyOtp' ? (
           <div className="p-6 pt-2 space-y-4">
-            <div className="p-3.5 bg-gold-500/10 rounded-2xl border border-gold-500/30 text-xs text-gold-300">
-              <p className="font-semibold text-center">Enter 6-Digit OTP</p>
-              <p className="text-[11px] text-gray-400 mt-1 text-center leading-relaxed">
-                We sent a 6-digit verification code to <strong>{verificationEmail}</strong>
+            <div className="p-3.5 bg-navy-850 rounded-2xl border border-emerald-500/30 text-xs text-emerald-300">
+              <p className="font-semibold text-center text-white">Enter 6-Digit Email Passcode</p>
+              <p className="text-[11px] text-gray-300 mt-1 text-center leading-relaxed">
+                We sent a 6-digit code to <strong className="text-emerald-400">{verificationEmail}</strong>
               </p>
             </div>
 
@@ -273,21 +279,25 @@ export const AuthModal = () => {
                 <input
                   type="text"
                   required
+                  autoFocus
                   maxLength={6}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="••••••"
+                  placeholder="123456"
                   autoComplete="one-time-code"
-                  className="w-full text-center tracking-[8px] font-mono text-xl py-3 bg-navy-850 text-gold-400 font-bold rounded-2xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-all"
+                  className="w-full text-center tracking-[12px] font-mono text-2xl py-3.5 bg-navy-850 text-emerald-400 font-bold rounded-2xl border-2 border-emerald-500/50 focus:outline-none focus:border-emerald-400 transition-all placeholder:text-gray-600 shadow-inner"
                 />
+                <p className="text-[11px] text-gray-400 text-center mt-2">
+                  ⏱️ Code is valid for 15 minutes
+                </p>
               </div>
 
               <button
                 type="submit"
                 disabled={submitting || otpCode.length < 6}
-                className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50"
+                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50"
               >
-                {submitting ? 'Verifying...' : 'Verify OTP & Sign In'}
+                {submitting ? 'Verifying Code...' : 'Verify & Activate Account'}
               </button>
             </form>
 
@@ -296,15 +306,15 @@ export const AuthModal = () => {
                 type="button"
                 onClick={handleResendOtp}
                 disabled={resendCooldown > 0 || submitting}
-                className="hover:text-gold-400 underline disabled:no-underline disabled:text-gray-600 cursor-pointer"
+                className="text-emerald-400 hover:underline disabled:no-underline disabled:text-gray-600 cursor-pointer font-medium"
               >
-                {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : 'Resend OTP'}
+                {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend Code'}
               </button>
 
               <button
                 type="button"
                 onClick={() => setAuthMode('register')}
-                className="hover:text-gold-400 cursor-pointer"
+                className="text-gray-400 hover:text-white cursor-pointer"
               >
                 Back to Sign Up
               </button>
@@ -627,7 +637,7 @@ export const AuthModal = () => {
               Don't have an account yet?{' '}
               <button
                 onClick={() => setAuthMode('register')}
-                className="text-gold-400 font-bold hover:underline cursor-pointer"
+                className="text-emerald-400 font-bold hover:underline cursor-pointer"
               >
                 Register Here
               </button>
@@ -637,9 +647,19 @@ export const AuthModal = () => {
               Already have an account?{' '}
               <button
                 onClick={() => setAuthMode('login')}
-                className="text-gold-400 font-bold hover:underline cursor-pointer"
+                className="text-emerald-400 font-bold hover:underline cursor-pointer"
               >
                 Sign In
+              </button>
+            </p>
+          ) : authMode === 'verifyOtp' ? (
+            <p>
+              Already verified your account?{' '}
+              <button
+                onClick={() => setAuthMode('login')}
+                className="text-emerald-400 font-bold hover:underline cursor-pointer"
+              >
+                Sign In Here
               </button>
             </p>
           ) : (
@@ -647,7 +667,7 @@ export const AuthModal = () => {
               Remember your password?{' '}
               <button
                 onClick={() => setAuthMode('login')}
-                className="text-gold-400 font-bold hover:underline cursor-pointer"
+                className="text-emerald-400 font-bold hover:underline cursor-pointer"
               >
                 Back to Sign In
               </button>
