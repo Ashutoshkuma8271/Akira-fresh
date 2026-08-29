@@ -127,7 +127,7 @@ export const AdminSignupPage = () => {
           <div className="pt-4 space-y-3">
             <Link
               to="/admin/login"
-              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-105 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 flex items-center justify-center gap-2 transition-all"
             >
               <span>Go to Admin Login</span>
               <ArrowRight className="w-4 h-4" />
@@ -135,13 +135,13 @@ export const AdminSignupPage = () => {
 
             <Link
               to="/"
-              className="block text-xs text-gray-400 hover:text-gold-400 transition-colors pt-2"
+              className="block text-xs text-gray-400 hover:text-emerald-400 transition-colors pt-2"
             >
               Return to Storefront
             </Link>
           </div>
 
-          <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
         </div>
       </div>
     );
@@ -241,7 +241,7 @@ export const AdminSignupPage = () => {
 
           <Link
             to="/admin/login"
-            className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105"
+            className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
           >
             <span>Proceed to Login</span>
             <ArrowRight className="w-4 h-4" />
@@ -253,15 +253,15 @@ export const AdminSignupPage = () => {
 
   // Step 1: Administrator Registration Form
   return (
-    <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
-      <div className="w-full max-w-lg bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
+    <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
+      <div className="w-full max-w-lg bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-gold-500/40 mb-2 shadow-gold-sm">
-            <ShieldCheck className="w-7 h-7 text-gold-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
+            <ShieldCheck className="w-7 h-7 text-emerald-400" />
           </div>
-          <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30 block w-max mx-auto">
+          <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 block w-max mx-auto">
             A_S FOODY Administration
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">

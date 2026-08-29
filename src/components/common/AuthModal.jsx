@@ -336,42 +336,42 @@ export const AuthModal = () => {
               </div>
             ) : resetModeStep === 'enterOtp' ? (
               <form onSubmit={handleResetWithOtpSubmit} className="space-y-3.5 animate-fadeIn">
-                <div className="p-3 bg-gold-500/10 rounded-2xl border border-gold-500/30 text-xs text-gold-300">
-                  <p className="font-semibold text-center">Reset Email Sent to {resetEmail}</p>
+                <div className="p-3 bg-navy-850 rounded-2xl border border-emerald-500/30 text-xs text-emerald-300">
+                  <p className="font-semibold text-center text-white">Reset Code Sent to {resetEmail}</p>
                   <p className="text-[11px] text-gray-300 mt-1 text-center leading-relaxed">
-                    Click the <strong>1-Click link</strong> in your email OR enter the <strong>6-digit OTP</strong> below to set your new password:
+                    Click the 1-click link in your email or enter the 6-digit code below:
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Reset OTP Code *</label>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Reset Code *</label>
                   <input
                     type="text"
                     required
                     maxLength={6}
                     value={resetOtp}
                     onChange={(e) => setResetOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                    placeholder="••••••"
-                    className="w-full text-center tracking-[8px] font-mono text-xl py-2.5 bg-navy-850 text-gold-400 font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-all"
+                    placeholder="123456"
+                    className="w-full text-center tracking-[8px] font-mono text-xl py-2.5 bg-navy-850 text-emerald-400 font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-all placeholder:text-gray-600"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-300 mb-1">New Strong Password *</label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                    <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
                       type={showResetPassword ? 'text' : 'password'}
                       required
                       value={resetNewPassword}
                       onChange={(e) => setResetNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowResetPassword(!showResetPassword)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                     >
                       {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -400,19 +400,19 @@ export const AuthModal = () => {
                 <div>
                   <label className="block text-xs font-semibold text-gray-300 mb-1">Confirm New Password *</label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                    <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
                       type={showResetConfirmPassword ? 'text' : 'password'}
                       required
                       value={resetConfirmPassword}
                       onChange={(e) => setResetConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                     >
                       {showResetConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -422,9 +422,9 @@ export const AuthModal = () => {
                 <button
                   type="submit"
                   disabled={submitting || resetOtp.length < 6}
-                  className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
+                  className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
                 >
-                  {submitting ? 'Updating Password...' : 'Save & Update Password'}
+                  {submitting ? 'Updating...' : 'Update Password'}
                 </button>
 
                 <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-navy-800">
@@ -432,7 +432,7 @@ export const AuthModal = () => {
                     type="button"
                     onClick={handleForgotSubmit}
                     disabled={submitting}
-                    className="hover:text-gold-400 underline cursor-pointer"
+                    className="text-emerald-400 hover:underline cursor-pointer"
                   >
                     Resend Code
                   </button>
@@ -442,7 +442,7 @@ export const AuthModal = () => {
                       setResetModeStep('request');
                       setResetLinkSent(false);
                     }}
-                    className="hover:text-gold-400 cursor-pointer"
+                    className="text-gray-400 hover:text-white cursor-pointer"
                   >
                     Change Email
                   </button>
@@ -451,9 +451,9 @@ export const AuthModal = () => {
             ) : (
               <form onSubmit={handleForgotSubmit} className="space-y-3.5 animate-fadeIn">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Registered Account Email</label>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Account Email</label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                    <Mail className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
                       type="email"
                       required
@@ -461,27 +461,27 @@ export const AuthModal = () => {
                       onChange={(e) => setResetEmail(e.target.value)}
                       placeholder="your.email@example.com"
                       autoComplete="email"
-                      className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
                   <p className="text-[11px] text-gray-400 mt-1.5 leading-relaxed">
-                    We'll email you a <strong>1-Click Magic Reset Link</strong> and a <strong>6-Digit Passcode</strong>.
+                    We'll email you a secure recovery link and 6-digit passcode.
                   </p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
+                  className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
                 >
-                  {submitting ? 'Sending Security Email...' : 'Send Magic Link & OTP'}
+                  {submitting ? 'Sending...' : 'Continue'}
                 </button>
 
                 <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-navy-800">
                   <button
                     type="button"
                     onClick={() => setAuthMode('login')}
-                    className="hover:text-gold-400 flex items-center gap-1 cursor-pointer"
+                    className="text-gray-400 hover:text-white flex items-center gap-1 cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Back to Sign In</span>
@@ -495,9 +495,9 @@ export const AuthModal = () => {
                       }
                       setResetModeStep('enterOtp');
                     }}
-                    className="hover:text-gold-400 underline cursor-pointer"
+                    className="text-emerald-400 hover:underline cursor-pointer"
                   >
-                    Already have OTP?
+                    Already have code?
                   </button>
                 </div>
               </form>
@@ -510,14 +510,14 @@ export const AuthModal = () => {
               <div>
                 <label className="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                  <User className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your Full Name"
-                    className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                 </div>
               </div>
@@ -526,14 +526,14 @@ export const AuthModal = () => {
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
             </div>
@@ -542,14 +542,14 @@ export const AuthModal = () => {
               <div>
                 <label className="block text-xs font-semibold text-gray-300 mb-1">Phone Number</label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                  <Phone className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                   <input
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                 </div>
               </div>
@@ -565,26 +565,26 @@ export const AuthModal = () => {
                       setResetEmail(email);
                       setAuthMode('forgot');
                     }}
-                    className="text-[11px] text-gold-400 hover:underline cursor-pointer"
+                    className="text-[11px] text-emerald-400 hover:underline cursor-pointer"
                   >
                     Forgot Password?
                   </button>
                 )}
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                  className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                  className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                   title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -621,16 +621,16 @@ export const AuthModal = () => {
               className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all mt-2 cursor-pointer disabled:opacity-50"
             >
               {submitting
-                ? 'Authenticating...'
+                ? (authMode === 'login' ? 'Signing In...' : 'Creating Account...')
                 : authMode === 'login'
-                ? 'Sign In to Account'
+                ? 'Sign In'
                 : 'Create Account'}
             </button>
           </form>
         )}
 
         {/* Footer Toggle */}
-        <div className="p-4 bg-navy-950 text-center border-t border-navy-800 text-xs text-gray-400 space-y-2">
+        <div className="p-4 bg-navy-950 text-center border-t border-navy-800 text-xs text-gray-400">
           {authMode === 'login' ? (
             <p>
               Don't have an account yet?{' '}
@@ -672,15 +672,6 @@ export const AuthModal = () => {
               </button>
             </p>
           )}
-
-          <div className="pt-2 border-t border-navy-850">
-            <a
-              href="/admin/login"
-              className="text-[11px] text-gray-400 hover:text-emerald-400 transition-colors inline-flex items-center gap-1"
-            >
-              <span>Switch to Admin Portal →</span>
-            </a>
-          </div>
         </div>
       </div>
     </div>
