@@ -85,7 +85,7 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
   const transporter = getTransporter();
   if (transporter) {
     try {
-      const senderEmail = process.env.SMTP_FROM_EMAIL || 'support@akirafresh.in';
+      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com';
       await transporter.sendMail({
         from: `"Akira Fresh" <${senderEmail}>`,
         to: cleanEmail,
@@ -110,7 +110,7 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          sender: { name: 'Akira Fresh', email: process.env.SMTP_FROM_EMAIL || 'support@akirafresh.in' },
+          sender: { name: 'Akira Fresh', email: process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com' },
           to: [{ email: cleanEmail, name: name || 'Valued Customer' }],
           subject: `${otp} is your Akira Fresh verification code`,
           htmlContent: htmlContent,
@@ -213,7 +213,7 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
   const transporter = getTransporter();
   if (transporter) {
     try {
-      const senderEmail = process.env.SMTP_FROM_EMAIL || 'support@akirafresh.in';
+      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com';
       await transporter.sendMail({
         from: `"Akira Fresh Security" <${senderEmail}>`,
         to: cleanEmail,
@@ -238,7 +238,7 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          sender: { name: 'Akira Fresh Security', email: process.env.SMTP_FROM_EMAIL || 'support@akirafresh.in' },
+          sender: { name: 'Akira Fresh Security', email: process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com' },
           to: [{ email: cleanEmail }],
           subject: `Reset Your Akira Fresh Password`,
           htmlContent
