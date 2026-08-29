@@ -350,4 +350,26 @@ router.get('/audit-logs', (req, res) => {
   }
 });
 
+// 7. CUSTOMERS MANAGEMENT
+// GET /api/admin/customers
+router.get('/customers', (req, res) => {
+  try {
+    const users = db.getUsers();
+    const sanitized = users.map(u => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone || '',
+      isVerified: u.isVerified !== false,
+      role: u.role || 'customer',
+      addressesCount: (u.addresses || []).length,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt
+    }));
+    return res.json({ success: true, customers: sanitized, total: sanitized.length });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Server error fetching customers' });
+  }
+});
+
 export default router;

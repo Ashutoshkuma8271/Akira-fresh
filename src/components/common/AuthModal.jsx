@@ -216,7 +216,7 @@ export const AuthModal = () => {
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-md bg-navy-900 text-white rounded-3xl shadow-2xl overflow-hidden z-10 border border-gold-500/30">
+      <div className="relative w-full max-w-md bg-navy-900 text-white rounded-3xl shadow-2xl overflow-hidden z-10 border border-emerald-500/30">
         {/* Close Button */}
         <button
           onClick={() => setIsAuthModalOpen(false)}
@@ -618,7 +618,7 @@ export const AuthModal = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all mt-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all mt-2 cursor-pointer disabled:opacity-50"
             >
               {submitting
                 ? 'Authenticating...'
@@ -630,7 +630,7 @@ export const AuthModal = () => {
         )}
 
         {/* Footer Toggle */}
-        <div className="p-4 bg-navy-950 text-center border-t border-navy-800 text-xs text-gray-400">
+        <div className="p-4 bg-navy-950 text-center border-t border-navy-800 text-xs text-gray-400 space-y-2">
           {authMode === 'login' ? (
             <p>
               Don't have an account yet?{' '}
@@ -672,6 +672,15 @@ export const AuthModal = () => {
               </button>
             </p>
           )}
+
+          <div className="pt-2 border-t border-navy-850">
+            <a
+              href="/admin/login"
+              className="text-[11px] text-gray-400 hover:text-emerald-400 transition-colors inline-flex items-center gap-1"
+            >
+              <span>Switch to Admin Portal →</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

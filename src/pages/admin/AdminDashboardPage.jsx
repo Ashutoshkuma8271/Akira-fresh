@@ -142,13 +142,14 @@ export const AdminDashboardPage = () => {
       setLoading(true);
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [statsRes, prodRes, ordersRes, couponsRes, auditRes, settingsRes] = await Promise.all([
+      const [statsRes, prodRes, ordersRes, couponsRes, auditRes, settingsRes, custRes] = await Promise.all([
         fetch('/api/admin/stats', { headers }),
         fetch('/api/admin/products', { headers }),
         fetch('/api/admin/orders', { headers }),
         fetch('/api/admin/coupons', { headers }),
         fetch('/api/admin/audit-logs', { headers }),
         fetch('/api/admin/settings', { headers }),
+        fetch('/api/admin/customers', { headers }),
       ]);
 
       if (statsRes.ok) {
@@ -174,6 +175,10 @@ export const AdminDashboardPage = () => {
       if (settingsRes.ok) {
         const d = await settingsRes.json();
         if (d.settings) setSiteSettings(d.settings);
+      }
+      if (custRes.ok) {
+        const d = await custRes.json();
+        setCustomers(d.customers || []);
       }
     } catch (err) {
       console.warn('Backend server offline, loading local dashboard cache');
@@ -450,6 +455,7 @@ export const AdminDashboardPage = () => {
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'products', label: `Catalog & Products (${products.length})`, icon: Package },
             { id: 'orders', label: `Orders & Delivery (${orders.length})`, icon: ShoppingBag },
+            { id: 'customers', label: `Customers (${customers.length})`, icon: User },
             { id: 'settings', label: 'Website Sections', icon: Sliders },
             { id: 'coupons', label: `Vouchers (${coupons.length})`, icon: Tag },
             { id: 'audit', label: `Security Audit Trail (${auditLogs.length})`, icon: History },
@@ -1163,6 +1169,102 @@ export const AdminDashboardPage = () => {
                   <span>{passSubmitting ? 'Updating Master Password...' : 'Save New Password'}</span>
                 </button>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 8: CUSTOMERS MANAGEMENT */}
+        {activeTab === 'customers' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="font-serif text-2xl font-bold text-white">Registered Customers Directory</h2>
+                <p className="text-xs text-gray-400">Total Patrons: {customers.length} verified & registered accounts</p>
+              </div>
+
+              <div className="w-full sm:w-72 relative">
+                <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={customerSearch}
+                  onChange={(e) => setCustomerSearch(e.target.value)}
+                  placeholder="Search by name, email or phone..."
+                  className="w-full pl-10 pr-4 py-2.5 bg-navy-900 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-800 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+            </div>
+
+            <div className="bg-navy-900 border border-emerald-500/20 rounded-3xl overflow-hidden shadow-xl">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-gray-300">
+                  <thead className="bg-navy-850 text-gray-400 font-mono uppercase text-[10px] tracking-wider border-b border-navy-800">
+                    <tr>
+                      <th className="px-6 py-4">Customer Name</th>
+                      <th className="px-6 py-4">Contact Details</th>
+                      <th className="px-6 py-4">Verification</th>
+                      <th className="px-6 py-4">Role</th>
+                      <th className="px-6 py-4">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-navy-800">
+                    {customers
+                      .filter((c) => {
+                        const q = customerSearch.toLowerCase();
+                        return (
+                          c.name?.toLowerCase().includes(q) ||
+                          c.email?.toLowerCase().includes(q) ||
+                          c.phone?.includes(q)
+                        );
+                      })
+                      .map((cust) => (
+                        <tr key={cust.id} className="hover:bg-navy-850/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-navy-800 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+                                {cust.name ? cust.name.charAt(0).toUpperCase() : 'U'}
+                              </div>
+                              <div>
+                                <p className="font-bold text-white text-xs">{cust.name || 'Anonymous Patron'}</p>
+                                <p className="text-[10px] text-gray-400 font-mono">ID: {cust.id}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-gray-200 font-mono text-xs">{cust.email}</p>
+                            <p className="text-[11px] text-gray-400">{cust.phone || 'No phone registered'}</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            {cust.isVerified ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>Verified</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                                <span>Pending OTP</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-[11px] uppercase font-mono text-gray-400 bg-navy-800 px-2 py-0.5 rounded">
+                              {cust.role || 'customer'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-400 text-[11px] font-mono">
+                            {cust.createdAt ? new Date(cust.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'}
+                          </td>
+                        </tr>
+                      ))}
+                    {customers.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-12 text-center text-gray-400 text-xs">
+                          No registered customers found yet. New customer signups will populate here automatically.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
