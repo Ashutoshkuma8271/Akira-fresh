@@ -79,7 +79,7 @@ export const OffersPage = () => {
         <h3 className="font-serif text-xl font-bold text-charcoal-950 dark:text-white mb-6">
           Featured Non-Veg Offers ({offerProducts.length})
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {offerProducts.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
