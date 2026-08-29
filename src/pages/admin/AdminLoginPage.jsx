@@ -41,21 +41,6 @@ export const AdminLoginPage = () => {
 
   return (
     <div className="min-h-screen bg-navy-950 text-white flex flex-col justify-center items-center p-4 selection:bg-emerald-500/30">
-      {/* Top Quick Bar */}
-      <div className="w-full max-w-md mb-3 flex items-center justify-between px-2">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Return to Storefront</span>
-        </Link>
-        <span className="text-[11px] text-emerald-400/80 font-mono flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live Store
-        </span>
-      </div>
-
       <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         {/* Header with Monogram */}
@@ -143,6 +128,17 @@ export const AdminLoginPage = () => {
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
+
+        {/* Return to Storefront at bottom */}
+        <div className="pt-4 border-t border-navy-800 text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Return to Customer Storefront</span>
+          </Link>
+        </div>
 
         <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
       </div>

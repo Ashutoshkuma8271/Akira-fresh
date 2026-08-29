@@ -29,21 +29,6 @@ export const AdminForgotPasswordPage = () => {
 
   return (
     <div className="min-h-screen bg-navy-950 text-white flex flex-col justify-center items-center p-4 selection:bg-emerald-500/30">
-      {/* Top Quick Bar */}
-      <div className="w-full max-w-md mb-3 flex items-center justify-between px-2">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Return to Storefront</span>
-        </Link>
-        <span className="text-[11px] text-emerald-400/80 font-mono flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live Store
-        </span>
-      </div>
-
       <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         <div className="text-center space-y-2">

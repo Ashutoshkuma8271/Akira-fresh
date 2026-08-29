@@ -95,7 +95,7 @@ export const CartProvider = ({ children }) => {
   // Enforce Login before Adding to Cart
   const addToCart = (product, quantity = 1, color = null, size = null, openDrawer = true) => {
     if (!isAuthenticated) {
-      requireAuth(null, 'Please sign in or register to add items to your shopping cart.');
+      requireAuth(null, 'Sign in to add items');
       return false;
     }
 

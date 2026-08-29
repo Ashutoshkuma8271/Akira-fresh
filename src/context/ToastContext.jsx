@@ -5,16 +5,16 @@ import { CheckCircle2, AlertCircle, Info, Sparkles } from 'lucide-react';
 const ToastContext = createContext(null);
 
 export const ToastProvider = ({ children }) => {
-  const addToast = useCallback((message, type = 'success', duration = 3000) => {
+  const addToast = useCallback((message, type = 'success', duration = 2500) => {
     const toastStyle = {
-      background: '#061A27',
-      color: '#FAF7F0',
-      border: '1px solid rgba(245, 184, 61, 0.4)',
-      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 184, 61, 0.2)',
-      borderRadius: '16px',
-      padding: '12px 18px',
-      fontSize: '13px',
-      fontWeight: '500',
+      background: '#0B192C',
+      color: '#F1F5F9',
+      border: '1px solid rgba(16, 185, 129, 0.3)',
+      boxShadow: '0 8px 20px -4px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.15)',
+      borderRadius: '12px',
+      padding: '8px 14px',
+      fontSize: '12px',
+      fontWeight: '600',
     };
 
     if (type === 'success') {
@@ -22,8 +22,8 @@ export const ToastProvider = ({ children }) => {
         duration,
         style: toastStyle,
         iconTheme: {
-          primary: '#F5B83D',
-          secondary: '#061A27',
+          primary: '#10B981',
+          secondary: '#0B192C',
         },
       });
     } else if (type === 'error') {
@@ -32,17 +32,18 @@ export const ToastProvider = ({ children }) => {
         style: {
           ...toastStyle,
           border: '1px solid rgba(239, 68, 68, 0.4)',
+          boxShadow: '0 8px 20px -4px rgba(0, 0, 0, 0.6), 0 0 10px rgba(239, 68, 68, 0.15)',
         },
         iconTheme: {
           primary: '#EF4444',
-          secondary: '#061A27',
+          secondary: '#0B192C',
         },
       });
     } else {
       toast(message, {
         duration,
         style: toastStyle,
-        icon: <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />,
+        icon: <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
       });
     }
   }, []);
