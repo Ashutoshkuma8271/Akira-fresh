@@ -261,7 +261,41 @@ export const db = {
 
   getAdminByEmail: (email) => {
     loadFromDisk();
-    return memoryDB.admins.find(a => a.email.toLowerCase() === email.toLowerCase());
+    return (memoryDB.admins || []).find(a => a.email.toLowerCase() === email.toLowerCase().trim());
+  },
+
+  getAdminByEmailAsync: async (email) => {
+    loadFromDisk();
+    const clean = email.toLowerCase().trim();
+    let admin = (memoryDB.admins || []).find(a => a.email.toLowerCase() === clean);
+
+    if (!admin) {
+      try {
+        const { data, error } = await supabase.from('admins').select('*').eq('email', clean).maybeSingle();
+        if (data && !error) {
+          admin = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            passwordHash: data.password_hash,
+            role: 'admin',
+            isActive: data.is_active ? 1 : 0,
+            isVerified: Boolean(data.is_verified ?? data.is_active),
+            verificationOtp: data.verification_otp,
+            singleAdminLock: data.single_admin_lock ?? 1,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at,
+            lastLoginAt: data.last_login_at
+          };
+          if (!memoryDB.admins) memoryDB.admins = [];
+          memoryDB.admins.push(admin);
+          saveToDisk();
+        }
+      } catch (e) {
+        console.warn('Supabase admin lookup error:', e.message);
+      }
+    }
+    return admin;
   },
 
   getAdminById: (id) => {
