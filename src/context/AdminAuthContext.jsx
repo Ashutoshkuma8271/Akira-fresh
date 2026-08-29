@@ -86,15 +86,15 @@ export const AdminAuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        addToast(data.message || 'Failed to create administrator account.', 'error');
+        addToast(data.message || 'Failed to create account.', 'error');
         await checkAdminStatus();
         return { success: false, message: data.message };
       }
 
-      addToast('Verification OTP sent to your email!', 'info');
+      addToast('Verification code sent', 'info');
       return { success: true, requireOtp: true, email: data.email || email };
     } catch (err) {
-      addToast('Connection error. Failed to create administrator account.', 'error');
+      addToast('Connection error', 'error');
       return { success: false, message: 'Server connection error' };
     }
   };
@@ -111,7 +111,7 @@ export const AdminAuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        addToast(data.message || 'Verification failed. Please check the OTP.', 'error');
+        addToast(data.message || 'Invalid verification code', 'error');
         return { success: false, message: data.message };
       }
 
@@ -123,10 +123,10 @@ export const AdminAuthProvider = ({ children }) => {
       }
 
       await checkAdminStatus();
-      addToast('Administrator verified successfully! Welcome to Dashboard.', 'success');
+      addToast('Administrator verified', 'success');
       return { success: true, token: data.token, admin: data.admin };
     } catch (err) {
-      addToast('Connection error during verification.', 'error');
+      addToast('Verification error', 'error');
       return { success: false, message: 'Server connection error' };
     }
   };
@@ -143,7 +143,7 @@ export const AdminAuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        addToast(data.message || 'Invalid administrator credentials.', 'error');
+        addToast(data.message || 'Invalid credentials', 'error');
         return { success: false, message: data.message };
       }
 
@@ -151,10 +151,10 @@ export const AdminAuthProvider = ({ children }) => {
       setAdmin(data.admin);
       localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
       localStorage.setItem('as_admin_profile', JSON.stringify(data.admin));
-      addToast(`Welcome, Administrator ${data.admin.name}!`, 'success');
+      addToast(`Welcome back, ${data.admin.name.split(' ')[0]}!`, 'success');
       return { success: true };
     } catch (err) {
-      addToast('Connection error. Failed to login.', 'error');
+      addToast('Connection error', 'error');
       return { success: false, message: 'Server connection error' };
     }
   };
@@ -175,7 +175,7 @@ export const AdminAuthProvider = ({ children }) => {
       setAdmin(null);
       localStorage.removeItem(ADMIN_TOKEN_KEY);
       localStorage.removeItem('as_admin_profile');
-      addToast('Logged out of Admin Portal.', 'info');
+      addToast('Logged out', 'info');
     }
   };
 

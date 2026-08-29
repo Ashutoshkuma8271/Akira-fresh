@@ -141,13 +141,13 @@ app.post('/api/auth/register', authLimiter, async (req, res) => {
     if (adminExisting) {
       return res.status(403).json({
         success: false,
-        message: 'This email is registered as an Administrator. Please use a different email for customer shopping.'
+        message: 'Admin email — please use Admin Portal.'
       });
     }
 
     const existing = await db.getUserByEmailAsync(cleanEmail);
     if (existing && existing.isVerified) {
-      return res.status(400).json({ success: false, message: 'An account with this email already exists and is verified. Please sign in.' });
+      return res.status(400).json({ success: false, message: 'Email already registered. Please sign in.' });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -291,7 +291,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
       return res.status(403).json({
         success: false,
         isAdminAccount: true,
-        message: 'Admin account. Please use Admin Portal.'
+        message: 'Admin account — please use Admin Portal.'
       });
     }
 
@@ -320,7 +320,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
         success: false,
         requireOtp: true,
         email: cleanEmail,
-        message: 'Please verify your account. OTP sent to your email.'
+        message: 'Verification code sent to your email.'
       });
     }
 
@@ -365,10 +365,10 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
       if (adminUser) {
         return res.status(403).json({
           success: false,
-          message: 'Administrator password reset must be requested from the Admin Portal (/admin/forgot-password).'
+          message: 'Admin account — please use Admin Portal.'
         });
       }
-      return res.status(404).json({ success: false, message: 'No customer account found with this registered email.' });
+      return res.status(404).json({ success: false, message: 'No account found with this email.' });
     }
 
     // Generate cryptographic 32-byte recovery token & 6-digit OTP

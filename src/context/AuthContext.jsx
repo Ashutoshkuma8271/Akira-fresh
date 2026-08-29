@@ -65,11 +65,11 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
       if (!data.success) {
         if (data.isAdminAccount || res.status === 403) {
-          addToast('Admin account detected. Please use the Admin Portal (/admin/login).', 'info');
+          addToast('Admin account — use Admin Portal', 'info');
           return { success: false, isAdminAccount: true, message: data.message };
         }
         if (data.requireOtp) {
-          addToast('OTP sent to your email', 'info');
+          addToast('Verification code sent', 'info');
           return { success: false, requireOtp: true, email: data.email };
         }
         addToast(data.message || 'Invalid email or password', 'error');
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
       }
       setIsAuthModalOpen(false);
       setAuthNotice('');
-      addToast(`Welcome back, ${data.user.name}!`, 'success');
+      addToast(`Welcome, ${data.user.name.split(' ')[0]}!`, 'success');
       return { success: true };
     } catch (e) {
       addToast('Connection error. Please try again.', 'error');
@@ -108,24 +108,24 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (data.requireOtp) {
-        addToast('OTP sent to your email', 'info');
+        addToast('Verification code sent', 'info');
         return { success: true, requireOtp: true, email: data.email };
       }
 
       setUser(data.user);
       setIsAuthModalOpen(false);
       setAuthNotice('');
-      addToast('Account created successfully', 'success');
+      addToast('Account created', 'success');
       return { success: true };
     } catch (e) {
-      addToast('Failed to connect to authentication service', 'error');
+      addToast('Connection error', 'error');
       return { success: false };
     }
   };
 
   const verifySignupOtp = async (email, otp) => {
     if (!email || !otp) {
-      addToast('Please enter the 6-digit OTP', 'error');
+      addToast('Please enter the 6-digit code', 'error');
       return { success: false };
     }
     try {
@@ -136,16 +136,16 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       if (!data.success) {
-        addToast(data.message || 'OTP verification failed', 'error');
+        addToast(data.message || 'Verification failed', 'error');
         return { success: false, message: data.message };
       }
 
       setAuthMode('login');
-      setAuthNotice('Account verified successfully! Please enter your password to sign in.');
-      addToast('Account verified! Please sign in.', 'success');
+      setAuthNotice('Account verified! Please enter your password to sign in.');
+      addToast('Account verified', 'success');
       return { success: true };
     } catch (e) {
-      addToast('Failed to verify OTP', 'error');
+      addToast('Verification failed', 'error');
       return { success: false };
     }
   };
@@ -259,21 +259,21 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       if (!data.success) {
-        addToast(data.message || 'Password reset request failed', 'error');
+        addToast(data.message || 'Request failed', 'error');
         return { success: false, message: data.message };
       }
-      addToast('Reset link & OTP sent to your email', 'success');
+      addToast('Recovery code sent', 'success');
       return { success: true, message: data.message, resetToken: data.resetToken, otp: data.otp };
     } catch (err) {
-      addToast('Failed to connect to authentication service', 'error');
+      addToast('Connection error', 'error');
       return { success: false };
     }
   };
 
   const resetPasswordWithToken = async (token, email, newPassword) => {
     if (!newPassword) {
-      addToast('Please enter your new password', 'error');
-      return { success: false, message: 'Please enter your new password' };
+      addToast('Please enter a new password', 'error');
+      return { success: false, message: 'Please enter a new password' };
     }
     try {
       const res = await fetch('/api/auth/reset-password-with-token', {
@@ -283,20 +283,20 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       if (!data.success) {
-        addToast(data.message || 'Password reset failed', 'error');
+        addToast(data.message || 'Reset failed', 'error');
         return { success: false, message: data.message };
       }
-      addToast('Password updated successfully! Please sign in.', 'success');
+      addToast('Password updated', 'success');
       return { success: true };
     } catch (err) {
-      addToast('Failed to reset password', 'error');
+      addToast('Reset failed', 'error');
       return { success: false, message: 'Connection error' };
     }
   };
 
   const resetPasswordWithOtp = async (email, otp, newPassword) => {
     if (!email || !otp || !newPassword) {
-      addToast('Please provide email, 6-digit OTP, and new password', 'error');
+      addToast('Please fill all fields', 'error');
       return { success: false, message: 'Missing required fields' };
     }
     try {
@@ -307,13 +307,13 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       if (!data.success) {
-        addToast(data.message || 'OTP password reset failed', 'error');
+        addToast(data.message || 'Reset failed', 'error');
         return { success: false, message: data.message };
       }
-      addToast('Password updated successfully! Please sign in.', 'success');
+      addToast('Password updated', 'success');
       return { success: true };
     } catch (err) {
-      addToast('Failed to reset password via OTP', 'error');
+      addToast('Reset failed', 'error');
       return { success: false, message: 'Connection error' };
     }
   };

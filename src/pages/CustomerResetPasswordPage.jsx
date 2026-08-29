@@ -54,28 +54,28 @@ export const CustomerResetPasswordPage = () => {
     e.preventDefault();
 
     if (activeTab === 'token' && !token) {
-      addToast('Missing or invalid recovery token. Please switch to 6-Digit OTP tab or request a new link.', 'error');
+      addToast('Invalid reset token', 'error');
       return;
     }
 
     if (activeTab === 'otp') {
       if (!email || !email.includes('@')) {
-        addToast('Please provide your valid account email address.', 'error');
+        addToast('Please enter your email', 'error');
         return;
       }
       if (!otp || otp.length < 6) {
-        addToast('Please enter the 6-digit OTP sent to your email.', 'error');
+        addToast('Please enter the 6-digit code', 'error');
         return;
       }
     }
 
     if (!strength.isStrong) {
-      addToast('Password must be at least 8 chars with uppercase, lowercase, numbers, and special characters.', 'error');
+      addToast('Password too weak', 'error');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      addToast('New passwords do not match. Please verify.', 'error');
+      addToast('Passwords do not match', 'error');
       return;
     }
 
