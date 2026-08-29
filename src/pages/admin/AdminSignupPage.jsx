@@ -287,14 +287,14 @@ export const AdminSignupPage = () => {
               Full Name
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+              <User className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ashutosh Kumar"
-                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                placeholder="Administrator Name"
+                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
           </div>
@@ -304,14 +304,14 @@ export const AdminSignupPage = () => {
               Official Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+              <Mail className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ashutoshgifthamper9334@gmail.com"
-                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                placeholder="admin@yourdomain.com"
+                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
           </div>
@@ -322,19 +322,19 @@ export const AdminSignupPage = () => {
                 Master Password (min 8 chars)
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                  className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                   title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -347,19 +347,19 @@ export const AdminSignupPage = () => {
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                  className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                   title={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -394,7 +394,7 @@ export const AdminSignupPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
           >
             <Sparkles className="w-4 h-4" />
             <span>{isSubmitting ? 'Sending 6-Digit OTP...' : 'Send Verification OTP'}</span>
@@ -404,7 +404,7 @@ export const AdminSignupPage = () => {
         <div className="pt-2 text-center border-t border-navy-800">
           <Link
             to="/admin/login"
-            className="text-xs text-gold-400 hover:underline font-semibold"
+            className="text-xs text-emerald-400 hover:underline font-semibold"
           >
             Already registered? Sign In to Admin Panel
           </Link>

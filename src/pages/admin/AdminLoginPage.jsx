@@ -51,10 +51,10 @@ export const AdminLoginPage = () => {
         
         {/* Header with Monogram */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-gold-500/40 mb-2 shadow-gold-sm">
-            <ShieldCheck className="w-7 h-7 text-gold-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
+            <ShieldCheck className="w-7 h-7 text-emerald-400" />
           </div>
-          <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30 block w-max mx-auto">
+          <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 block w-max mx-auto">
             Authorized Personnel Only
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
@@ -80,14 +80,14 @@ export const AdminLoginPage = () => {
               Administrator Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+              <Mail className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ashutoshgifthamper9334@gmail.com"
-                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                placeholder="admin@yourdomain.com"
+                className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
           </div>
@@ -99,25 +99,25 @@ export const AdminLoginPage = () => {
               </label>
               <Link
                 to="/admin/forgot-password"
-                className="text-[11px] text-gold-400 hover:underline"
+                className="text-[11px] text-emerald-400 hover:underline"
               >
                 Forgot Password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+              <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -128,7 +128,7 @@ export const AdminLoginPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
           >
             <span>{isSubmitting ? 'Authenticating...' : 'Login to Admin Portal'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -140,7 +140,7 @@ export const AdminLoginPage = () => {
           {adminExists === false && (
             <Link
               to="/admin/signup"
-              className="inline-block text-xs text-gold-400 hover:underline font-semibold"
+              className="inline-block text-xs text-emerald-400 hover:underline font-semibold"
             >
               ⚡ No administrator configured yet. Create First Admin →
             </Link>
@@ -149,7 +149,7 @@ export const AdminLoginPage = () => {
           <div>
             <Link
               to="/"
-              className="text-xs text-gray-400 hover:text-gold-400 transition-colors"
+              className="text-xs text-gray-400 hover:text-emerald-400 transition-colors"
             >
               Return to Customer Storefront
             </Link>

@@ -100,8 +100,8 @@ export const AdminResetPasswordPage = () => {
         
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-gold-500/40 mb-2 shadow-gold-sm">
-            <Key className="w-7 h-7 text-gold-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
+            <Key className="w-7 h-7 text-emerald-400" />
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
             Reset Master Password
@@ -114,8 +114,8 @@ export const AdminResetPasswordPage = () => {
         {/* Success Alert */}
         {isSuccess ? (
           <div className="space-y-4 text-center">
-            <div className="p-4 rounded-2xl bg-green-900/30 border border-green-500/40 text-green-300 text-xs flex flex-col items-center gap-2">
-              <CheckCircle2 className="w-8 h-8 text-green-400" />
+            <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/40 text-emerald-300 text-xs flex flex-col items-center gap-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
               <span className="font-bold text-sm">Password Reset Successful!</span>
               <p className="text-[11px] text-gray-300">
                 Your master administrator password has been updated. You can now login with your new credentials.
@@ -123,7 +123,7 @@ export const AdminResetPasswordPage = () => {
             </div>
             <Link
               to="/admin/login"
-              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Proceed to Admin Login</span>
               <ArrowRight className="w-4 h-4" />
@@ -146,7 +146,7 @@ export const AdminResetPasswordPage = () => {
                 onClick={() => setActiveTab('token')}
                 className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
                   activeTab === 'token'
-                    ? 'bg-navy-950 text-gold-400 border border-gold-500/40 shadow-sm'
+                    ? 'bg-navy-950 text-emerald-400 border border-emerald-500/40 shadow-sm'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -157,7 +157,7 @@ export const AdminResetPasswordPage = () => {
                 onClick={() => setActiveTab('otp')}
                 className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
                   activeTab === 'otp'
-                    ? 'bg-navy-950 text-gold-400 border border-gold-500/40 shadow-sm'
+                    ? 'bg-navy-950 text-emerald-400 border border-emerald-500/40 shadow-sm'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -179,13 +179,13 @@ export const AdminResetPasswordPage = () => {
                       Recovery Token
                     </label>
                     <div className="relative">
-                      <Key className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <Key className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                       <input
                         type="text"
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
                         placeholder="Paste 32-byte recovery token"
-                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs font-mono rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs font-mono rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
                   </div>
@@ -197,14 +197,14 @@ export const AdminResetPasswordPage = () => {
                       Administrator Email *
                     </label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <Mail className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="admin@akirafresh.com"
-                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                        placeholder="admin@yourdomain.com"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
                   </div>
@@ -214,15 +214,15 @@ export const AdminResetPasswordPage = () => {
                       6-Digit Admin Reset OTP *
                     </label>
                     <div className="relative">
-                      <KeyRound className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <KeyRound className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                       <input
                         type="text"
                         required
                         maxLength={6}
                         value={otp}
                         onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                        placeholder="••••••"
-                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-gold-400 font-mono tracking-widest text-lg font-bold text-center rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                        placeholder="123456"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-emerald-400 font-mono tracking-widest text-lg font-bold text-center rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-gray-600"
                       />
                     </div>
                   </div>
@@ -234,19 +234,19 @@ export const AdminResetPasswordPage = () => {
                   New Master Password (min 8 chars)
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                  <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                     title={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -279,19 +279,19 @@ export const AdminResetPasswordPage = () => {
                   Confirm New Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                  <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    className="w-full pl-10 pr-10 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
                     title={showConfirmPassword ? 'Hide password' : 'Show password'}
                   >
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -302,7 +302,7 @@ export const AdminResetPasswordPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <span>{isSubmitting ? 'Resetting Password...' : 'Save & Update Password'}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -314,7 +314,7 @@ export const AdminResetPasswordPage = () => {
         <div className="pt-2 text-center border-t border-navy-800">
           <Link
             to="/admin/login"
-            className="text-xs text-gold-400 hover:underline"
+            className="text-xs text-emerald-400 hover:underline"
           >
             Back to Admin Login
           </Link>

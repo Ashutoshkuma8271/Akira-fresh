@@ -113,8 +113,8 @@ export const CustomerResetPasswordPage = () => {
         
         {/* Header Icon */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gold-500/10 dark:bg-navy-800 border border-gold-500/30 text-gold-500 shadow-gold-sm">
-            {isSuccess ? <CheckCircle2 className="w-7 h-7 text-emerald-500" /> : <ShieldCheck className="w-7 h-7 text-gold-400" />}
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/30 text-emerald-400 shadow-sm">
+            {isSuccess ? <CheckCircle2 className="w-7 h-7 text-emerald-400" /> : <ShieldCheck className="w-7 h-7 text-emerald-400" />}
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-navy-950 dark:text-white">
             {isSuccess ? 'Password Reset Complete!' : 'Set New Password'}
@@ -122,19 +122,19 @@ export const CustomerResetPasswordPage = () => {
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
             {isSuccess
               ? 'Your account password has been updated securely with 10-round Bcrypt encryption.'
-              : 'Choose a strong, unique password for your Akira Fresh customer account.'}
+              : 'Choose a strong, unique password for your account.'}
           </p>
         </div>
 
         {isSuccess ? (
           <div className="space-y-4 text-center animate-fadeIn">
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-600 dark:text-emerald-400 leading-relaxed">
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-400 leading-relaxed">
               You can now sign in using your new credentials.
             </div>
 
             <button
               onClick={handleGoToLogin}
-              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer"
             >
               Sign In to Your Account
             </button>
@@ -143,14 +143,14 @@ export const CustomerResetPasswordPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             
             {/* Mode Switcher Tabs */}
-            <div className="flex bg-gray-100 dark:bg-navy-800 p-1 rounded-2xl border border-gray-200 dark:border-navy-700">
+            <div className="flex bg-navy-850 p-1 rounded-2xl border border-navy-700">
               <button
                 type="button"
                 onClick={() => setActiveTab('token')}
                 className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
                   activeTab === 'token'
-                    ? 'bg-white dark:bg-navy-900 text-gold-500 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    ? 'bg-navy-950 text-emerald-400 border border-emerald-500/40 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
                 1-Click Magic Link
@@ -160,8 +160,8 @@ export const CustomerResetPasswordPage = () => {
                 onClick={() => setActiveTab('otp')}
                 className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
                   activeTab === 'otp'
-                    ? 'bg-white dark:bg-navy-900 text-gold-500 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    ? 'bg-navy-950 text-emerald-400 border border-emerald-500/40 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
                 6-Digit OTP Code
@@ -170,13 +170,13 @@ export const CustomerResetPasswordPage = () => {
 
             {activeTab === 'token' ? (
               token ? (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
                   <span className="font-semibold">Magic Recovery Link Authenticated</span>
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide">
                     Recovery Token
                   </label>
                   <input
@@ -184,43 +184,43 @@ export const CustomerResetPasswordPage = () => {
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
                     placeholder="Paste 32-byte recovery token"
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs font-mono rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-2.5 bg-navy-850 text-white text-xs font-mono rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               )
             ) : (
               <div className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1">
                     Account Email *
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-gold-500 absolute left-3 top-3" />
+                    <Mail className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your.email@example.com"
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1">
                     6-Digit Reset OTP *
                   </label>
                   <div className="relative">
-                    <KeyRound className="w-4 h-4 text-gold-500 absolute left-3 top-3" />
+                    <KeyRound className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
                       type="text"
                       required
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                      placeholder="••••••"
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs tracking-widest font-mono font-bold rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                      placeholder="123456"
+                      className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-emerald-400 text-xs tracking-widest font-mono font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 placeholder:text-gray-600"
                     />
                   </div>
                 </div>
@@ -228,11 +228,11 @@ export const CustomerResetPasswordPage = () => {
             )}
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1">
                 New Strong Password *
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
                 <input
                   type={showNewPassword ? 'text' : 'password'}
                   required
@@ -240,12 +240,12 @@ export const CustomerResetPasswordPage = () => {
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 cursor-pointer p-0.5"
+                  className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 cursor-pointer p-0.5"
                   title={showNewPassword ? 'Hide password' : 'Show password'}
                 >
                   {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -263,7 +263,7 @@ export const CustomerResetPasswordPage = () => {
                       <div
                         key={s}
                         className={`h-full rounded-full transition-all duration-300 ${
-                          s <= strength.score ? strength.color.split(' ')[0] : 'bg-gray-200 dark:bg-navy-750'
+                          s <= strength.score ? strength.color.split(' ')[0] : 'bg-navy-750'
                         }`}
                       />
                     ))}
@@ -273,11 +273,11 @@ export const CustomerResetPasswordPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1">
                 Confirm New Password *
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gold-500 absolute left-3.5 top-3" />
+                <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   required
@@ -285,12 +285,12 @@ export const CustomerResetPasswordPage = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 cursor-pointer p-0.5"
+                  className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 cursor-pointer p-0.5"
                   title={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -301,17 +301,17 @@ export const CustomerResetPasswordPage = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
             >
               {submitting ? 'Updating Password...' : 'Save New Password & Sign In'}
             </button>
           </form>
         )}
 
-        <div className="text-center pt-2 border-t border-gray-100 dark:border-navy-800">
+        <div className="text-center pt-2 border-t border-navy-800">
           <Link
             to="/"
-            className="text-xs text-gray-500 dark:text-gray-400 hover:text-gold-500 inline-flex items-center gap-1.5"
+            className="text-xs text-gray-400 hover:text-emerald-400 inline-flex items-center gap-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Storefront</span>
