@@ -9,7 +9,6 @@ import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createServer as createViteServer } from 'vite';
 import { db, initDB } from './db.js';
 import adminAuthRouter from './routes/adminAuth.js';
 import adminDashboardRouter from './routes/adminDashboard.js';
@@ -601,6 +600,7 @@ async function startServer() {
 
     // Mount Vite dev middleware in development or static assets in production
     if (process.env.NODE_ENV !== 'production') {
+      const { createServer: createViteServer } = await import('vite');
       const vite = await createViteServer({
         root: rootDir,
         server: { middlewareMode: true },
