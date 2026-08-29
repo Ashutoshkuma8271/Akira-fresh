@@ -303,7 +303,7 @@ export const CustomerResetPasswordPage = () => {
               disabled={submitting}
               className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
             >
-              {submitting ? 'Updating Password...' : 'Save New Password & Sign In'}
+              {submitting ? 'Updating...' : 'Update Password'}
             </button>
           </form>
         )}

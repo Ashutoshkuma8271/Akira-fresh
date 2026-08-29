@@ -395,7 +395,7 @@ export const db = {
 
     const now = new Date().toISOString();
     const newAdmin = {
-      id,
+      id: id || `adm-${Date.now()}`,
       name,
       email: email.toLowerCase().trim(),
       passwordHash,
@@ -422,7 +422,10 @@ export const db = {
         email: newAdmin.email,
         password_hash: newAdmin.passwordHash,
         role: 'admin',
-        is_active: 1,
+        is_active: isActive ? 1 : 0,
+        is_verified: isVerified,
+        verification_otp: verificationOtp,
+        otp_expires_at: otpExpiresAt,
         single_admin_lock: 1,
         created_at: now,
         updated_at: now
@@ -432,6 +435,22 @@ export const db = {
       console.warn('Supabase admins table write note:', err.message);
     }
 
+    // Also persist in users table as fallback
+    try {
+      await supabase.from('users').upsert({
+        id: newAdmin.id,
+        name: newAdmin.name,
+        email: newAdmin.email,
+        password_hash: newAdmin.passwordHash,
+        role: 'admin',
+        is_verified: isVerified,
+        verification_otp: verificationOtp,
+        otp_expires_at: otpExpiresAt,
+        created_at: now,
+        updated_at: now
+      });
+    } catch (err) {}
+
     return newAdmin;
   },
 
@@ -439,7 +458,19 @@ export const db = {
     loadFromDisk();
     const clean = email.toLowerCase().trim();
     let admin = await db.getAdminByEmailAsync(clean);
-    if (!admin) return { success: false, message: 'Administrator record not found.' };
+    
+    // Fallback search in memory
+    if (!admin && memoryDB.admins && memoryDB.admins.length > 0) {
+      admin = memoryDB.admins.find(a => a.email?.toLowerCase() === clean);
+    }
+    if (!admin && memoryDB.users && memoryDB.users.length > 0) {
+      const u = memoryDB.users.find(u => u.email?.toLowerCase() === clean && u.role === 'admin');
+      if (u) admin = { ...u, isActive: 1 };
+    }
+
+    if (!admin) {
+      return { success: false, message: 'Administrator record not found.' };
+    }
 
     let isValid = (admin.verificationOtp && admin.verificationOtp.toString().trim() === otp.toString().trim()) || otp === '123456';
 
@@ -451,10 +482,11 @@ export const db = {
     admin.isVerified = true;
     admin.isActive = 1;
     admin.verificationOtp = null;
+    admin.otpExpiresAt = null;
     admin.updatedAt = now;
 
     if (!memoryDB.admins) memoryDB.admins = [];
-    const index = memoryDB.admins.findIndex(a => a.id === admin.id);
+    const index = memoryDB.admins.findIndex(a => a.id === admin.id || a.email.toLowerCase() === clean);
     if (index !== -1) {
       memoryDB.admins[index] = { ...memoryDB.admins[index], ...admin };
     } else {
@@ -466,9 +498,19 @@ export const db = {
     try {
       await supabase.from('admins').update({
         is_active: 1,
+        is_verified: true,
+        verification_otp: null,
         updated_at: now
       }).eq('id', admin.id);
       console.log('⚡ Verified and Activated Admin in Supabase');
+    } catch (e) {}
+
+    try {
+      await supabase.from('users').update({
+        is_verified: true,
+        verification_otp: null,
+        updated_at: now
+      }).eq('email', clean);
     } catch (e) {}
 
     return { success: true, admin };

@@ -304,7 +304,7 @@ export const AdminResetPasswordPage = () => {
                 disabled={isSubmitting}
                 className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <span>{isSubmitting ? 'Resetting Password...' : 'Save & Update Password'}</span>
+                <span>{isSubmitting ? 'Updating...' : 'Update Password'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
