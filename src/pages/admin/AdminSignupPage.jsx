@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowRight, Sparkles, CheckCircle2, Eye, EyeOff, KeyRound } from 'lucide-react';
-import { Logo } from '../../components/common/Logo';
 
 export const AdminSignupPage = () => {
   const navigate = useNavigate();
@@ -65,7 +64,7 @@ export const AdminSignupPage = () => {
     }
 
     if (!strength.isStrong) {
-      setErrorMessage('Please use a strong master password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special symbol).');
+      setErrorMessage('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.');
       return;
     }
 
@@ -98,7 +97,7 @@ export const AdminSignupPage = () => {
       setStep('verified');
       setTimeout(() => {
         navigate('/admin/login');
-      }, 2000);
+      }, 1500);
     } else {
       setErrorMessage(result.message || 'Invalid or expired OTP code. Please check your email.');
     }
@@ -115,13 +114,13 @@ export const AdminSignupPage = () => {
 
           <div className="space-y-2">
             <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
-              Single-Admin Security Policy Active
+              Admin Portal Security Active
             </span>
             <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-              Admin account already exists.
+              Administrator Configured
             </h1>
             <p className="text-xs sm:text-sm text-gray-400 leading-relaxed pt-2">
-              A_S FOODY enforces a strict single-administrator policy at the database level. New administrator registrations are permanently closed.
+              A_S FOODY has an active administrator account. Please log in with your credentials to manage your store.
             </p>
           </div>
 
@@ -159,13 +158,13 @@ export const AdminSignupPage = () => {
 
           <div className="space-y-2">
             <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
-              Email Security Passcode
+              Two-Factor Authentication
             </span>
             <h1 className="font-serif text-2xl font-bold text-white">
               Verify Administrator Email
             </h1>
             <p className="text-xs text-gray-300 leading-relaxed">
-              We sent a 6-digit one-time passcode to <strong className="text-gold-400 font-mono">{registeredEmail}</strong>. Please enter it below to activate your administrator account:
+              We sent a 6-digit one-time passcode to <strong className="text-gold-400 font-mono">{registeredEmail}</strong>. Enter it below to activate your account:
             </p>
           </div>
 
@@ -182,6 +181,7 @@ export const AdminSignupPage = () => {
                 type="text"
                 maxLength={6}
                 required
+                autoFocus
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                 placeholder="••••••"
@@ -198,7 +198,7 @@ export const AdminSignupPage = () => {
               className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>{isSubmitting ? 'Verifying...' : 'Verify & Activate Account'}</span>
+              <span>{isSubmitting ? 'Verifying...' : 'Verify & Continue to Login'}</span>
             </button>
           </form>
 
@@ -229,13 +229,13 @@ export const AdminSignupPage = () => {
 
           <div className="space-y-2">
             <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
-              Activation Complete
+              Account Activated
             </span>
             <h1 className="font-serif text-2xl font-bold text-white">
-              Administrator Activated!
+              Verification Successful!
             </h1>
             <p className="text-xs text-gray-300 leading-relaxed">
-              Your administrator account has been verified. Redirecting you to the Admin Login page...
+              Redirecting you to the Administrator Login page...
             </p>
           </div>
 
@@ -243,7 +243,7 @@ export const AdminSignupPage = () => {
             to="/admin/login"
             className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-105"
           >
-            <span>Click here to Login</span>
+            <span>Proceed to Login</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -251,7 +251,7 @@ export const AdminSignupPage = () => {
     );
   }
 
-  // Step 1: Initial Administrator Registration Form
+  // Step 1: Administrator Registration Form
   return (
     <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
       <div className="w-full max-w-lg bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
@@ -262,13 +262,13 @@ export const AdminSignupPage = () => {
             <ShieldCheck className="w-7 h-7 text-gold-400" />
           </div>
           <span className="text-[10px] uppercase font-mono tracking-widest text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30 block w-max mx-auto">
-            Initial Administrator Bootstrap
+            A_S FOODY Administration
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-            Create A_S FOODY Admin
+            Create Admin Account
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
-            The first registered account will become the sole administrator of A_S FOODY. A 6-digit verification code will be sent to your email to confirm registration.
+            Register your administrator credentials. A 6-digit verification code will be sent to your email to activate your account.
           </p>
         </div>
 
@@ -284,7 +284,7 @@ export const AdminSignupPage = () => {
         <form onSubmit={handleSubmitSignup} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-              Administrator Name
+              Full Name
             </label>
             <div className="relative">
               <User className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
@@ -293,7 +293,7 @@ export const AdminSignupPage = () => {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your Full Name"
+                placeholder="Ashutosh Kumar"
                 className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
               />
             </div>
@@ -301,7 +301,7 @@ export const AdminSignupPage = () => {
 
           <div>
             <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-              Administrator Email Address
+              Official Email Address
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
@@ -310,7 +310,7 @@ export const AdminSignupPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your.email@domain.com"
+                placeholder="ashutoshgifthamper9334@gmail.com"
                 className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
               />
             </div>
@@ -406,7 +406,7 @@ export const AdminSignupPage = () => {
             to="/admin/login"
             className="text-xs text-gold-400 hover:underline font-semibold"
           >
-            Already registered? Go to Admin Login
+            Already registered? Sign In to Admin Panel
           </Link>
         </div>
 

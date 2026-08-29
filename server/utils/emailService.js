@@ -25,52 +25,51 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
   const cleanEmail = email.toLowerCase().trim();
   const htmlContent = `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verification Code</title>
+  <title>Your Verification Code</title>
 </head>
-<body style="margin:0; padding:0; background-color:#06170E; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased;">
-  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#06170E; min-height:100vh;">
+<body style="margin: 0; padding: 0; background-color: #FBF9F4; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif; color: #13231B;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FBF9F4; padding: 40px 10px;">
     <tr>
-      <td align="center" style="padding:48px 16px;">
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px; background:linear-gradient(180deg, #092013 0%, #05140b 100%); border:1px solid rgba(212, 175, 55, 0.35); border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,0.6); overflow:hidden;">
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px; background-color: #06170E; border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 24px; overflow: hidden; box-shadow: 0 15px 40px rgba(6, 23, 14, 0.15);">
+          <!-- Header Branding -->
           <tr>
-            <td height="4" style="background:linear-gradient(90deg, #D4AF37 0%, #F5B83D 50%, #D4AF37 100%);"></td>
-          </tr>
-          <tr>
-            <td align="center" style="padding:36px 32px 24px 32px; border-bottom:1px solid rgba(255,255,255,0.06);">
-              <div style="display:inline-block; padding:7px 18px; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); border-radius:30px; margin-bottom:14px;">
-                <span style="font-size:10px; font-weight:800; letter-spacing:2.5px; color:#D4AF37; text-transform:uppercase;">OFFICIAL VERIFICATION</span>
-              </div>
-              <h1 style="margin:0; font-size:24px; font-weight:800; letter-spacing:4px; color:#FFFFFF; text-transform:uppercase; font-family:'Georgia', serif;">A_S FOODY</h1>
-              <p style="margin:4px 0 0 0; font-size:10px; letter-spacing:2.5px; color:#F5B83D; text-transform:uppercase;">Gourmet Cold-Chain Delivery</p>
+            <td align="center" style="padding: 40px 40px 20px 40px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+              <span style="font-family: Georgia, serif; font-size: 26px; font-weight: 800; color: #FAF7F0; letter-spacing: 2px;">A_S <span style="color: #22C55E;">FOODY</span></span>
+              <p style="margin: 5px 0 0 0; font-size: 10px; color: #F5B83D; letter-spacing: 3px; text-transform: uppercase;">Gourmet Cold-Chain Delivery</p>
             </td>
           </tr>
+          <!-- Content Body -->
           <tr>
-            <td align="center" style="padding:36px 36px 32px 36px;">
-              <h2 style="margin:0 0 12px 0; font-size:21px; font-weight:700; color:#FFFFFF; font-family:'Georgia', serif;">Verify Your Email Address</h2>
-              <p style="margin:0 0 32px 0; font-size:13.5px; line-height:1.65; color:#9FB3C8; max-width:400px;">
-                Welcome to A_S FOODY. Please enter this one-time 6-digit passcode on your screen to complete registration:
+            <td style="padding: 40px;">
+              <h2 style="margin: 0 0 16px 0; font-family: Georgia, serif; font-size: 22px; font-weight: 700; color: #FFFFFF; text-align: center;">Verify Your Account</h2>
+              <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #D1D5DB; text-align: center;">
+                Welcome to A_S FOODY. Please enter the following 6-digit one-time passcode to complete verification:
               </p>
-              <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto 32px auto;">
+              <!-- Passcode Display -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                  <td align="center" style="background:radial-gradient(ellipse at center, rgba(212,175,55,0.18) 0%, rgba(6,23,14,0.8) 100%); border:1.5px solid #D4AF37; border-radius:18px; padding:22px 36px; box-shadow:0 8px 30px rgba(212,175,55,0.15);">
-                    <div style="font-size:10px; font-weight:800; letter-spacing:2px; color:#F5B83D; text-transform:uppercase; margin-bottom:6px;">ONE-TIME PASSCODE</div>
-                    <div style="font-size:38px; font-weight:800; letter-spacing:10px; color:#D4AF37; font-family:'Courier New', monospace; text-shadow:0 2px 10px rgba(212,175,55,0.4); padding-left:10px;">${otp}</div>
+                  <td align="center">
+                    <div style="display: inline-block; padding: 15px 36px; background-color: rgba(34, 197, 94, 0.1); border: 2px solid #22C55E; color: #22C55E; font-size: 32px; font-weight: 800; border-radius: 12px; letter-spacing: 6px; font-family: monospace;">
+                      ${otp}
+                    </div>
                   </td>
                 </tr>
               </table>
-              <p style="margin:0; font-size:11.5px; line-height:1.5; color:#627D98;">
-                ⏱️ Valid for <strong>15 minutes</strong>. For your security, never share this code with anyone.
+              <p style="margin: 24px 0 0 0; font-size: 12px; color: #9CA3AF; text-align: center;">
+                ⏱️ Code is valid for 15 minutes. Never share this code with anyone.
               </p>
             </td>
           </tr>
+          <!-- Footer -->
           <tr>
-            <td align="center" style="padding:24px 32px; background:#04100a; border-top:1px solid rgba(255,255,255,0.05); font-size:11px; color:#486581;">
-              <p style="margin:0 0 6px 0;">© 2026 A_S FOODY Private Limited. All rights reserved.</p>
-              <p style="margin:0; font-size:10px; color:#334E68;">Protected by End-to-End 256-Bit TLS Encryption.</p>
+            <td align="center" style="padding: 20px 40px 40px 40px; background-color: #04100a; border-top: 1px solid rgba(255, 255, 255, 0.03);">
+              <p style="margin: 0 0 8px 0; font-size: 11px; color: #9CA3AF;">Need assistance? Contact our concierge service.</p>
+              <p style="margin: 0; font-size: 11px; color: #F5B83D; font-weight: 600;">+91 63862 56770 &bull; ashutoshgifthamper9334@gmail.com</p>
             </td>
           </tr>
         </table>
