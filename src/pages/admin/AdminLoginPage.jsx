@@ -122,15 +122,22 @@ export const AdminLoginPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center cursor-pointer mt-2 disabled:opacity-50"
           >
             <span>{isSubmitting ? 'Signing In...' : 'Sign In'}</span>
-            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
+        {/* Switch to Admin Signup */}
+        <div className="text-center text-xs text-gray-400">
+          <span>New administrator? </span>
+          <Link to="/admin/signup" className="text-emerald-400 font-semibold hover:underline">
+            Create Admin Account
+          </Link>
+        </div>
+
         {/* Return to Storefront at bottom */}
-        <div className="pt-4 border-t border-navy-800 text-center">
+        <div className="pt-3 border-t border-navy-800 text-center">
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"

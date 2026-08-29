@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowRight, Sparkles, CheckCircle2, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowLeft, CheckCircle2, Eye, EyeOff, KeyRound } from 'lucide-react';
 
 export const AdminSignupPage = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export const AdminSignupPage = () => {
     }
   }, [isAdminAuthenticated, navigate]);
 
-  // Password Security Strength Calculation
+  // Real-time password strength validation
   const checkPasswordStrength = (pwd) => {
     if (!pwd) return { score: 0, label: '', color: 'bg-gray-700', isStrong: false };
     let score = 0;
@@ -58,8 +58,8 @@ export const AdminSignupPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match.');
+    if (!name.trim()) {
+      setErrorMessage('Please enter your full administrator name.');
       return;
     }
 
@@ -68,15 +68,20 @@ export const AdminSignupPage = () => {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
+
     setIsSubmitting(true);
-    const result = await signup(name, email, password, confirmPassword);
+    const result = await signup(name.trim(), email.trim(), password);
     setIsSubmitting(false);
 
     if (result.success) {
-      setRegisteredEmail(result.email || email.trim().toLowerCase());
+      setRegisteredEmail(email.trim());
       setStep('otp');
     } else {
-      setErrorMessage(result.message || 'Failed to create administrator account.');
+      setErrorMessage(result.message || 'Registration failed. Administrator may already exist.');
     }
   };
 
@@ -103,7 +108,7 @@ export const AdminSignupPage = () => {
     }
   };
 
-  // If the backend database reports an administrator already exists:
+  // If backend reports an administrator already exists:
   if (adminExists === true && step === 'form') {
     return (
       <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
@@ -127,17 +132,16 @@ export const AdminSignupPage = () => {
           <div className="pt-4 space-y-3">
             <Link
               to="/admin/login"
-              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 flex items-center justify-center transition-all cursor-pointer"
             >
               <span>Go to Admin Login</span>
-              <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
               to="/"
               className="block text-xs text-gray-400 hover:text-emerald-400 transition-colors pt-2"
             >
-              Return to Storefront
+              Return to Customer Storefront
             </Link>
           </div>
 
@@ -195,10 +199,9 @@ export const AdminSignupPage = () => {
             <button
               type="submit"
               disabled={isSubmitting || otp.length !== 6}
-              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center cursor-pointer disabled:opacity-50"
             >
-              <span>{isSubmitting ? 'Verifying...' : 'Continue'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{isSubmitting ? 'Verifying...' : 'Verify & Activate'}</span>
             </button>
           </form>
 
@@ -206,7 +209,7 @@ export const AdminSignupPage = () => {
             <button
               type="button"
               onClick={() => setStep('form')}
-              className="text-xs text-gray-400 hover:text-white transition-colors"
+              className="text-xs text-gray-400 hover:text-white transition-colors cursor-pointer"
             >
               ← Back to Registration
             </button>
@@ -235,16 +238,15 @@ export const AdminSignupPage = () => {
               Verification Successful!
             </h1>
             <p className="text-xs text-gray-300 leading-relaxed">
-              Redirecting you to the Administrator Login page...
+              Redirecting you to the Administrator Control Panel...
             </p>
           </div>
 
           <Link
-            to="/admin/login"
-            className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
+            to="/admin/dashboard"
+            className="inline-flex items-center justify-center py-3 px-6 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
           >
-            <span>Proceed to Login</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Proceed to Dashboard</span>
           </Link>
         </div>
       </div>
@@ -254,21 +256,6 @@ export const AdminSignupPage = () => {
   // Step 1: Administrator Registration Form
   return (
     <div className="min-h-screen bg-navy-950 text-white flex flex-col justify-center items-center p-4 selection:bg-emerald-500/30">
-      {/* Top Quick Bar */}
-      <div className="w-full max-w-lg mb-3 flex items-center justify-between px-2">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"
-        >
-          <ArrowRight className="w-4 h-4 rotate-180" />
-          <span>Return to Storefront</span>
-        </Link>
-        <span className="text-[11px] text-emerald-400/80 font-mono flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live Store
-        </span>
-      </div>
-
       <div className="w-full max-w-lg bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         {/* Header */}
@@ -334,7 +321,7 @@ export const AdminSignupPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                Master Password (min 8 chars)
+                Master Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
@@ -350,7 +337,6 @@ export const AdminSignupPage = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
-                  title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -375,7 +361,6 @@ export const AdminSignupPage = () => {
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -409,14 +394,13 @@ export const AdminSignupPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center cursor-pointer mt-2 disabled:opacity-50"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>{isSubmitting ? 'Sending 6-Digit OTP...' : 'Send Verification OTP'}</span>
+            <span>{isSubmitting ? 'Sending OTP...' : 'Send Verification OTP'}</span>
           </button>
         </form>
 
-        <div className="pt-2 text-center border-t border-navy-800">
+        <div className="pt-2 text-center">
           <Link
             to="/admin/login"
             className="text-xs text-emerald-400 hover:underline font-semibold"
@@ -425,6 +409,17 @@ export const AdminSignupPage = () => {
           </Link>
         </div>
 
+        <div className="pt-3 border-t border-navy-800 text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-emerald-400 transition-colors font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Return to Customer Storefront</span>
+          </Link>
+        </div>
+
+        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
       </div>
     </div>
   );
