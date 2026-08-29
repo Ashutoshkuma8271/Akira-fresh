@@ -68,7 +68,7 @@ export const AdminDashboardPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [productForm, setProductForm] = useState({
     name: '',
-    brand: 'A_S Signature',
+    brand: 'Akira Fresh',
     category: 'accessories',
     categoryName: 'Accessories',
     price: '',
@@ -191,7 +191,7 @@ export const AdminDashboardPage = () => {
     setEditingProduct(null);
     setProductForm({
       name: '',
-      brand: 'A_S Signature',
+      brand: 'Akira Fresh',
       category: 'men',
       categoryName: 'Men Fashion',
       price: '',
@@ -1204,7 +1204,7 @@ export const AdminDashboardPage = () => {
                     required
                     value={productForm.brand}
                     onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-                    placeholder="e.g. A_S Signature"
+                    placeholder="e.g. Akira Fresh"
                     className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
                   />
                 </div>

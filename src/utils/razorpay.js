@@ -15,7 +15,7 @@ export const processRazorpayPayment = ({
       key: rzpKey,
       amount: Math.round(amount * 100), // amount in paisa
       currency: 'INR',
-      name: 'A_S Commerce',
+      name: 'Akira Fresh',
       description: `Payment for Order #${orderId}`,
       image: '/logo.png',
       handler: async function (response) {

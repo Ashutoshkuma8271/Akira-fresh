@@ -35,7 +35,11 @@ async function cleanAllDemoData() {
     console.log('✅ Local database.json cleaned!');
   }
 
-  // 2. Clean Supabase public.users and public.orders
+  // 2. Clean Supabase public.admins, public.users and public.orders
+  const { error: adminErr } = await supabase.from('admins').delete().neq('id', 'non_existent_id');
+  if (adminErr) console.error('Supabase admin clean error:', adminErr.message);
+  else console.log('✅ Supabase public.admins table purged!');
+
   const { error: userErr } = await supabase.from('users').delete().neq('id', 'non_existent_id');
   if (userErr) console.error('Supabase user clean error:', userErr.message);
   else console.log('✅ Supabase public.users table purged of all test records!');

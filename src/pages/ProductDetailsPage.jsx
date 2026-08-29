@@ -113,7 +113,7 @@ export const ProductDetailsPage = () => {
   };
 
   const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(`Check out ${product.name} on A_S Commerce: ${window.location.href}`);
+    const text = encodeURIComponent(`Check out ${product.name} on Akira Fresh: ${window.location.href}`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 

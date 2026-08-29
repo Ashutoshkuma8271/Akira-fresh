@@ -58,7 +58,7 @@ export const AdminLoginPage = () => {
             Authorized Personnel Only
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-            A_S Admin Portal
+            Akira Fresh Admin Portal
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
             Enter your credentials to access the secure administrative control center.
@@ -86,7 +86,7 @@ export const AdminLoginPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@ascommerce.luxury"
+                placeholder="admin@akirafresh.in"
                 className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
               />
             </div>
