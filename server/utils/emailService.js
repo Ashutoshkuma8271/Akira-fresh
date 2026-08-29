@@ -123,20 +123,7 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
     }
   }
 
-  // 3. Fallback: Trigger Supabase Auth OTP Email if integrated
-  try {
-    const { error } = await supabase.auth.signInWithOtp({
-      email: cleanEmail,
-      options: { shouldCreateUser: false }
-    });
-    if (!error) {
-      console.log(`✉️ [Supabase Auth] Verification trigger dispatched to ${cleanEmail}`);
-    }
-  } catch (e) {
-    // Supabase trigger note
-  }
-
-  // 4. Local Server Console Log for instantaneous developer testing
+  // 3. Local Server Console Log for instantaneous developer testing
   console.log(`\n======================================================`);
   console.log(`✉️  [EMAIL SERVICE] SIGNUP VERIFICATION OTP`);
   console.log(`To: ${cleanEmail} (${name || 'Customer'})`);
