@@ -56,16 +56,25 @@ export const AdminForgotPasswordPage = () => {
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white">Reset Link Dispatched</h3>
+              <h3 className="font-bold text-sm text-white">Reset Link & 6-Digit OTP Dispatched</h3>
               <p className="text-xs text-gray-300 mt-1.5 leading-relaxed">
-                A secure password reset link has been sent to <strong className="text-gold-400 font-mono">{email}</strong>. Please check your inbox and click the link to set your new password.
+                We sent a 1-click magic reset link AND a 6-digit passcode to <strong className="text-gold-400 font-mono">{email}</strong>. Check your inbox to set your new administrator password.
               </p>
             </div>
+
+            <Link
+              to="/admin/reset-password"
+              className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2"
+            >
+              <span>Enter 6-Digit OTP / Token</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
             <div className="pt-2">
               <button
                 type="button"
                 onClick={() => setSuccessInfo(null)}
-                className="text-xs text-gold-400 hover:underline cursor-pointer"
+                className="text-xs text-gray-400 hover:text-gold-400 underline cursor-pointer"
               >
                 Did not receive the email? Try again
               </button>
@@ -84,7 +93,7 @@ export const AdminForgotPasswordPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ashutoshgifthamper9334@gmail.com"
+                  placeholder="admin@akirafresh.com"
                   className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
                 />
               </div>
@@ -95,7 +104,7 @@ export const AdminForgotPasswordPage = () => {
               disabled={isSubmitting}
               className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <span>{isSubmitting ? 'Sending Reset Link...' : 'Send Password Reset Link'}</span>
+              <span>{isSubmitting ? 'Sending Security Email...' : 'Send Magic Link & OTP'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

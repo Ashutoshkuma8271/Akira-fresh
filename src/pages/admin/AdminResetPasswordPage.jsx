@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { Lock, Key, ShieldCheck, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Lock, Key, ShieldCheck, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff, KeyRound, Mail } from 'lucide-react';
 import { Logo } from '../../components/common/Logo';
 
 export const AdminResetPasswordPage = () => {
@@ -9,9 +9,12 @@ export const AdminResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const tokenFromUrl = searchParams.get('token') || '';
 
-  const { resetPasswordWithToken } = useAdminAuth();
+  const { resetPassword, resetPasswordWithOtp } = useAdminAuth();
 
+  const [activeTab, setActiveTab] = useState(tokenFromUrl ? 'token' : 'otp');
   const [token, setToken] = useState(tokenFromUrl);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -49,6 +52,22 @@ export const AdminResetPasswordPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
+    if (activeTab === 'token' && !token) {
+      setErrorMessage('Missing recovery token. Switch to the 6-Digit OTP tab or request a new reset link.');
+      return;
+    }
+
+    if (activeTab === 'otp') {
+      if (!email || !email.includes('@')) {
+        setErrorMessage('Please enter the registered administrator email address.');
+        return;
+      }
+      if (!otp || otp.length < 6) {
+        setErrorMessage('Please enter the 6-digit OTP code sent to your email.');
+        return;
+      }
+    }
+
     if (!strength.isStrong) {
       setErrorMessage('New password must be at least 8 characters long and include uppercase, lowercase, number, and special character.');
       return;
@@ -60,13 +79,18 @@ export const AdminResetPasswordPage = () => {
     }
 
     setIsSubmitting(true);
-    const result = await resetPasswordWithToken(token.trim(), newPassword);
+    let result = null;
+    if (activeTab === 'token') {
+      result = await resetPassword(token.trim(), newPassword);
+    } else {
+      result = await resetPasswordWithOtp(email.trim(), otp.trim(), newPassword);
+    }
     setIsSubmitting(false);
 
-    if (result.success) {
+    if (result && result.success) {
       setIsSuccess(true);
     } else {
-      setErrorMessage(result.message || 'Invalid or expired recovery token.');
+      setErrorMessage(result?.message || 'Invalid or expired recovery code/token.');
     }
   };
 
@@ -83,7 +107,7 @@ export const AdminResetPasswordPage = () => {
             Reset Master Password
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
-            Enter the recovery token and specify your new master administrator password.
+            Verify via recovery token or 6-digit email OTP to specify your new administrator password.
           </p>
         </div>
 
@@ -115,28 +139,92 @@ export const AdminResetPasswordPage = () => {
               </div>
             )}
 
+            {/* Mode Switcher Tabs */}
+            <div className="flex bg-navy-850 p-1 rounded-2xl border border-navy-700">
+              <button
+                type="button"
+                onClick={() => setActiveTab('token')}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+                  activeTab === 'token'
+                    ? 'bg-navy-950 text-gold-400 border border-gold-500/40 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                1-Click Magic Token
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('otp')}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+                  activeTab === 'otp'
+                    ? 'bg-navy-950 text-gold-400 border border-gold-500/40 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                6-Digit Admin OTP
+              </button>
+            </div>
+
             {/* Reset Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {tokenFromUrl ? (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span className="font-semibold">Recovery Link Authenticated</span>
-                </div>
+              {activeTab === 'token' ? (
+                tokenFromUrl ? (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span className="font-semibold">Recovery Link Authenticated</span>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      Recovery Token
+                    </label>
+                    <div className="relative">
+                      <Key className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <input
+                        type="text"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value)}
+                        placeholder="Paste 32-byte recovery token"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs font-mono rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+                )
               ) : (
-                <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                    Recovery Token
-                  </label>
-                  <div className="relative">
-                    <Key className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
-                    <input
-                      type="text"
-                      required
-                      value={token}
-                      onChange={(e) => setToken(e.target.value)}
-                      placeholder="Paste 32-byte recovery token"
-                      className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs font-mono rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
-                    />
+                <div className="space-y-3.5">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      Administrator Email *
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="admin@akirafresh.com"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      6-Digit Admin Reset OTP *
+                    </label>
+                    <div className="relative">
+                      <KeyRound className="w-4 h-4 text-gold-400 absolute left-3.5 top-3.5" />
+                      <input
+                        type="text"
+                        required
+                        maxLength={6}
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                        placeholder="••••••"
+                        className="w-full pl-10 pr-4 py-3 bg-navy-850 text-gold-400 font-mono tracking-widest text-lg font-bold text-center rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -236,3 +324,4 @@ export const AdminResetPasswordPage = () => {
     </div>
   );
 };
+

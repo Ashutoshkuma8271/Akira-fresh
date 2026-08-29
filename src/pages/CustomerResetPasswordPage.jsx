@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
+import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowLeft, ShieldCheck, Sparkles, KeyRound, Mail } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import confetti from 'canvas-confetti';
@@ -9,12 +9,15 @@ export const CustomerResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { resetPasswordWithToken, setIsAuthModalOpen, setAuthMode } = useAuth();
+  const { resetPasswordWithToken, resetPasswordWithOtp, setIsAuthModalOpen, setAuthMode } = useAuth();
 
-  const token = searchParams.get('token') || '';
+  const tokenParam = searchParams.get('token') || '';
   const emailParam = searchParams.get('email') || '';
 
+  const [activeTab, setActiveTab] = useState(tokenParam ? 'token' : 'otp'); // 'token' | 'otp'
+  const [token, setToken] = useState(tokenParam);
   const [email, setEmail] = useState(emailParam);
+  const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -50,9 +53,20 @@ export const CustomerResetPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      addToast('Missing or invalid password reset token. Please request a new link.', 'error');
+    if (activeTab === 'token' && !token) {
+      addToast('Missing or invalid recovery token. Please switch to 6-Digit OTP tab or request a new link.', 'error');
       return;
+    }
+
+    if (activeTab === 'otp') {
+      if (!email || !email.includes('@')) {
+        addToast('Please provide your valid account email address.', 'error');
+        return;
+      }
+      if (!otp || otp.length < 6) {
+        addToast('Please enter the 6-digit OTP sent to your email.', 'error');
+        return;
+      }
     }
 
     if (!strength.isStrong) {
@@ -66,7 +80,12 @@ export const CustomerResetPasswordPage = () => {
     }
 
     setSubmitting(true);
-    const res = await resetPasswordWithToken(token, email, newPassword);
+    let res = null;
+    if (activeTab === 'token') {
+      res = await resetPasswordWithToken(token.trim(), email.trim(), newPassword);
+    } else {
+      res = await resetPasswordWithOtp(email.trim(), otp.trim(), newPassword);
+    }
     setSubmitting(false);
 
     if (res && res.success) {
@@ -103,7 +122,7 @@ export const CustomerResetPasswordPage = () => {
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
             {isSuccess
               ? 'Your account password has been updated securely with 10-round Bcrypt encryption.'
-              : 'Choose a strong, unique password for your A_S FOODY customer account.'}
+              : 'Choose a strong, unique password for your Akira Fresh customer account.'}
           </p>
         </div>
 
@@ -122,24 +141,89 @@ export const CustomerResetPasswordPage = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!token && (
-              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-500 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>Invalid or missing reset token. Please request a new link from the sign-in modal.</span>
-              </div>
-            )}
+            
+            {/* Mode Switcher Tabs */}
+            <div className="flex bg-gray-100 dark:bg-navy-800 p-1 rounded-2xl border border-gray-200 dark:border-navy-700">
+              <button
+                type="button"
+                onClick={() => setActiveTab('token')}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+                  activeTab === 'token'
+                    ? 'bg-white dark:bg-navy-900 text-gold-500 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                1-Click Magic Link
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('otp')}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+                  activeTab === 'otp'
+                    ? 'bg-white dark:bg-navy-900 text-gold-500 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                6-Digit OTP Code
+              </button>
+            </div>
 
-            {email && (
-              <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
-                  Account Email
-                </label>
-                <input
-                  type="email"
-                  disabled
-                  value={email}
-                  className="w-full px-4 py-2.5 bg-gray-100 dark:bg-navy-800 text-gray-500 dark:text-gray-400 text-xs rounded-xl border border-gray-200 dark:border-navy-700 cursor-not-allowed font-mono"
-                />
+            {activeTab === 'token' ? (
+              token ? (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span className="font-semibold">Magic Recovery Link Authenticated</span>
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                    Recovery Token
+                  </label>
+                  <input
+                    type="text"
+                    value={token}
+                    onChange={(e) => setToken(e.target.value)}
+                    placeholder="Paste 32-byte recovery token"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs font-mono rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                  />
+                </div>
+              )
+            ) : (
+              <div className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+                    Account Email *
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-gold-500 absolute left-3 top-3" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your.email@example.com"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+                    6-Digit Reset OTP *
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 text-gold-500 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      required
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                      placeholder="••••••"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-navy-850 text-navy-950 dark:text-white text-xs tracking-widest font-mono font-bold rounded-xl border border-gray-200 dark:border-navy-700 focus:outline-none focus:border-gold-500"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -216,7 +300,7 @@ export const CustomerResetPasswordPage = () => {
 
             <button
               type="submit"
-              disabled={submitting || !token}
+              disabled={submitting}
               className="w-full py-3.5 bg-gold-gradient text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
             >
               {submitting ? 'Updating Password...' : 'Save New Password & Sign In'}

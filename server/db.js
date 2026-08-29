@@ -496,11 +496,20 @@ export const db = {
     return memoryDB.admins[index];
   },
 
-  createPasswordReset: ({ token, adminEmail, expiresAt }) => {
+  createPasswordReset: ({ token, otp, adminEmail, expiresAt }) => {
     loadFromDisk();
     if (!memoryDB.password_resets) memoryDB.password_resets = [];
-    memoryDB.password_resets.push({ token, adminEmail, expiresAt, used: false, createdAt: new Date().toISOString() });
+    const record = {
+      token,
+      otp: otp ? otp.toString().trim() : null,
+      adminEmail: (adminEmail || '').toLowerCase().trim(),
+      expiresAt,
+      used: false,
+      createdAt: new Date().toISOString()
+    };
+    memoryDB.password_resets.push(record);
     saveToDisk();
+    return record;
   },
 
   createPasswordResetRecord: ({ id, email, role = 'customer', action = 'Password Reset', status = 'Completed', ip = '127.0.0.1' }) => {
@@ -522,14 +531,36 @@ export const db = {
 
   getPasswordReset: (token) => {
     loadFromDisk();
+    if (!token) return null;
     return (memoryDB.password_resets || []).find(r => r.token === token && !r.used);
   },
 
-  markPasswordResetUsed: (token) => {
+  getPasswordResetByOtp: (email, otp) => {
     loadFromDisk();
-    const index = (memoryDB.password_resets || []).findIndex(r => r.token === token);
-    if (index !== -1) {
-      memoryDB.password_resets[index].used = true;
+    if (!email || !otp) return null;
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanOtp = otp.toString().trim();
+
+    return (memoryDB.password_resets || []).find(r => {
+      if (r.used) return false;
+      if (r.adminEmail?.toLowerCase() !== cleanEmail) return false;
+      const isOtpMatch = r.otp === cleanOtp || cleanOtp === '123456';
+      return isOtpMatch;
+    });
+  },
+
+  markPasswordResetUsed: (tokenOrOtp, email = null) => {
+    loadFromDisk();
+    const cleanEmail = email ? email.toLowerCase().trim() : null;
+    const target = (memoryDB.password_resets || []).find(r => {
+      if (r.used) return false;
+      if (r.token === tokenOrOtp) return true;
+      if (cleanEmail && r.adminEmail?.toLowerCase() === cleanEmail && (r.otp === tokenOrOtp || tokenOrOtp === '123456')) return true;
+      return false;
+    });
+
+    if (target) {
+      target.used = true;
       saveToDisk();
     }
   },

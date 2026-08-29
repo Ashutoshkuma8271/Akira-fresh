@@ -195,27 +195,34 @@ export const AdminAuthProvider = ({ children }) => {
     };
   };
 
-  // 7. Reset Password
-  const resetPassword = async (resetToken, newPassword) => {
+  // 7. Reset Password (supports Token or OTP)
+  const resetPassword = async (resetToken, newPassword, email = null, otp = null) => {
     try {
+      const payload = resetToken
+        ? { token: resetToken, newPassword }
+        : { email: email ? email.trim() : undefined, otp: otp ? otp.trim() : undefined, newPassword };
+
       const res = await fetch('/api/admin/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: resetToken, newPassword })
+        body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          addToast('Password reset successful. Please log in.', 'success');
-        } else {
-          addToast(data.message || 'Password reset failed.', 'error');
-        }
-        return data;
+      const data = await res.json();
+      if (res.ok && data.success) {
+        addToast('Admin password reset successful. Please log in.', 'success');
+        return { success: true, message: data.message };
+      } else {
+        addToast(data.message || 'Password reset failed.', 'error');
+        return { success: false, message: data.message };
       }
-    } catch (err) {}
+    } catch (err) {
+      addToast('Connection error during password reset.', 'error');
+      return { success: false, message: 'Connection error' };
+    }
+  };
 
-    addToast('Password has been successfully updated!', 'success');
-    return { success: true };
+  const resetPasswordWithOtp = async (email, otp, newPassword) => {
+    return resetPassword(null, newPassword, email, otp);
   };
 
   // 8. Change Password (Authenticated)
@@ -260,6 +267,7 @@ export const AdminAuthProvider = ({ children }) => {
         forgotPassword,
         resetPassword,
         resetPasswordWithToken: resetPassword,
+        resetPasswordWithOtp,
         changePassword,
       }}
     >

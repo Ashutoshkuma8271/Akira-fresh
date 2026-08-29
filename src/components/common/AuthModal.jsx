@@ -31,6 +31,7 @@ export const AuthModal = () => {
     verifySignupOtp,
     resendSignupOtp,
     requestPasswordReset,
+    resetPasswordWithOtp,
   } = useAuth();
   const { addToast } = useToast();
 
@@ -51,6 +52,12 @@ export const AuthModal = () => {
   const [resetEmail, setResetEmail] = useState('');
   const [resetLinkSent, setResetLinkSent] = useState(false);
   const [resetToken, setResetToken] = useState('');
+  const [resetOtp, setResetOtp] = useState('');
+  const [resetNewPassword, setResetNewPassword] = useState('');
+  const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
+  const [resetModeStep, setResetModeStep] = useState('request'); // 'request' | 'enterOtp' | 'success'
 
   useEffect(() => {
     let timer;
@@ -86,6 +93,7 @@ export const AuthModal = () => {
   };
 
   const registerStrength = checkPasswordStrength(password);
+  const resetStrength = checkPasswordStrength(resetNewPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -162,6 +170,40 @@ export const AuthModal = () => {
       if (res.resetToken) {
         setResetToken(res.resetToken);
       }
+      setResetModeStep('enterOtp');
+    }
+  };
+
+  const handleResetWithOtpSubmit = async (e) => {
+    e.preventDefault();
+    if (!resetOtp || resetOtp.length < 6) {
+      addToast('Please enter the 6-digit OTP code received in your email', 'error');
+      return;
+    }
+
+    if (!resetStrength.isStrong) {
+      addToast('Password must be at least 8 chars with uppercase, lowercase, numbers, and symbols.', 'error');
+      return;
+    }
+
+    if (resetNewPassword !== resetConfirmPassword) {
+      addToast('New passwords do not match. Please verify.', 'error');
+      return;
+    }
+
+    setSubmitting(true);
+    const res = await resetPasswordWithOtp(resetEmail.trim(), resetOtp.trim(), resetNewPassword);
+    setSubmitting(false);
+
+    if (res && res.success) {
+      setResetModeStep('success');
+      setEmail(resetEmail.trim());
+      setPassword('');
+      setTimeout(() => {
+        setAuthMode('login');
+        setResetModeStep('request');
+        setResetLinkSent(false);
+      }, 1800);
     }
   };
 
@@ -269,36 +311,138 @@ export const AuthModal = () => {
             </div>
           </div>
         ) : authMode === 'forgot' ? (
-          /* FORGOT PASSWORD VIA EMAIL LINK */
+          /* DUAL-MODE FORGOT PASSWORD (MAGIC LINK OR 6-DIGIT OTP) */
           <div className="p-6 pt-2">
-            {resetLinkSent ? (
-              <div className="space-y-4 animate-fadeIn">
-                <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/30 text-xs text-emerald-300 flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="space-y-1">
-                    <p className="font-bold text-sm text-white">Reset Link Sent!</p>
-                    <p className="text-gray-300 leading-relaxed">
-                      A password recovery link has been sent to <strong>{resetEmail}</strong>. Please check your email to create a new password.
-                    </p>
+            {resetModeStep === 'success' ? (
+              <div className="space-y-4 text-center animate-fadeIn py-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-white text-base">Password Reset Successfully!</h4>
+                  <p className="text-xs text-gray-300">
+                    Your password has been updated securely. Redirecting you to sign in...
+                  </p>
+                </div>
+              </div>
+            ) : resetModeStep === 'enterOtp' ? (
+              <form onSubmit={handleResetWithOtpSubmit} className="space-y-3.5 animate-fadeIn">
+                <div className="p-3 bg-gold-500/10 rounded-2xl border border-gold-500/30 text-xs text-gold-300">
+                  <p className="font-semibold text-center">Reset Email Sent to {resetEmail}</p>
+                  <p className="text-[11px] text-gray-300 mt-1 text-center leading-relaxed">
+                    Click the <strong>1-Click link</strong> in your email OR enter the <strong>6-digit OTP</strong> below to set your new password:
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Reset OTP Code *</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={resetOtp}
+                    onChange={(e) => setResetOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                    placeholder="••••••"
+                    className="w-full text-center tracking-[8px] font-mono text-xl py-2.5 bg-navy-850 text-gold-400 font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">New Strong Password *</label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                    <input
+                      type={showResetPassword ? 'text' : 'password'}
+                      required
+                      value={resetNewPassword}
+                      onChange={(e) => setResetNewPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(!showResetPassword)}
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                    >
+                      {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  {resetNewPassword && (
+                    <div className="mt-2 space-y-1.5 animate-fadeIn">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-gray-400">Security Strength:</span>
+                        <span className={`font-semibold ${resetStrength.color.split(' ')[1]}`}>{resetStrength.label}</span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1 h-1.5">
+                        {[1, 2, 3, 4].map((s) => (
+                          <div
+                            key={s}
+                            className={`h-full rounded-full transition-all duration-300 ${
+                              s <= resetStrength.score ? resetStrength.color.split(' ')[0] : 'bg-navy-700'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Confirm New Password *</label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
+                    <input
+                      type={showResetConfirmPassword ? 'text' : 'password'}
+                      required
+                      value={resetConfirmPassword}
+                      onChange={(e) => setResetConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-10 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gold-400 transition-colors cursor-pointer p-0.5"
+                    >
+                      {showResetConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
 
-                <div className="pt-2 text-center">
+                <button
+                  type="submit"
+                  disabled={submitting || resetOtp.length < 6}
+                  className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
+                >
+                  {submitting ? 'Updating Password...' : 'Save & Update Password'}
+                </button>
+
+                <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-navy-800">
                   <button
-                    onClick={() => {
-                      setResetLinkSent(false);
-                      setAuthMode('login');
-                    }}
-                    className="w-full py-3 bg-navy-800 text-white hover:text-gold-400 font-bold text-xs rounded-xl border border-navy-700 cursor-pointer"
+                    type="button"
+                    onClick={handleForgotSubmit}
+                    disabled={submitting}
+                    className="hover:text-gold-400 underline cursor-pointer"
                   >
-                    Back to Sign In
+                    Resend Code
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setResetModeStep('request');
+                      setResetLinkSent(false);
+                    }}
+                    className="hover:text-gold-400 cursor-pointer"
+                  >
+                    Change Email
                   </button>
                 </div>
-              </div>
+              </form>
             ) : (
               <form onSubmit={handleForgotSubmit} className="space-y-3.5 animate-fadeIn">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Registered Account Email</label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-gold-400 absolute left-3 top-3" />
                     <input
@@ -312,7 +456,7 @@ export const AuthModal = () => {
                     />
                   </div>
                   <p className="text-[11px] text-gray-400 mt-1.5 leading-relaxed">
-                    Enter your registered email and we'll send you a password reset link.
+                    We'll email you a <strong>1-Click Magic Reset Link</strong> and a <strong>6-Digit Passcode</strong>.
                   </p>
                 </div>
 
@@ -321,17 +465,30 @@ export const AuthModal = () => {
                   disabled={submitting}
                   className="w-full py-3 bg-gold-gradient text-navy-950 font-bold text-xs rounded-xl shadow-gold-sm hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
                 >
-                  {submitting ? 'Sending Link...' : 'Send Reset Link'}
+                  {submitting ? 'Sending Security Email...' : 'Send Magic Link & OTP'}
                 </button>
 
-                <div className="mt-4 text-center">
+                <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-navy-800">
                   <button
                     type="button"
                     onClick={() => setAuthMode('login')}
-                    className="text-xs text-gray-400 hover:text-gold-400 flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
+                    className="hover:text-gold-400 flex items-center gap-1 cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Back to Sign In</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!resetEmail) {
+                        addToast('Please enter your email above first', 'info');
+                        return;
+                      }
+                      setResetModeStep('enterOtp');
+                    }}
+                    className="hover:text-gold-400 underline cursor-pointer"
+                  >
+                    Already have OTP?
                   </button>
                 </div>
               </form>

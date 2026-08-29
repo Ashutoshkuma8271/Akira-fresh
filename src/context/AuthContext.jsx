@@ -262,8 +262,8 @@ export const AuthProvider = ({ children }) => {
         addToast(data.message || 'Password reset request failed', 'error');
         return { success: false, message: data.message };
       }
-      addToast('Reset link sent to your email', 'success');
-      return { success: true, message: data.message, resetToken: data.resetToken };
+      addToast('Reset link & OTP sent to your email', 'success');
+      return { success: true, message: data.message, resetToken: data.resetToken, otp: data.otp };
     } catch (err) {
       addToast('Failed to connect to authentication service', 'error');
       return { success: false };
@@ -272,8 +272,8 @@ export const AuthProvider = ({ children }) => {
 
   const resetPasswordWithToken = async (token, email, newPassword) => {
     if (!newPassword) {
-      addToast('Please fill all required fields', 'error');
-      return { success: false, message: 'Please fill all required fields' };
+      addToast('Please enter your new password', 'error');
+      return { success: false, message: 'Please enter your new password' };
     }
     try {
       const res = await fetch('/api/auth/reset-password-with-token', {
@@ -286,7 +286,7 @@ export const AuthProvider = ({ children }) => {
         addToast(data.message || 'Password reset failed', 'error');
         return { success: false, message: data.message };
       }
-      addToast('Password updated successfully', 'success');
+      addToast('Password updated successfully! Please sign in.', 'success');
       return { success: true };
     } catch (err) {
       addToast('Failed to reset password', 'error');
@@ -294,12 +294,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const resetPasswordDirect = async (email, newPassword) => {
-    return resetPasswordWithToken(null, email, newPassword);
+  const resetPasswordWithOtp = async (email, otp, newPassword) => {
+    if (!email || !otp || !newPassword) {
+      addToast('Please provide email, 6-digit OTP, and new password', 'error');
+      return { success: false, message: 'Missing required fields' };
+    }
+    try {
+      const res = await fetch('/api/auth/reset-password-with-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), otp: otp.trim(), newPassword }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        addToast(data.message || 'OTP password reset failed', 'error');
+        return { success: false, message: data.message };
+      }
+      addToast('Password updated successfully! Please sign in.', 'success');
+      return { success: true };
+    } catch (err) {
+      addToast('Failed to reset password via OTP', 'error');
+      return { success: false, message: 'Connection error' };
+    }
   };
 
-  const resetPasswordWithOtp = async (email, otp, newPassword) => {
-    return resetPasswordDirect(email, newPassword);
+  const resetPasswordDirect = async (email, newPassword) => {
+    return resetPasswordWithToken(null, email, newPassword);
   };
 
   return (

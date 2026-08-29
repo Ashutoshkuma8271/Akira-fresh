@@ -349,7 +349,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
   }
 });
 
-// Customer Forgot Password (Dispatch Luxury Email Reset Link)
+// Customer Forgot Password (Dispatch Luxury Email Reset Link + 6-Digit OTP)
 app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
@@ -371,21 +371,23 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
       return res.status(404).json({ success: false, message: 'No customer account found with this registered email.' });
     }
 
-    // Generate cryptographic 32-byte recovery token
+    // Generate cryptographic 32-byte recovery token & 6-digit OTP
     const token = crypto.randomBytes(32).toString('hex');
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 15 * 60 * 1000; // 15 minutes
 
-    db.createPasswordReset({ token, adminEmail: cleanEmail, expiresAt });
+    db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
 
     const baseUrl = req.headers.origin || 'http://localhost:5173';
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
 
-    await sendPasswordResetEmail(cleanEmail, resetUrl, 'customer');
+    await sendPasswordResetEmail(cleanEmail, resetUrl, 'customer', otp);
 
     return res.json({
       success: true,
-      message: 'Reset link sent to your email',
+      message: 'Password reset instructions and 6-digit OTP sent to your email.',
       resetToken: token,
+      otp: otp,
       expiresInMinutes: 15
     });
   } catch (err) {
@@ -394,26 +396,39 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
   }
 });
 
-// Reset Password with Token (Strict Previous Password Reuse Prevention)
-app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password'], authLimiter, async (req, res) => {
+// Reset Password with Token or 6-Digit OTP (Strict Previous Password Reuse Prevention)
+app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-otp', '/api/auth/reset-password'], authLimiter, async (req, res) => {
   try {
-    const { token, email, newPassword } = req.body || {};
+    const { token, otp, email, newPassword } = req.body || {};
     if (!newPassword) {
       return res.status(400).json({ success: false, message: 'New password is required.' });
     }
 
     let user = null;
     let cleanEmail = email ? email.trim().toLowerCase() : '';
+    let validatedBy = 'Token';
 
     if (token) {
       const resetRecord = db.getPasswordReset(token);
       if (!resetRecord) {
-        return res.status(400).json({ success: false, message: 'Invalid or expired password reset link. Please request a new link.' });
+        return res.status(400).json({ success: false, message: 'Invalid or expired password recovery link. Please request a new link.' });
       }
       if (Date.now() > resetRecord.expiresAt) {
-        return res.status(400).json({ success: false, message: 'This password reset link has expired. Please request a fresh link.' });
+        return res.status(400).json({ success: false, message: 'This recovery link has expired. Please request a fresh link.' });
       }
       cleanEmail = cleanEmail || (resetRecord.adminEmail || '').trim().toLowerCase();
+      validatedBy = 'Magic Link Token';
+    } else if (otp && cleanEmail) {
+      const resetRecord = db.getPasswordResetByOtp(cleanEmail, otp);
+      if (!resetRecord) {
+        return res.status(400).json({ success: false, message: 'Invalid 6-digit password reset code.' });
+      }
+      if (Date.now() > resetRecord.expiresAt) {
+        return res.status(400).json({ success: false, message: 'This reset code has expired. Please request a new one.' });
+      }
+      validatedBy = '6-Digit OTP';
+    } else {
+      return res.status(400).json({ success: false, message: 'Either a recovery token or your registered email with 6-digit OTP is required.' });
     }
 
     if (!cleanEmail) {
@@ -453,16 +468,14 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password'], au
     const passwordHash = await bcrypt.hash(newPassword, 10);
     db.updateUser(user.id, { passwordHash });
 
-    if (token) {
-      db.markPasswordResetUsed(token);
-    }
+    db.markPasswordResetUsed(token || otp, cleanEmail);
 
     // Track Audit Log in database.json password_resets table
     db.createPasswordResetRecord({
       id: `rst-${Date.now()}`,
       email: cleanEmail,
       role: user.role || 'customer',
-      action: 'Password Reset via Email Link',
+      action: `Password Reset via ${validatedBy}`,
       status: 'Completed',
       ip: req.ip || '127.0.0.1'
     });

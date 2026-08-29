@@ -1,7 +1,16 @@
 {
   "admins": [],
   "users": [],
-  "password_resets": [],
+  "password_resets": [
+    {
+      "token": "dbd6b5876554663c6560e9aa7361accdb0bbd35f4304e6a5bdca8aec0c8f14de",
+      "otp": "617283",
+      "adminEmail": "customer.test@akirafresh.com",
+      "expiresAt": 1788037744299,
+      "used": true,
+      "createdAt": "2026-08-29T20:54:04.301Z"
+    }
+  ],
   "audit_logs": [
     {
       "id": "audit-1787992370833",
