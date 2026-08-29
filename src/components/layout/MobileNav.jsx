@@ -145,7 +145,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span>Home</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -154,7 +154,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/shop"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span>Shop All Products</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -163,7 +163,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/categories"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span>Shop by Category</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -172,7 +172,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/bestsellers"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-lime-500 dark:text-lime-400" />
@@ -184,7 +184,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/offers"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span className="flex items-center gap-2">
                 <Percent className="w-4 h-4 text-lime-500 dark:text-lime-400" />
@@ -196,7 +196,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/help"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span>About Akira Fresh</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -205,7 +205,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
             <Link
               to="/contact"
               onClick={onClose}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-forest-800 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-colors"
+              className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
               <span>Contact Us</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />

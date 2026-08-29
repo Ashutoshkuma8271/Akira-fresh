@@ -55,12 +55,12 @@ export const Logo = ({ size = 'normal', showTagline = true, variant = 'default',
       </div>
 
       {/* Brand Wordmark & Subtitle matching image */}
-      <div className="flex flex-col text-left justify-center">
-        <span className="font-serif text-[22px] sm:text-[25px] font-black tracking-[-0.02em] text-[#0D1F18] dark:text-white leading-[1.05] group-hover:text-[#1E5638] dark:group-hover:text-[#84CC16] transition-colors">
-          FreshNest
+      <div className="hidden min-[380px]:flex flex-col text-left justify-center">
+        <span className="font-serif text-[20px] sm:text-[23px] font-black tracking-[-0.02em] text-[#0D1F18] dark:text-white leading-[1.05] group-hover:text-[#1E5638] dark:group-hover:text-[#84CC16] transition-colors">
+          Akira Fresh
         </span>
         {showTagline && (
-          <span className="text-[8.5px] sm:text-[9.5px] font-bold tracking-[0.18em] text-[#4B5563] dark:text-gray-300 uppercase mt-0.5 font-sans leading-none">
+          <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.18em] text-[#4B5563] dark:text-gray-300 uppercase mt-0.5 font-sans leading-none">
             GOOD FOOD. BETTER LIVING.
           </span>
         )}

@@ -184,7 +184,7 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               </button>
 
               {/* User Account Popover */}
-              <div ref={accountRef} className="relative">
+              <div ref={accountRef} className="relative hidden md:block">
                 <button
                   onClick={() => setIsAccountOpen(!isAccountOpen)}
                   className="p-1 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center"
@@ -278,7 +278,7 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               {/* Wishlist Link */}
               <Link
                 to="/wishlist"
-                className="p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative"
+                className="p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative hidden md:block"
                 aria-label="Wishlist"
               >
                 <Heart className="w-5 h-5 stroke-[1.9]" />
