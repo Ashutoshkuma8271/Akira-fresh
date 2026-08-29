@@ -23,14 +23,14 @@ let memoryDB = {
   coupons: [],
   products: [],
   settings: {
-    announcementText: '✨ Complimentary White-Glove Shipping Across India on Orders Above ₹2,999',
-    freeShippingThreshold: 2999,
-    heroBadge: 'NEW SEASON COLLECTION 2026',
-    heroHeadline: 'Elevate Your Style. Define Your Comfort.',
-    heroSubheadline: 'Discover the latest trends in fashion, electronics, and lifestyle. Premium products, best prices at A_S Commerce.',
-    heroDiscount: '50% OFF',
+    announcementText: '✨ Complimentary Sub-Zero Delivery Across Delhi NCR on Orders Above ₹999',
+    freeShippingThreshold: 999,
+    heroBadge: 'GOURMET PARTY COLLECTION 2026',
+    heroHeadline: 'Gourmet Chicken & Mutton Snacks, Delivered Cold.',
+    heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
+    heroDiscount: '15% OFF',
     supportPhone: '+91 98765 43210',
-    supportEmail: 'concierge@ascommerce.luxury'
+    supportEmail: 'support@akirafresh.in'
   }
 };
 
@@ -188,6 +188,27 @@ export async function initDB() {
   if (!memoryDB.products || memoryDB.products.length === 0) {
     memoryDB.products = INITIAL_PRODUCTS;
     saveToDisk();
+  }
+
+  // Try to pull site settings from Supabase if table exists
+  try {
+    const { data: supaSettings } = await supabase.from('site_settings').select('*').eq('id', 'config').maybeSingle();
+    if (supaSettings) {
+      memoryDB.settings = {
+        announcementText: supaSettings.announcement_text || memoryDB.settings.announcementText,
+        freeShippingThreshold: Number(supaSettings.free_shipping_threshold) || memoryDB.settings.freeShippingThreshold,
+        heroBadge: supaSettings.hero_badge || memoryDB.settings.heroBadge,
+        heroHeadline: supaSettings.hero_headline || memoryDB.settings.heroHeadline,
+        heroSubheadline: supaSettings.hero_subheadline || memoryDB.settings.heroSubheadline,
+        heroDiscount: supaSettings.hero_discount || memoryDB.settings.heroDiscount,
+        supportPhone: supaSettings.support_phone || memoryDB.settings.supportPhone,
+        supportEmail: supaSettings.support_email || memoryDB.settings.supportEmail
+      };
+      saveToDisk();
+      console.log('⚡ Loaded Site Settings from Supabase Cloud');
+    }
+  } catch (e) {
+    // Supabase site settings sync fallback
   }
 
   if (!memoryDB.coupons || memoryDB.coupons.length === 0) {
@@ -762,6 +783,23 @@ export const db = {
     loadFromDisk();
     memoryDB.settings = { ...memoryDB.settings, ...newSettings };
     saveToDisk();
+
+    // Async write to Supabase
+    supabase.from('site_settings').upsert({
+      id: 'config',
+      announcement_text: memoryDB.settings.announcementText,
+      free_shipping_threshold: Number(memoryDB.settings.freeShippingThreshold),
+      hero_badge: memoryDB.settings.heroBadge,
+      hero_headline: memoryDB.settings.heroHeadline,
+      hero_subheadline: memoryDB.settings.heroSubheadline,
+      hero_discount: memoryDB.settings.heroDiscount,
+      support_phone: memoryDB.settings.supportPhone,
+      support_email: memoryDB.settings.supportEmail,
+      updated_at: new Date().toISOString()
+    }).then().catch(e => {
+      console.warn('Supabase site settings sync note:', e.message);
+    });
+
     return memoryDB.settings;
   },
 

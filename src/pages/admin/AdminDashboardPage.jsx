@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useSettings } from '../../context/SettingsContext';
 import { formatINR } from '../../utils/currency';
 import {
   ShieldCheck,
@@ -38,6 +39,7 @@ import { Logo } from '../../components/common/Logo';
 export const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const { admin, token, logout, changePassword } = useAdminAuth();
+  const { refreshSettings } = useSettings();
 
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'products' | 'orders' | 'settings' | 'coupons' | 'audit' | 'profile'
   const [stats, setStats] = useState(null);
@@ -46,12 +48,14 @@ export const AdminDashboardPage = () => {
   const [coupons, setCoupons] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
   const [siteSettings, setSiteSettings] = useState({
-    announcementText: '10% Off on First Order | Use Code: WELCOME10',
+    announcementText: '✨ Complimentary Sub-Zero Delivery Across Delhi NCR on Orders Above ₹999',
     freeShippingThreshold: 999,
-    heroBadge: 'NEW SEASON COLLECTION 2026',
-    heroHeadline: 'Elevate Your Style. Define Your Comfort.',
-    heroSubheadline: 'Discover the latest trends in fashion, electronics, and lifestyle. Premium products, best prices at A_S Commerce.',
-    heroDiscount: '50% OFF',
+    heroBadge: 'GOURMET PARTY COLLECTION 2026',
+    heroHeadline: 'Gourmet Chicken & Mutton Snacks, Delivered Cold.',
+    heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
+    heroDiscount: '15% OFF',
+    supportPhone: '+91 98765 43210',
+    supportEmail: 'support@akirafresh.in'
   });
   const [loading, setLoading] = useState(true);
 
@@ -308,6 +312,7 @@ export const AdminDashboardPage = () => {
         body: JSON.stringify(siteSettings),
       });
       fetchDashboardData();
+      refreshSettings(); // Sync public storefront settings
     } catch (err) {
       console.error('Save settings error', err);
     } finally {
@@ -854,6 +859,30 @@ export const AdminDashboardPage = () => {
                     type="text"
                     value={siteSettings.heroDiscount}
                     onChange={(e) => setSiteSettings({ ...siteSettings, heroDiscount: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-gold-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                  3. Store Contact Information
+                </h4>
+                <div>
+                  <label className="block font-semibold text-gray-300 mb-1">Customer Support Phone</label>
+                  <input
+                    type="text"
+                    value={siteSettings.supportPhone || ''}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, supportPhone: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-gray-300 mb-1">Customer Support Email</label>
+                  <input
+                    type="email"
+                    value={siteSettings.supportEmail || ''}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, supportEmail: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
                   />
                 </div>

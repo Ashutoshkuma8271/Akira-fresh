@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, Leaf, Star, Zap } from 'lucide-react';
+import { useSettings } from '../../context/SettingsContext';
 
 export const HeroSlider = () => {
+  const { settings } = useSettings();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
@@ -62,11 +64,11 @@ export const HeroSlider = () => {
   const slides = [
     {
       id: 0,
-      badge: 'PREMIUM FRESH MEAT',
+      badge: settings.heroBadge || 'PREMIUM FRESH MEAT',
       badgeIcon: Leaf,
-      titleLine1: 'Fresh Quality.',
-      titleLine2: 'Delivered Better.',
-      subtitle: 'Premium products, carefully selected and delivered with freshness you can trust.',
+      titleLine1: settings.heroHeadline ? settings.heroHeadline.split(',')[0] || 'Fresh Quality.' : 'Fresh Quality.',
+      titleLine2: settings.heroHeadline ? settings.heroHeadline.split(',')[1] || 'Delivered Better.' : 'Delivered Better.',
+      subtitle: settings.heroSubheadline || 'Premium products, carefully selected and delivered with freshness you can trust.',
       primaryBtnText: 'Shop Now',
       primaryBtnLink: '/shop',
       secondaryBtnText: 'Explore Collection',

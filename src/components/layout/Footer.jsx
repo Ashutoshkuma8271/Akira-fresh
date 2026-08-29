@@ -4,9 +4,11 @@ import { Mail, Phone, MapPin, ArrowRight, ShieldCheck, Heart, Leaf, Award, Truck
 import { Logo } from '../common/Logo';
 import { CATEGORIES } from '../../data/categories';
 import { useToast } from '../../context/ToastContext';
+import { useSettings } from '../../context/SettingsContext';
 
 export const Footer = () => {
   const { addToast } = useToast();
+  const { settings } = useSettings();
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -148,15 +150,15 @@ export const Footer = () => {
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-leaf-400 shrink-0" />
-                <span>+91 98765 43210 (8 AM – 10 PM)</span>
+                <span>{settings.supportPhone} (8 AM – 10 PM)</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-leaf-400 shrink-0" />
-                <span>support@akirafresh.in</span>
+                <span>{settings.supportEmail}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <MessageCircle className="w-4 h-4 text-lime-400 shrink-0" />
-                <span className="text-lime-300 font-medium">WhatsApp: +91 98765 43210</span>
+                <span className="text-lime-300 font-medium">WhatsApp: {settings.supportPhone}</span>
               </div>
               <div className="pt-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-forest-900 border border-leaf-500/30 text-[11px] text-leaf-300 font-semibold">
@@ -182,6 +184,11 @@ export const Footer = () => {
             <Link to="/help" className="hover:text-leaf-400 transition-colors">Terms of Service</Link>
             <span>&bull;</span>
             <Link to="/help" className="hover:text-leaf-400 transition-colors">FSSAI Compliance</Link>
+            <span>&bull;</span>
+            <Link to="/admin/login" className="hover:text-leaf-400 transition-colors flex items-center gap-1">
+              <Lock className="w-3 h-3 text-leaf-400" />
+              <span>Admin Portal</span>
+            </Link>
           </div>
         </div>
 

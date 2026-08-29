@@ -89,6 +89,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
+// Public Website Settings API
+app.get('/api/settings', (req, res) => {
+  try {
+    const settings = db.getSettings();
+    return res.json({ success: true, settings });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to fetch settings' });
+  }
+});
+
 // Payment Gateway Routes (Razorpay)
 app.use('/api/payment', paymentRouter);
 

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { AuthProvider } from './context/AuthContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { CartProvider } from './context/CartContext';
@@ -78,8 +79,9 @@ export function App() {
       />
 
       <ThemeProvider>
-        <ToastProvider>
-          <AuthProvider>
+        <SettingsProvider>
+          <ToastProvider>
+            <AuthProvider>
             <AdminAuthProvider>
               <CartProvider>
                 <WishlistProvider>
@@ -180,6 +182,7 @@ export function App() {
             </AdminAuthProvider>
           </AuthProvider>
         </ToastProvider>
+        </SettingsProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

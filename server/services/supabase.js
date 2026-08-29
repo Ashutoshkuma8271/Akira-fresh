@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pgbhtnjsfggxnldyrcaz.supabase.co';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'sb_publishable_NkjgJd5mDtiY9TM1Fw8ZIQ_nTtqP2Vg';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://mipknpayasdtvodjvdqb.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'sb_publishable_pY0umbaU3HUXD_lppodnsQ_MQq0ytPR';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
