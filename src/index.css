@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  html, body, #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   html {
     scroll-behavior: smooth;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -12,7 +17,6 @@
   body {
     background-color: #FBF9F4;
     color: #13231B;
-    overflow-x: hidden;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
