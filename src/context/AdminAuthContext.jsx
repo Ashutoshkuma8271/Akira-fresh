@@ -115,9 +115,16 @@ export const AdminAuthProvider = ({ children }) => {
         return { success: false, message: data.message };
       }
 
+      if (data.token && data.admin) {
+        setToken(data.token);
+        setAdmin(data.admin);
+        localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+        localStorage.setItem('as_admin_profile', JSON.stringify(data.admin));
+      }
+
       await checkAdminStatus();
-      addToast('Administrator verified successfully! Please log in.', 'success');
-      return { success: true };
+      addToast('Administrator verified successfully! Welcome to Dashboard.', 'success');
+      return { success: true, token: data.token, admin: data.admin };
     } catch (err) {
       addToast('Connection error during verification.', 'error');
       return { success: false, message: 'Server connection error' };

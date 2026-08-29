@@ -109,7 +109,7 @@ export const CustomerResetPasswordPage = () => {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 animate-fadeIn">
-      <div className="w-full max-w-md bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gold-500/30 shadow-2xl space-y-6">
+      <div className="w-full max-w-md bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-emerald-500/30 shadow-2xl space-y-6">
         
         {/* Header Icon */}
         <div className="text-center space-y-2">

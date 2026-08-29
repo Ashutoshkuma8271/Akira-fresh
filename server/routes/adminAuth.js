@@ -156,9 +156,21 @@ router.post('/verify-signup-otp', async (req, res) => {
       });
     }
 
+    const admin = result.admin;
+    const token = jwt.sign(
+      {
+        id: admin.id,
+        email: admin.email,
+        name: admin.name,
+        role: 'admin'
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
     logAudit({
       action: 'Admin email verified',
-      adminId: result.admin.id,
+      adminId: admin.id,
       adminEmail: cleanEmail,
       ip: req.ip,
       details: 'Administrator account activated via OTP verification.'
@@ -166,7 +178,16 @@ router.post('/verify-signup-otp', async (req, res) => {
 
     return res.json({
       success: true,
-      message: 'Administrator verified successfully! Please log in.'
+      token,
+      admin: {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        role: 'admin',
+        isActive: 1,
+        isVerified: true
+      },
+      message: 'Administrator verified successfully! Redirecting to Dashboard...'
     });
   } catch (err) {
     console.error('Admin verify OTP error:', err);

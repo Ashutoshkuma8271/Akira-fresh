@@ -19,12 +19,6 @@ export const AdminLoginPage = () => {
   }, []);
 
   useEffect(() => {
-    if (adminExists === false) {
-      navigate('/admin/signup', { replace: true });
-    }
-  }, [adminExists, navigate]);
-
-  useEffect(() => {
     if (isAdminAuthenticated) {
       navigate('/admin/dashboard', { replace: true });
     }
@@ -46,8 +40,8 @@ export const AdminLoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-gold-500/30">
-      <div className="w-full max-w-md bg-navy-900 border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
+    <div className="min-h-screen bg-navy-950 text-white flex items-center justify-center p-4 selection:bg-emerald-500/30">
+      <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         {/* Header with Monogram */}
         <div className="text-center space-y-2">
@@ -130,7 +124,7 @@ export const AdminLoginPage = () => {
             disabled={isSubmitting}
             className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
           >
-            <span>{isSubmitting ? 'Authenticating...' : 'Login to Admin Portal'}</span>
+            <span>{isSubmitting ? 'Signing In...' : 'Sign In'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
@@ -142,7 +136,7 @@ export const AdminLoginPage = () => {
               to="/admin/signup"
               className="inline-block text-xs text-emerald-400 hover:underline font-semibold"
             >
-              ⚡ No administrator configured yet. Create First Admin →
+              ⚡ First Time Setup: Create Master Admin →
             </Link>
           )}
 
@@ -156,7 +150,7 @@ export const AdminLoginPage = () => {
           </div>
         </div>
 
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
       </div>
     </div>
   );

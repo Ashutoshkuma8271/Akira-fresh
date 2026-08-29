@@ -96,8 +96,8 @@ export const AdminSignupPage = () => {
     if (result.success) {
       setStep('verified');
       setTimeout(() => {
-        navigate('/admin/login');
-      }, 1500);
+        navigate('/admin/dashboard', { replace: true });
+      }, 1200);
     } else {
       setErrorMessage(result.message || 'Invalid or expired OTP code. Please check your email.');
     }
