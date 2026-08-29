@@ -33,6 +33,13 @@ const HelpPage = lazy(() => import('./pages/StaticPages').then(m => ({ default: 
 const ContactPage = lazy(() => import('./pages/StaticPages').then(m => ({ default: m.ContactPage })));
 const CustomerResetPasswordPage = lazy(() => import('./pages/CustomerResetPasswordPage').then(m => ({ default: m.CustomerResetPasswordPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
+const StaticLegalPages = lazy(() => import('./pages/StaticLegalPages').then(m => ({ default: m.StaticLegalPages })));
+const PaymentFailedPage = lazy(() => import('./pages/PaymentFailedPage').then(m => ({ default: m.PaymentFailedPage })));
+const PaymentPendingPage = lazy(() => import('./pages/PaymentPendingPage').then(m => ({ default: m.PaymentPendingPage })));
+const ForbiddenPage = lazy(() => import('./pages/ForbiddenPage').then(m => ({ default: m.ForbiddenPage })));
+const ServerErrorPage = lazy(() => import('./pages/ServerErrorPage').then(m => ({ default: m.ServerErrorPage })));
+const SessionExpiredPage = lazy(() => import('./pages/SessionExpiredPage').then(m => ({ default: m.SessionExpiredPage })));
+const MaintenancePage = lazy(() => import('./pages/MaintenancePage').then(m => ({ default: m.MaintenancePage })));
 
 // Lazy Loaded Single-Admin Control Pages
 const AdminSignupPage = lazy(() => import('./pages/admin/AdminSignupPage').then(m => ({ default: m.AdminSignupPage })));
@@ -160,10 +167,31 @@ export function App() {
                                     <Route path="/help" element={<HelpPage />} />
                                     <Route path="/pages/about-akira-fresh" element={<HelpPage />} />
                                     <Route path="/about" element={<HelpPage />} />
-                                    <Route path="/shipping" element={<HelpPage />} />
-                                    <Route path="/returns" element={<HelpPage />} />
+                                    <Route path="/shipping" element={<StaticLegalPages />} />
+                                    <Route path="/returns" element={<StaticLegalPages />} />
                                     <Route path="/contact" element={<ContactPage />} />
                                     <Route path="/pages/contact" element={<ContactPage />} />
+
+                                    {/* Legal Policies */}
+                                    <Route path="/privacy" element={<StaticLegalPages />} />
+                                    <Route path="/terms" element={<StaticLegalPages />} />
+                                    <Route path="/cookies" element={<StaticLegalPages />} />
+                                    <Route path="/refund-policy" element={<StaticLegalPages />} />
+                                    <Route path="/cancellation-policy" element={<StaticLegalPages />} />
+                                    <Route path="/shipping-policy" element={<StaticLegalPages />} />
+                                    <Route path="/return-policy" element={<StaticLegalPages />} />
+                                    <Route path="/disclaimer" element={<StaticLegalPages />} />
+                                    <Route path="/accessibility" element={<StaticLegalPages />} />
+                                    <Route path="/security-policy" element={<StaticLegalPages />} />
+                                    <Route path="/responsible-disclosure" element={<StaticLegalPages />} />
+
+                                    {/* Customer Lifecycle & UX States */}
+                                    <Route path="/payment-failed" element={<PaymentFailedPage />} />
+                                    <Route path="/payment-pending" element={<PaymentPendingPage />} />
+                                    <Route path="/403" element={<ForbiddenPage />} />
+                                    <Route path="/500" element={<ServerErrorPage />} />
+                                    <Route path="/session-expired" element={<SessionExpiredPage />} />
+                                    <Route path="/maintenance" element={<MaintenancePage />} />
 
                                     {/* Fallback */}
                                     <Route path="*" element={<NotFoundPage />} />

@@ -179,11 +179,11 @@ export const Footer = () => {
           </div>
           
           <div className="flex items-center gap-4 text-gray-400">
-            <Link to="/help" className="hover:text-leaf-400 transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="hover:text-leaf-400 transition-colors">Privacy Policy</Link>
             <span>&bull;</span>
-            <Link to="/help" className="hover:text-leaf-400 transition-colors">Terms of Service</Link>
+            <Link to="/terms" className="hover:text-leaf-400 transition-colors">Terms of Service</Link>
             <span>&bull;</span>
-            <Link to="/help" className="hover:text-leaf-400 transition-colors">FSSAI Compliance</Link>
+            <Link to="/disclaimer" className="hover:text-leaf-400 transition-colors">FSSAI Compliance</Link>
             <span>&bull;</span>
             <Link to="/admin/login" className="hover:text-leaf-400 transition-colors flex items-center gap-1">
               <Lock className="w-3 h-3 text-leaf-400" />
