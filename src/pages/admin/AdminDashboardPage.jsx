@@ -404,13 +404,13 @@ export const AdminDashboardPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-navy-950 text-white selection:bg-gold-500/30 flex flex-col font-sans">
+    <div className="min-h-screen bg-navy-950 text-white selection:bg-emerald-500/30 flex flex-col font-sans">
       
       {/* Top Admin Header */}
-      <header className="bg-navy-900 border-b border-gold-500/20 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xl backdrop-blur-md">
+      <header className="bg-navy-900 border-b border-emerald-500/20 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-4">
           <Logo size="small" />
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-gold-500/10 border border-gold-500/30 rounded-full text-gold-400 text-xs font-mono">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-mono">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Master Control & Logistics Suite</span>
           </div>
@@ -420,7 +420,8 @@ export const AdminDashboardPage = () => {
           <Link
             to="/"
             target="_blank"
-            className="flex items-center gap-1.5 text-xs text-gray-300 hover:text-gold-400 font-medium px-3 py-1.5 rounded-xl hover:bg-navy-800 transition-colors"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-navy-950 font-bold px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 shadow-md hover:brightness-110 active:scale-98 transition-all cursor-pointer"
           >
             <span>Live Storefront</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -430,8 +431,8 @@ export const AdminDashboardPage = () => {
 
           <div className="flex items-center gap-3">
             <div className="text-right hidden md:block">
-              <p className="text-xs font-bold text-white leading-tight">{admin?.name || 'Alexander Sterling'}</p>
-              <p className="text-[10px] font-mono text-gold-400">Master Administrator</p>
+              <p className="text-xs font-bold text-white leading-tight">{admin?.name || 'Administrator'}</p>
+              <p className="text-[10px] font-mono text-emerald-400">Master Administrator</p>
             </div>
 
             <button
