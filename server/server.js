@@ -204,7 +204,7 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const result = db.verifyUserOtp(cleanEmail, otp);
+    const result = await db.verifyUserOtpAsync(cleanEmail, otp);
 
     if (!result.success) {
       return res.status(400).json({ success: false, message: result.message });

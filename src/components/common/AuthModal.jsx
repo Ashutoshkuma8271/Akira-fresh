@@ -126,8 +126,14 @@ export const AuthModal = () => {
     }
 
     setSubmitting(true);
-    await verifySignupOtp(verificationEmail, otpCode);
+    const res = await verifySignupOtp(verificationEmail, otpCode);
     setSubmitting(false);
+
+    if (res && res.success) {
+      setEmail(verificationEmail);
+      setPassword('');
+      setOtpCode('');
+    }
   };
 
   const handleResendOtp = async () => {

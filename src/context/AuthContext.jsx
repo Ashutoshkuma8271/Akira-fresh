@@ -140,13 +140,9 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: data.message };
       }
 
-      setUser(data.user);
-      if (data.token) {
-        localStorage.setItem('as_commerce_token', data.token);
-      }
-      setIsAuthModalOpen(false);
-      setAuthNotice('');
-      addToast('Account verified successfully', 'success');
+      setAuthMode('login');
+      setAuthNotice('Account verified successfully! Please enter your password to sign in.');
+      addToast('Account verified! Please sign in.', 'success');
       return { success: true };
     } catch (e) {
       addToast('Failed to verify OTP', 'error');
