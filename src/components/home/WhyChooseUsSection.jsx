@@ -40,7 +40,7 @@ export const WhyChooseUsSection = () => {
       <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage-100 dark:bg-forest-900 border border-leaf-500/30 text-xs font-bold text-leaf-600 dark:text-leaf-400 uppercase tracking-widest mb-2.5">
           <Award className="w-3.5 h-3.5 text-lime-500" />
-          <span>The Akira Fresh Distinction</span>
+          <span>The A_S FOODY Distinction</span>
         </div>
         <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-charcoal-900 dark:text-white tracking-tight">
           Why Discerning Foodies Choose Us

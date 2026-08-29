@@ -198,7 +198,7 @@ export const MobileNav = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-forest-850 hover:pl-6 text-sm font-semibold text-charcoal-900 dark:text-ivory-100 transition-all duration-350 border-b border-gray-100/30 dark:border-forest-800/30"
             >
-              <span>About Akira Fresh</span>
+              <span>About A_S FOODY</span>
               <ChevronRight className="w-4 h-4 text-gray-400" />
             </Link>
 

@@ -1,6 +1,6 @@
 {
-  "name": "Akira Fresh",
-  "description": "Farm-fresh fruits, organic vegetables, pure dairy, bakery, and premium groceries delivered to your doorstep across Delhi NCR.",
+  "name": "A_S FOODY",
+  "description": "Restaurant-grade fresh non-veg snacks, artisanal kebabs, and sub-zero cold-chain delicacies delivered to your doorstep.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

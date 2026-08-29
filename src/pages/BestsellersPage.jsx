@@ -30,7 +30,7 @@ export const BestsellersPage = () => {
             <span>TOP-RATED CUSTOMER FAVORITES</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white">
-            Akira Fresh Bestsellers
+            A_S FOODY Bestsellers
           </h1>
           <p className="text-xs sm:text-sm text-gray-200/90 leading-relaxed font-sans max-w-xl">
             Our most ordered non-veg creations. Handcrafted with traditional marinades, high protein cuts, and blast-frozen freshness.

@@ -120,7 +120,7 @@ export const CartPage = () => {
                 />
                 <div className="space-y-1">
                   <span className="text-[10px] font-bold text-leaf-700 dark:text-lime-400 uppercase tracking-wider">
-                    {item.brand || 'Akira Fresh Original'}
+                    {item.brand || 'A_S FOODY Original'}
                   </span>
                   <Link
                     to={`/product/${item.id}`}

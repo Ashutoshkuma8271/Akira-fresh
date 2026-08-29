@@ -23,7 +23,7 @@ export const CategorySection = () => {
               className="snap-start shrink-0 w-24 sm:w-28 lg:w-28 group flex flex-col items-center text-center cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
             >
               {/* Circular Ceramic Dish / Plate Container */}
-              <div className="relative w-22 h-22 sm:w-26 sm:h-26 lg:w-28 lg:h-28 rounded-full p-1 bg-gradient-to-b from-[#fbf9f4] to-[#ede7db] dark:from-forest-800 dark:to-forest-900 border border-gray-200/90 dark:border-forest-700 shadow-md group-hover:shadow-lg transition-all duration-300 flex items-center justify-center overflow-hidden">
+              <div className="relative w-20 h-20 min-[380px]:w-24 min-[380px]:h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-b from-[#fbf9f4] to-[#ede7db] dark:from-forest-800 dark:to-forest-900 border border-gray-200/90 dark:border-forest-700 shadow-md group-hover:shadow-lg transition-all duration-300 flex items-center justify-center overflow-hidden">
                 <div className="w-full h-full rounded-full overflow-hidden border border-white/60 dark:border-white/10 shadow-inner">
                   <img
                     src={cat.image}

@@ -393,7 +393,7 @@ export const AccountPage = () => {
                 <div className="space-y-2 z-10">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Welcome to Akira Fresh</span>
+                    <span>Welcome to A_S FOODY</span>
                   </div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
                     {user.name}

@@ -7,7 +7,7 @@ export const HelpPage = () => {
 
   const faqs = [
     {
-      q: 'How does Akira Fresh sub-zero cold chain delivery work?',
+      q: 'How does A_S FOODY sub-zero cold chain delivery work?',
       a: 'All our gourmet ready-to-cook delicacies are IQF blast-frozen at -18°C directly after chef preparation and packed in specialized thermal insulation boxes with food-grade dry ice packs to ensure 100% frozen freshness right to your doorstep.'
     },
     {
@@ -73,7 +73,7 @@ export const ContactPage = () => {
       <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-6">
         <div className="text-center max-w-md mx-auto">
           <span className="text-xs font-bold uppercase tracking-widest text-leaf-700 dark:text-lime-400">Direct Support</span>
-          <h1 className="font-serif text-3xl font-bold text-charcoal-950 dark:text-white mt-1">Contact Akira Fresh</h1>
+          <h1 className="font-serif text-3xl font-bold text-charcoal-950 dark:text-white mt-1">Contact A_S FOODY</h1>
           <p className="text-xs text-charcoal-600 dark:text-gray-400 mt-2">
             Have questions about party catering, bulk orders, or cold-chain delivery? We are here to help.
           </p>

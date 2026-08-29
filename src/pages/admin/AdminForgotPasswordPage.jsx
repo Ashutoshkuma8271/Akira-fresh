@@ -84,7 +84,7 @@ export const AdminForgotPasswordPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@akirafresh.in"
+                  placeholder="ashukumarfbg8271@gmail.com"
                   className="w-full pl-10 pr-4 py-3 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-gold-500 transition-colors"
                 />
               </div>

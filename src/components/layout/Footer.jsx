@@ -38,7 +38,7 @@ export const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <Logo size="normal" />
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed pr-4">
-              Akira Fresh delivers restaurant-grade Awadhi Galouti kebabs, Afghani tikkas, gourmet patties, and sub-zero cold-chain delicacies directly to your kitchen across Delhi NCR.
+              A_S FOODY delivers restaurant-grade Awadhi Galouti kebabs, Afghani tikkas, gourmet patties, and sub-zero cold-chain delicacies directly to your kitchen across Delhi NCR.
             </p>
 
             {/* Newsletter Subscription */}
@@ -141,12 +141,12 @@ export const Footer = () => {
           {/* Col 4: Reach Us / Delivery Zones (Col span 3) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold text-white tracking-wide border-b border-forest-800/80 pb-2">
-              Akira Cold Hub
+              A_S FOODY Cold Hub
             </h4>
             <div className="space-y-2.5 text-xs text-gray-300">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-leaf-400 shrink-0 mt-0.5" />
-                <span>Central Cold Logistics, Okhla Phase III, New Delhi 110020</span>
+                <span>H no 132 2nd floor Dhaka Village near kumar tailor Pin code 110009</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-leaf-400 shrink-0" />

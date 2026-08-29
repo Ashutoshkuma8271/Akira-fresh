@@ -112,7 +112,7 @@ export const HeroSlider = () => {
       subtitle: 'Antibiotic-free, farm-sourced premium poultry, mutton, and ready-to-grill delicacies.',
       primaryBtnText: 'Shop Now',
       primaryBtnLink: '/shop',
-      secondaryBtnText: 'About Akira Fresh',
+      secondaryBtnText: 'About A_S FOODY',
       secondaryBtnLink: '/help',
       image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1800&auto=format&fit=crop&q=85',
     },

@@ -51,7 +51,7 @@ export const TrackOrderPage = () => {
           Track Your Fresh Delivery
         </h1>
         <p className="text-xs sm:text-sm text-charcoal-600 dark:text-gray-400 max-w-md mx-auto mt-2">
-          Enter your Akira Fresh Order ID to check live rider dispatch and -18°C sub-zero cold-chain transit.
+          Enter your A_S FOODY Order ID to check live rider dispatch and -18°C sub-zero cold-chain transit.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export const TrackOrderPage = () => {
                 </span>
               </div>
               <p className="text-xs text-charcoal-600 dark:text-gray-400 mt-1">
-                Placed on {activeOrder.date} via {activeOrder.carrier || 'Akira Cold Express'}
+                Placed on {activeOrder.date} via {activeOrder.carrier || 'A_S FOODY Cold Express'}
               </p>
             </div>
 

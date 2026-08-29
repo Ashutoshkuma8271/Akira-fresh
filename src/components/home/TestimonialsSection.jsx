@@ -20,7 +20,7 @@ export const TestimonialsSection = () => {
       location: 'DLF Phase 5, Gurugram',
       rating: 5,
       title: 'A2 Milk & Galouti Kebabs are Elite',
-      comment: 'The Akira signature chicken galouti kebabs and morning-harvested A2 milk are weekly staples for our family. Cold-chain delivery arrived in 90 minutes.',
+      comment: 'The A_S FOODY signature chicken galouti kebabs and morning-harvested A2 milk are weekly staples for our family. Cold-chain delivery arrived in 90 minutes.',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       purchased: 'Signature Chicken Kebabs',
       time: 'Yesterday',
@@ -51,7 +51,7 @@ export const TestimonialsSection = () => {
           Loved by 50,000+ Fresh Households
         </h2>
         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">
-          Discover why discerning families across Delhi NCR trust Akira Fresh every morning.
+          Discover why discerning families across Delhi NCR trust A_S FOODY every morning.
         </p>
       </div>
 

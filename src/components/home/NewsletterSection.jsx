@@ -19,7 +19,7 @@ export const NewsletterSection = () => {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubscribed(true);
-      addToast('Welcome to the Akira Fresh Club! 15% OFF coupon sent to your inbox.', 'success');
+      addToast('Welcome to the A_S FOODY Club! 15% OFF coupon sent to your inbox.', 'success');
       setEmail('');
     }, 600);
   };
@@ -36,7 +36,7 @@ export const NewsletterSection = () => {
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest-900 border border-leaf-500/40 text-xs font-bold text-lime-300">
             <Sparkles className="w-3.5 h-3.5 text-lime-400" />
-            <span>AKIRA VIP HARVEST CLUB</span>
+            <span>A_S FOODY VIP CLUB</span>
           </div>
 
           {/* Headline */}

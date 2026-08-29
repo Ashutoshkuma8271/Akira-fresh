@@ -7,7 +7,7 @@ export const AppDownloadSection = () => {
   const { addToast } = useToast();
 
   const handleDownloadClick = (platform) => {
-    addToast(`Akira Fresh for ${platform} link generated!`, 'success');
+    addToast(`A_S FOODY for ${platform} link generated!`, 'success');
   };
 
   return (
@@ -23,7 +23,7 @@ export const AppDownloadSection = () => {
           <div className="lg:col-span-7 space-y-4 text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest-950 border border-leaf-500/40 text-xs font-bold text-lime-300">
               <Smartphone className="w-3.5 h-3.5 text-lime-400" />
-              <span>AKIRA FRESH MOBILE APP</span>
+              <span>A_S FOODY MOBILE APP</span>
             </div>
 
             <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">

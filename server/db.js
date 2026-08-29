@@ -29,8 +29,8 @@ let memoryDB = {
     heroHeadline: 'Gourmet Chicken & Mutton Snacks, Delivered Cold.',
     heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
     heroDiscount: '15% OFF',
-    supportPhone: '+91 98765 43210',
-    supportEmail: 'support@akirafresh.in'
+    supportPhone: '+91 63862 56770',
+    supportEmail: 'ashukumarfbg8271@gmail.com'
   }
 };
 

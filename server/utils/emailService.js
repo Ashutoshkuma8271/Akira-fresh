@@ -1,4 +1,4 @@
-// Email Delivery Service for A_S Commerce
+// Email Delivery Service for A_S FOODY
 // Multi-layer delivery: Supabase Auth SMTP (Brevo), Direct Brevo API, Nodemailer SMTP, and Local Console Log
 
 import nodemailer from 'nodemailer';
@@ -35,16 +35,16 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#06170E; min-height:100vh;">
     <tr>
       <td align="center" style="padding:48px 16px;">
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px; background:linear-gradient(180deg, #092013 0%, #05140b 100%); border:1px solid rgba(34, 197, 94, 0.35); border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,0.6); overflow:hidden;">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px; background:linear-gradient(180deg, #092013 0%, #05140b 100%); border:1px solid rgba(212, 175, 55, 0.35); border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,0.6); overflow:hidden;">
           <tr>
-            <td height="4" style="background:linear-gradient(90deg, #22C55E 0%, #F5B83D 50%, #22C55E 100%);"></td>
+            <td height="4" style="background:linear-gradient(90deg, #D4AF37 0%, #F5B83D 50%, #D4AF37 100%);"></td>
           </tr>
           <tr>
             <td align="center" style="padding:36px 32px 24px 32px; border-bottom:1px solid rgba(255,255,255,0.06);">
-              <div style="display:inline-block; padding:7px 18px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:30px; margin-bottom:14px;">
-                <span style="font-size:10px; font-weight:800; letter-spacing:2.5px; color:#22C55E; text-transform:uppercase;">OFFICIAL VERIFICATION</span>
+              <div style="display:inline-block; padding:7px 18px; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); border-radius:30px; margin-bottom:14px;">
+                <span style="font-size:10px; font-weight:800; letter-spacing:2.5px; color:#D4AF37; text-transform:uppercase;">OFFICIAL VERIFICATION</span>
               </div>
-              <h1 style="margin:0; font-size:24px; font-weight:800; letter-spacing:4px; color:#FFFFFF; text-transform:uppercase; font-family:'Georgia', serif;">AKIRA FRESH</h1>
+              <h1 style="margin:0; font-size:24px; font-weight:800; letter-spacing:4px; color:#FFFFFF; text-transform:uppercase; font-family:'Georgia', serif;">A_S FOODY</h1>
               <p style="margin:4px 0 0 0; font-size:10px; letter-spacing:2.5px; color:#F5B83D; text-transform:uppercase;">Gourmet Cold-Chain Delivery</p>
             </td>
           </tr>
@@ -52,13 +52,13 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
             <td align="center" style="padding:36px 36px 32px 36px;">
               <h2 style="margin:0 0 12px 0; font-size:21px; font-weight:700; color:#FFFFFF; font-family:'Georgia', serif;">Verify Your Email Address</h2>
               <p style="margin:0 0 32px 0; font-size:13.5px; line-height:1.65; color:#9FB3C8; max-width:400px;">
-                Welcome to Akira Fresh. Please enter this one-time 6-digit passcode on your screen to complete registration:
+                Welcome to A_S FOODY. Please enter this one-time 6-digit passcode on your screen to complete registration:
               </p>
               <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto 32px auto;">
                 <tr>
-                  <td align="center" style="background:radial-gradient(ellipse at center, rgba(34,197,94,0.18) 0%, rgba(6,23,14,0.8) 100%); border:1.5px solid #22C55E; border-radius:18px; padding:22px 36px; box-shadow:0 8px 30px rgba(34,197,94,0.15);">
+                  <td align="center" style="background:radial-gradient(ellipse at center, rgba(212,175,55,0.18) 0%, rgba(6,23,14,0.8) 100%); border:1.5px solid #D4AF37; border-radius:18px; padding:22px 36px; box-shadow:0 8px 30px rgba(212,175,55,0.15);">
                     <div style="font-size:10px; font-weight:800; letter-spacing:2px; color:#F5B83D; text-transform:uppercase; margin-bottom:6px;">ONE-TIME PASSCODE</div>
-                    <div style="font-size:38px; font-weight:800; letter-spacing:10px; color:#22C55E; font-family:'Courier New', monospace; text-shadow:0 2px 10px rgba(34,197,94,0.4); padding-left:10px;">${otp}</div>
+                    <div style="font-size:38px; font-weight:800; letter-spacing:10px; color:#D4AF37; font-family:'Courier New', monospace; text-shadow:0 2px 10px rgba(212,175,55,0.4); padding-left:10px;">${otp}</div>
                   </td>
                 </tr>
               </table>
@@ -69,7 +69,7 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
           </tr>
           <tr>
             <td align="center" style="padding:24px 32px; background:#04100a; border-top:1px solid rgba(255,255,255,0.05); font-size:11px; color:#486581;">
-              <p style="margin:0 0 6px 0;">© 2026 Akira Fresh Private Limited. All rights reserved.</p>
+              <p style="margin:0 0 6px 0;">© 2026 A_S FOODY Private Limited. All rights reserved.</p>
               <p style="margin:0; font-size:10px; color:#334E68;">Protected by End-to-End 256-Bit TLS Encryption.</p>
             </td>
           </tr>
@@ -85,11 +85,11 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
   const transporter = getTransporter();
   if (transporter) {
     try {
-      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com';
+      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashukumarfbg8271@gmail.com';
       await transporter.sendMail({
-        from: `"Akira Fresh" <${senderEmail}>`,
+        from: `"A_S FOODY" <${senderEmail}>`,
         to: cleanEmail,
-        subject: `${otp} is your Akira Fresh verification code`,
+        subject: `${otp} is your A_S FOODY verification code`,
         html: htmlContent
       });
       console.log(`✉️ [Nodemailer SMTP] Verification email sent to ${cleanEmail}`);
@@ -110,9 +110,9 @@ export const sendSignupOtpEmail = async (email, name, otp) => {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          sender: { name: 'Akira Fresh', email: process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com' },
+          sender: { name: 'A_S FOODY', email: process.env.SMTP_FROM_EMAIL || 'ashukumarfbg8271@gmail.com' },
           to: [{ email: cleanEmail, name: name || 'Valued Customer' }],
-          subject: `${otp} is your Akira Fresh verification code`,
+          subject: `${otp} is your A_S FOODY verification code`,
           htmlContent: htmlContent,
         }),
       });
@@ -161,16 +161,16 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#06170E; min-height:100vh;">
     <tr>
       <td align="center" style="padding:48px 16px;">
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px; background:linear-gradient(180deg, #092013 0%, #05140b 100%); border:1px solid rgba(34, 197, 94, 0.35); border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,0.6); overflow:hidden;">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px; background:linear-gradient(180deg, #092013 0%, #05140b 100%); border:1px solid rgba(212, 175, 55, 0.35); border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,0.6); overflow:hidden;">
           <tr>
-            <td height="4" style="background:linear-gradient(90deg, #22C55E 0%, #F5B83D 50%, #22C55E 100%);"></td>
+            <td height="4" style="background:linear-gradient(90deg, #D4AF37 0%, #F5B83D 50%, #D4AF37 100%);"></td>
           </tr>
           <tr>
             <td align="center" style="padding:36px 32px 24px 32px; border-bottom:1px solid rgba(255,255,255,0.06);">
-              <div style="display:inline-block; padding:7px 18px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:30px; margin-bottom:14px;">
-                <span style="font-size:10px; font-weight:800; letter-spacing:2.5px; color:#22C55E; text-transform:uppercase;">ACCOUNT SECURITY</span>
+              <div style="display:inline-block; padding:7px 18px; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); border-radius:30px; margin-bottom:14px;">
+                <span style="font-size:10px; font-weight:800; letter-spacing:2.5px; color:#D4AF37; text-transform:uppercase;">ACCOUNT SECURITY</span>
               </div>
-              <h1 style="margin:0; font-size:24px; font-weight:800; letter-spacing:4px; color:#FFFFFF; text-transform:uppercase; font-family:'Georgia', serif;">AKIRA FRESH</h1>
+              <h1 style="margin:0; font-size:24px; font-weight:800; letter-spacing:4px; color:#FFFFFF; text-transform:uppercase; font-family:'Georgia', serif;">A_S FOODY</h1>
               <p style="margin:4px 0 0 0; font-size:10px; letter-spacing:2.5px; color:#F5B83D; text-transform:uppercase;">Luxury Concierge & Protection</p>
             </td>
           </tr>
@@ -178,11 +178,11 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
             <td align="center" style="padding:36px 36px 32px 36px;">
               <h2 style="margin:0 0 12px 0; font-size:21px; font-weight:700; color:#FFFFFF; font-family:'Georgia', serif;">Reset Your Password</h2>
               <p style="margin:0 0 32px 0; font-size:13.5px; line-height:1.65; color:#9FB3C8; max-width:400px;">
-                We received a request to update the password for your Akira Fresh account. Click the secure button below to choose your new password:
+                We received a request to update the password for your A_S FOODY account. Click the secure button below to choose your new password:
               </p>
               <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto 32px auto;">
                 <tr>
-                  <td align="center" style="border-radius:14px; background:linear-gradient(135deg, #22C55E 0%, #15803D 50%, #0e5629 100%); box-shadow:0 8px 24px rgba(34,197,94,0.25);">
+                  <td align="center" style="border-radius:14px; background:linear-gradient(135deg, #D4AF37 0%, #B89028 50%, #8c6c19 100%); box-shadow:0 8px 24px rgba(212,175,55,0.25);">
                     <a href="${resetUrl}" style="display:inline-block; padding:15px 44px; font-size:13px; font-weight:800; color:#06170E !important; text-decoration:none; text-transform:uppercase; letter-spacing:1px; border-radius:14px;">Reset Password</a>
                   </td>
                 </tr>
@@ -197,8 +197,8 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
           </tr>
           <tr>
             <td align="center" style="padding:24px 32px; background:#04100a; border-top:1px solid rgba(255,255,255,0.05); font-size:11px; color:#486581;">
-              <p style="margin:0 0 6px 0;">© 2026 Akira Fresh Private Limited. All rights reserved.</p>
-              <p style="margin:0; font-size:10px; color:#334E68;">Protected by 10-Round Bcrypt Encryption.</p>
+              <p style="margin:0 0 6px 0;">© 2026 A_S FOODY Private Limited. All rights reserved.</p>
+              <p style="margin:0; font-size:10px; color:#334E68;">Protected by 12-Round Bcrypt Encryption.</p>
             </td>
           </tr>
         </table>
@@ -213,11 +213,11 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
   const transporter = getTransporter();
   if (transporter) {
     try {
-      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com';
+      const senderEmail = process.env.SMTP_FROM_EMAIL || 'ashukumarfbg8271@gmail.com';
       await transporter.sendMail({
-        from: `"Akira Fresh Security" <${senderEmail}>`,
+        from: `"A_S FOODY Security" <${senderEmail}>`,
         to: cleanEmail,
-        subject: `Reset Your Akira Fresh Password`,
+        subject: `Reset Your A_S FOODY Password`,
         html: htmlContent
       });
       console.log(`✉️ [Nodemailer SMTP] Password reset email sent to ${cleanEmail}`);
@@ -238,9 +238,9 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          sender: { name: 'Akira Fresh Security', email: process.env.SMTP_FROM_EMAIL || 'ashutoshgifthamper9334@gmail.com' },
+          sender: { name: 'A_S FOODY Security', email: process.env.SMTP_FROM_EMAIL || 'ashukumarfbg8271@gmail.com' },
           to: [{ email: cleanEmail }],
-          subject: `Reset Your Akira Fresh Password`,
+          subject: `Reset Your A_S FOODY Password`,
           htmlContent
         })
       });
@@ -251,7 +251,7 @@ export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer')
     }
   }
 
-  // 3. Trigger Supabase Auth Password Reset Email (Uses Brevo SMTP connected in Supabase Dashboard)
+  // 3. Trigger Supabase Auth Password Reset Email
   try {
     await supabase.auth.resetPasswordForEmail(cleanEmail, {
       redirectTo: resetUrl

@@ -113,7 +113,7 @@ export const ProductDetailsPage = () => {
   };
 
   const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(`Check out ${product.name} on Akira Fresh: ${window.location.href}`);
+    const text = encodeURIComponent(`Check out ${product.name} on A_S FOODY: ${window.location.href}`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
@@ -259,7 +259,7 @@ export const ProductDetailsPage = () => {
               {/* Freshness & Cold Chain Pill */}
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-leaf-800 dark:text-lime-300 bg-leaf-500/10 px-3 py-1 rounded-full border border-leaf-500/20">
-                  {product.brand || 'Akira Gourmet'}
+                  {product.brand || 'A_S FOODY Gourmet'}
                 </span>
                 <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full flex items-center gap-1 border border-emerald-500/20">
                   <Flame className="w-3.5 h-3.5 text-orange-500" />

@@ -95,7 +95,7 @@ export const AdminSignupPage = () => {
               Admin account already exists.
             </h1>
             <p className="text-xs sm:text-sm text-gray-400 leading-relaxed pt-2">
-              Akira Fresh enforces a strict single-administrator policy at the database level. New administrator registrations are permanently closed.
+              A_S FOODY enforces a strict single-administrator policy at the database level. New administrator registrations are permanently closed.
             </p>
           </div>
 
@@ -136,10 +136,10 @@ export const AdminSignupPage = () => {
             Initial Administrator Bootstrap
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-            Create Akira Fresh Admin
+            Create A_S FOODY Admin
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
-            The first registered account will become the sole administrator of Akira Fresh. All subsequent registration attempts will be permanently rejected.
+            The first registered account will become the sole administrator of A_S FOODY. All subsequent registration attempts will be permanently rejected.
           </p>
         </div>
 

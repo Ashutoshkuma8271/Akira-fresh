@@ -54,8 +54,8 @@ export const AdminDashboardPage = () => {
     heroHeadline: 'Gourmet Chicken & Mutton Snacks, Delivered Cold.',
     heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
     heroDiscount: '15% OFF',
-    supportPhone: '+91 98765 43210',
-    supportEmail: 'support@akirafresh.in'
+    supportPhone: '+91 63862 56770',
+    supportEmail: 'ashukumarfbg8271@gmail.com'
   });
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +68,7 @@ export const AdminDashboardPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [productForm, setProductForm] = useState({
     name: '',
-    brand: 'Akira Fresh',
+    brand: 'A_S FOODY',
     category: 'accessories',
     categoryName: 'Accessories',
     price: '',
@@ -191,7 +191,7 @@ export const AdminDashboardPage = () => {
     setEditingProduct(null);
     setProductForm({
       name: '',
-      brand: 'Akira Fresh',
+      brand: 'A_S FOODY',
       category: 'men',
       categoryName: 'Men Fashion',
       price: '',
@@ -1204,7 +1204,7 @@ export const AdminDashboardPage = () => {
                     required
                     value={productForm.brand}
                     onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-                    placeholder="e.g. Akira Fresh"
+                    placeholder="e.g. A_S FOODY"
                     className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-gold-500"
                   />
                 </div>

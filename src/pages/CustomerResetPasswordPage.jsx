@@ -103,7 +103,7 @@ export const CustomerResetPasswordPage = () => {
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
             {isSuccess
               ? 'Your account password has been updated securely with 10-round Bcrypt encryption.'
-              : 'Choose a strong, unique password for your Akira Fresh customer account.'}
+              : 'Choose a strong, unique password for your A_S FOODY customer account.'}
           </p>
         </div>
 

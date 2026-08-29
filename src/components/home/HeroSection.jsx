@@ -44,7 +44,7 @@ export const HeroSection = () => {
 
             {/* Supporting Text */}
             <p className="text-sm sm:text-base text-ivory-200/90 max-w-lg leading-relaxed font-sans">
-              Akira Fresh delivers premium frozen ready-to-cook chicken and mutton snacks, artisanal kebabs, and zesty marinated cuts across Delhi NCR through sub-zero cold-chain delivery.
+              A_S FOODY delivers premium frozen ready-to-cook chicken and mutton snacks, artisanal kebabs, and zesty marinated cuts across Delhi NCR through sub-zero cold-chain delivery.
             </p>
 
             {/* Primary & Secondary Action CTAs */}

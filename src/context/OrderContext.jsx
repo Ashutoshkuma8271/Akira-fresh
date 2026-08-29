@@ -103,7 +103,7 @@ export const OrderProvider = ({ children }) => {
       deliveryMode,
       shippingAddress,
       timeline: [
-        { step: 'Order Placed', time: 'Just now', done: true, desc: 'Order confirmed in Akira Fresh system' },
+        { step: 'Order Placed', time: 'Just now', done: true, desc: 'Order confirmed in A_S FOODY system' },
         { step: 'Payment Confirmed', time: 'Just now', done: true, desc: `Payment of ₹${total.toLocaleString('en-IN')} confirmed` },
         { step: 'Processing', time: 'Scheduled today', done: false, desc: 'Insulated sub-zero packaging & quality check' },
         { step: 'Shipped', time: 'Pending dispatch', done: false, desc: 'Handed over to carrier' },

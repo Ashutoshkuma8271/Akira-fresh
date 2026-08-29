@@ -604,7 +604,7 @@ async function startServer() {
     }
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[Akira Fresh Server] Server running on http://localhost:${PORT}`);
+      console.log(`[A_S FOODY Server] Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);

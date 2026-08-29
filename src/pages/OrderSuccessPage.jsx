@@ -53,7 +53,7 @@ export const OrderSuccessPage = () => {
           </h1>
 
           <p className="text-xs sm:text-sm text-gray-200/90 max-w-md mx-auto leading-relaxed font-sans">
-            Thank you for choosing Akira Fresh. We are packing your frozen non-veg cuts in specialized sub-zero thermal boxes with dry ice.
+            Thank you for choosing A_S FOODY. We are packing your frozen non-veg cuts in specialized sub-zero thermal boxes with dry ice.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
