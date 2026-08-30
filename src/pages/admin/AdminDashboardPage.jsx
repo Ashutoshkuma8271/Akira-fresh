@@ -45,8 +45,10 @@ export const AdminDashboardPage = () => {
   const [stats, setStats] = useState(null);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [coupons, setCoupons] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
+
   const [siteSettings, setSiteSettings] = useState({
     announcementText: '✨ Complimentary Sub-Zero Delivery Across Delhi NCR on Orders Above ₹999',
     freeShippingThreshold: 999,
@@ -59,9 +61,11 @@ export const AdminDashboardPage = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // Search & Filters in Products
+  // Search & Filters in Products & Customers
   const [productSearch, setProductSearch] = useState('');
   const [productCategoryFilter, setProductCategoryFilter] = useState('all');
+  const [customerSearch, setCustomerSearch] = useState('');
+
 
   // Product Modal State (Add / Edit)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -791,10 +795,116 @@ export const AdminDashboardPage = () => {
           </div>
         )}
 
-        {/* TAB 4: WEBSITE SECTIONS & CONTENT CUSTOMIZER */}
+        {/* TAB 4: CUSTOMERS DIRECTORY */}
+        {activeTab === 'customers' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
+              <div>
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                  <User className="w-6 h-6 text-emerald-400" />
+                  <span>Customer Directory</span>
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Real-time database records of verified customer accounts, contact details, and registered store profiles.
+                </p>
+              </div>
+              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/30 w-max font-bold">
+                {customers.length} Registered Accounts
+              </span>
+            </div>
+
+            {/* Search Customers Bar */}
+            <div className="relative max-w-md">
+              <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                value={customerSearch}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                placeholder="Search customers by name, email, or phone..."
+                className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            {/* Customers Table */}
+            {customers.length === 0 ? (
+              <div className="p-8 text-center bg-navy-850 rounded-2xl border border-navy-800 space-y-2">
+                <User className="w-8 h-8 text-gray-500 mx-auto" />
+                <p className="text-sm font-semibold text-gray-300">No Customers Registered Yet</p>
+                <p className="text-xs text-gray-500">Customer profiles created on the storefront will appear here instantly.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-gray-300">
+                  <thead className="bg-navy-950 text-gray-400 font-mono text-[11px] uppercase border-b border-navy-800">
+                    <tr>
+                      <th className="p-3.5">Customer</th>
+                      <th className="p-3.5">Contact Details</th>
+                      <th className="p-3.5">Verification</th>
+                      <th className="p-3.5">Role</th>
+                      <th className="p-3.5">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-navy-800">
+                    {customers
+                      .filter((c) => {
+                        if (!customerSearch) return true;
+                        const q = customerSearch.toLowerCase();
+                        return (
+                          c.name?.toLowerCase().includes(q) ||
+                          c.email?.toLowerCase().includes(q) ||
+                          c.phone?.includes(q)
+                        );
+                      })
+                      .map((c) => (
+                        <tr key={c.id} className="hover:bg-navy-850/60 transition-colors">
+                          <td className="p-3.5">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                                {c.name ? c.name.charAt(0).toUpperCase() : 'U'}
+                              </div>
+                              <div>
+                                <p className="font-bold text-white text-sm">{c.name || 'Anonymous'}</p>
+                                <p className="text-[11px] text-gray-400 font-mono">ID: {c.id}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3.5">
+                            <p className="font-mono text-gray-200">{c.email}</p>
+                            <p className="text-[11px] text-gray-400">{c.phone || 'No phone provided'}</p>
+                          </td>
+                          <td className="p-3.5">
+                            {c.isVerified ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>Verified</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                                <Clock className="w-3 h-3" />
+                                <span>Pending OTP</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-3.5 font-mono uppercase text-[11px] text-gray-400">
+                            {c.role || 'customer'}
+                          </td>
+                          <td className="p-3.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                            {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'N/A'}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 5: WEBSITE SECTIONS & CONTENT CUSTOMIZER */}
         {activeTab === 'settings' && (
           <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
             <div className="border-b border-navy-800 pb-4">
+
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
                 <Sliders className="w-6 h-6 text-emerald-400" />
                 <span>Website Sections & Content Customizer</span>
