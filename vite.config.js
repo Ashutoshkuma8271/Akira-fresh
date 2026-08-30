@@ -8,12 +8,13 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       }
     }
   },
+
   build: {
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
