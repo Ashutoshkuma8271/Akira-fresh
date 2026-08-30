@@ -122,19 +122,14 @@ app.post('/api/auth/register', authLimiter, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Name, email and password are required.' });
     }
 
-    // Enforce Strong Password Policy (Min 8 chars, uppercase, lowercase, number, special char)
-    const hasMinLength = password.length >= 8;
-    const hasUpper = /[A-Z]/.test(password);
-    const hasLower = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    if (!hasMinLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+    // Customer Password Policy: Min 6 characters
+    if (password.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+        message: 'Password must be at least 6 characters long.'
       });
     }
+
 
     const cleanEmail = email.trim().toLowerCase();
     const adminExisting = await db.getAdminByEmailAsync(cleanEmail);

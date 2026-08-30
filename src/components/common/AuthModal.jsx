@@ -99,11 +99,12 @@ export const AuthModal = () => {
     e.preventDefault();
 
     if (authMode === 'register') {
-      if (!registerStrength.isStrong) {
-        addToast('Please use a strong password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character).', 'error');
+      if (!password || password.length < 6) {
+        addToast('Password must be at least 6 characters.', 'error');
         return;
       }
     }
+
 
     setSubmitting(true);
     if (authMode === 'login') {

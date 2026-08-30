@@ -61,20 +61,23 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
       });
     }
 
-    // CRITICAL SECURITY RULE: Enforce that only ONE admin can ever exist in database
+    // CRITICAL SECURITY RULE: Enforce single active admin
+    const activeAdmin = (await db.getAdminByEmailAsync(cleanEmail)) || null;
     const existingCount = await db.getAdminCountAsync();
-    if (existingCount > 0) {
+    
+    if (existingCount > 0 && (!activeAdmin || (activeAdmin.isVerified && activeAdmin.isActive))) {
       logAudit({
         action: 'Blocked Duplicate Admin Creation Attempt',
         adminEmail: cleanEmail,
         ip: req.ip,
-        details: 'Attempted admin signup when admin already exists in database'
+        details: 'Attempted admin signup when active admin already exists in database'
       });
       return res.status(403).json({
         success: false,
-        message: 'Admin account already exists.'
+        message: 'Administrator account is already registered and active. Please sign in.'
       });
     }
+
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();

@@ -389,15 +389,19 @@ export const db = {
 
   createFirstAdmin: async ({ id, name, email, passwordHash, role = 'admin', isActive = 0, isVerified = false, verificationOtp = null, otpExpiresAt = null }) => {
     loadFromDisk();
-    if (memoryDB.admins && memoryDB.admins.length > 0) {
+    const cleanEmail = email.toLowerCase().trim();
+    const activeAdmin = (memoryDB.admins || []).find(a => (a.isActive === 1 || a.isActive === true) && a.isVerified === true);
+    if (activeAdmin && activeAdmin.email.toLowerCase() !== cleanEmail) {
       throw new Error('ADMIN_ALREADY_EXISTS');
     }
 
     const now = new Date().toISOString();
+    const existingIndex = (memoryDB.admins || []).findIndex(a => a.email.toLowerCase() === cleanEmail);
+
     const newAdmin = {
-      id: id || `adm-${Date.now()}`,
+      id: existingIndex !== -1 ? memoryDB.admins[existingIndex].id : (id || `adm-${Date.now()}`),
       name,
-      email: email.toLowerCase().trim(),
+      email: cleanEmail,
       passwordHash,
       role: 'admin',
       isActive: isActive ? 1 : 0,
@@ -405,18 +409,22 @@ export const db = {
       verificationOtp,
       otpExpiresAt,
       singleAdminLock: 1,
-      createdAt: now,
+      createdAt: existingIndex !== -1 ? memoryDB.admins[existingIndex].createdAt : now,
       updatedAt: now,
       lastLoginAt: null
     };
 
     if (!memoryDB.admins) memoryDB.admins = [];
-    memoryDB.admins.push(newAdmin);
+    if (existingIndex !== -1) {
+      memoryDB.admins[existingIndex] = newAdmin;
+    } else {
+      memoryDB.admins.push(newAdmin);
+    }
     saveToDisk();
 
     // Direct write to Supabase table (using standard columns)
     try {
-      await supabase.from('admins').insert({
+      await supabase.from('admins').upsert({
         id: newAdmin.id,
         name: newAdmin.name,
         email: newAdmin.email,
@@ -427,13 +435,14 @@ export const db = {
         verification_otp: verificationOtp,
         otp_expires_at: otpExpiresAt,
         single_admin_lock: 1,
-        created_at: now,
+        created_at: newAdmin.createdAt,
         updated_at: now
       });
       console.log('⚡ Saved Admin into Supabase table public.admins');
     } catch (err) {
       console.warn('Supabase admins table write note:', err.message);
     }
+
 
     // Also persist in users table as fallback
     try {

@@ -208,10 +208,13 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
                 aria-label="Cart"
               >
                 <ShoppingBag className="w-5 h-5 stroke-[1.9]" />
-                <span className="absolute -top-1 -right-1.5 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
-                  {totalItemsCount}
-                </span>
+                {totalItemsCount > 0 && (
+                  <span className="absolute -top-1 -right-1.5 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
+                    {totalItemsCount}
+                  </span>
+                )}
               </button>
+
 
               {/* User Account Popover (Mobile & Desktop Visible) */}
               <div ref={accountRef} className="relative flex items-center">

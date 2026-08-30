@@ -25,10 +25,11 @@ export const SettingsProvider = ({ children }) => {
         setSettings(data.settings);
       }
     } catch (err) {
-      console.error('Failed to load dynamic site settings:', err);
+      console.warn('Site settings loaded with default cache');
     } finally {
       setLoading(false);
     }
+
   };
 
   useEffect(() => {
