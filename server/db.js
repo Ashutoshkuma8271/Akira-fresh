@@ -539,20 +539,18 @@ export const db = {
       console.log('⚡ Verified and Activated Admin in Supabase');
     } catch (e) {}
 
-    return { success: true, admin };
-  },
-
-
     try {
       await supabase.from('users').update({
         is_verified: true,
         verification_otp: null,
         updated_at: now
-      }).eq('email', clean);
+      }).eq('email', admin.email.toLowerCase());
     } catch (e) {}
 
     return { success: true, admin };
   },
+
+
 
   updateAdmin: (id, updates) => {
     loadFromDisk();
