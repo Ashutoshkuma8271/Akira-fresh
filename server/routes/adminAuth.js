@@ -153,11 +153,12 @@ router.post('/verify-signup-otp', async (req, res) => {
     const result = await db.verifyAdminOtpAsync(cleanEmail, otp.trim());
 
     if (!result.success) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        message: result.message || 'Invalid or expired verification code.'
+        message: result.message || 'Invalid verification code'
       });
     }
+
 
     const admin = result.admin;
     const token = jwt.sign(

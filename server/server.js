@@ -202,8 +202,9 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
     const result = await db.verifyUserOtpAsync(cleanEmail, otp);
 
     if (!result.success) {
-      return res.status(400).json({ success: false, message: result.message });
+      return res.json({ success: false, message: result.message || 'Invalid verification code' });
     }
+
 
     const user = result.user;
     const token = jwt.sign(
@@ -293,13 +294,14 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
     // 2. Customer User Lookup
     const user = await db.getUserByEmailAsync(cleanEmail);
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+      return res.json({ success: false, message: 'Invalid email or password' });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+      return res.json({ success: false, message: 'Invalid email or password' });
     }
+
 
     if (user.isVerified === false) {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
