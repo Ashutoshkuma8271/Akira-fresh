@@ -42,13 +42,13 @@ export const ToastProvider = ({ children }) => {
     const compactMessage = condenseMessage(message);
 
     const baseStyle = {
-      background: 'rgba(11, 25, 44, 0.96)',
-      color: '#F8FAFC',
-      backdropFilter: 'blur(12px)',
+      background: 'rgba(4, 28, 21, 0.96)',
+      color: '#FAF7F0',
+      backdropFilter: 'blur(14px)',
       borderRadius: '9999px',
       padding: '5px 12px',
       fontSize: '11.5px',
-      fontWeight: '500',
+      fontWeight: '600',
       lineHeight: '1.25',
       maxWidth: '300px',
       letterSpacing: '0.01em',
@@ -62,8 +62,8 @@ export const ToastProvider = ({ children }) => {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(16, 185, 129, 0.35)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(16, 185, 129, 0.15)',
+          border: '1px solid rgba(16, 185, 129, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.25)',
         },
         icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
       });
@@ -72,8 +72,8 @@ export const ToastProvider = ({ children }) => {
         duration: duration + 400,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(239, 68, 68, 0.4)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(239, 68, 68, 0.15)',
+          border: '1px solid rgba(239, 68, 68, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(239, 68, 68, 0.2)',
         },
         icon: <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />,
       });
@@ -82,23 +82,24 @@ export const ToastProvider = ({ children }) => {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(56, 189, 248, 0.35)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(56, 189, 248, 0.15)',
+          border: '1px solid rgba(132, 204, 22, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(132, 204, 22, 0.2)',
         },
-        icon: <Info className="w-3.5 h-3.5 text-sky-400 shrink-0" />,
+        icon: <Info className="w-3.5 h-3.5 text-lime-400 shrink-0" />,
       });
     } else {
       toast(compactMessage, {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(245, 158, 11, 0.4)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(245, 158, 11, 0.2)',
         },
-        icon: <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
+        icon: <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />,
       });
     }
   }, []);
+
 
 
 
