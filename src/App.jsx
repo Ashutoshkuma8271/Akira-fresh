@@ -70,20 +70,28 @@ export function App() {
       <Toaster
         position="top-center"
         reverseOrder={false}
+        gutter={6}
+        containerStyle={{
+          top: 20,
+        }}
         toastOptions={{
-          duration: 3500,
+          duration: 2400,
           style: {
-            background: '#061A27',
-            color: '#FAF7F0',
-            border: '1px solid rgba(245, 184, 61, 0.35)',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 184, 61, 0.15)',
-            borderRadius: '16px',
-            padding: '12px 20px',
-            fontSize: '13px',
-            fontWeight: '600',
+            background: 'rgba(11, 25, 44, 0.96)',
+            color: '#F8FAFC',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: '0 6px 16px -2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(16, 185, 129, 0.1)',
+            borderRadius: '9999px',
+            padding: '6px 13px',
+            fontSize: '12px',
+            fontWeight: '500',
+            lineHeight: '1.3',
+            maxWidth: '360px',
           },
         }}
       />
+
 
       <ThemeProvider>
         <SettingsProvider>
