@@ -608,28 +608,42 @@ async function startServer() {
 
     // Mount Vite dev middleware in development or static assets in production
     if (process.env.NODE_ENV !== 'production') {
+      const http = await import('http');
+      const server = http.createServer(app);
+
       const { createServer: createViteServer } = await import('vite');
       const vite = await createViteServer({
         root: rootDir,
-        server: { middlewareMode: true },
+        server: {
+          middlewareMode: true,
+          hmr: {
+            server: server,
+          },
+        },
         appType: 'spa',
       });
       app.use(vite.middlewares);
+
+      server.listen(PORT, '0.0.0.0', () => {
+        console.log(`[A_S FOODY Server] Server running on http://localhost:${PORT}`);
+      });
+      return;
     } else {
       const distPath = path.join(rootDir, 'dist');
       app.use(express.static(distPath));
       app.get('*', (req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
       });
-    }
 
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[A_S FOODY Server] Server running on http://localhost:${PORT}`);
-    });
+      app.listen(PORT, '0.0.0.0', () => {
+        console.log(`[A_S FOODY Server] Server running on http://localhost:${PORT}`);
+      });
+    }
   } catch (err) {
     console.error('Failed to start server:', err);
   }
 }
+
 
 if (!process.env.VERCEL) {
   startServer();

@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '0.0.0.0',
+    hmr: {
+      clientPort: 5173,
+    },
     proxy: {
       '/api': {
         target: process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:5000',
@@ -14,6 +17,7 @@ export default defineConfig({
       }
     }
   },
+
 
   build: {
     cssCodeSplit: true,
