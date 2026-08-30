@@ -102,16 +102,17 @@ export const Logo = ({ size = 'normal', showTagline = true, variant = 'default',
       </div>
 
       {/* Brand Wordmark & Subtitle */}
-      <div className="hidden min-[380px]:flex flex-col text-left justify-center">
-        <span className="font-serif text-[19px] sm:text-[22px] font-black tracking-[-0.01em] text-[#0D1F18] dark:text-white leading-[1.05] group-hover:text-[#D4AF37] dark:group-hover:text-[#FBBF24] transition-colors">
+      <div className="hidden min-[350px]:flex flex-col text-left justify-center">
+        <span className="font-serif text-[15px] sm:text-[19px] md:text-[22px] font-black tracking-[-0.01em] text-[#0D1F18] dark:text-white leading-[1.05] group-hover:text-[#D4AF37] dark:group-hover:text-[#FBBF24] transition-colors">
           A_S FOODY
         </span>
         {showTagline && (
-          <span className="text-[7.5px] sm:text-[8px] font-bold tracking-[0.18em] text-[#4B5563] dark:text-gray-350 uppercase mt-0.5 font-sans leading-none">
+          <span className="text-[6.5px] sm:text-[7.5px] md:text-[8px] font-bold tracking-[0.14em] text-[#4B5563] dark:text-gray-350 uppercase mt-0.5 font-sans leading-none">
             FRESH • TASTY • ALWAYS
           </span>
         )}
       </div>
     </Link>
+
   );
 };

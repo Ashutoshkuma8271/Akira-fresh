@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Heart, ShoppingBag, User, Sparkles, Menu } from 'lucide-react';
 import { Logo } from '../common/Logo';
+import { ThemeToggle } from '../common/ThemeToggle';
 import { SearchModal } from '../common/SearchModal';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -55,20 +56,20 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
       {/* Master Main Header (Matching Exact Reference Mockup) */}
       <div
         className={`w-full bg-white/95 dark:bg-[#072418]/95 backdrop-blur-md border-b border-gray-200/80 dark:border-forest-800 transition-all duration-300 select-none shadow-xs ${
-          isScrolled ? 'py-2.5 sm:py-3' : 'py-3.5 sm:py-4'
+          isScrolled ? 'py-2.5 sm:py-3' : 'py-3 sm:py-4'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 lg:gap-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
             
             {/* Left: Mobile Menu Button + Brand Logo */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 onClick={onOpenMobileMenu}
                 aria-label="Open mobile menu"
-                className="lg:hidden p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] rounded-xl hover:bg-gray-100 dark:hover:bg-forest-800 transition-colors cursor-pointer"
+                className="lg:hidden p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] rounded-xl hover:bg-gray-100 dark:hover:bg-forest-800 transition-colors cursor-pointer"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-6 h-6 stroke-[2]" />
               </button>
               <Logo />
             </div>
@@ -156,13 +157,13 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               </Link>
             </nav>
 
-            {/* Right: Search Capsule + Account + Wishlist + Cart */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            {/* Right: Search Capsule + ThemeToggle + Wishlist + Cart + Profile */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-3 shrink-0">
               
-              {/* Search Capsule Input */}
+              {/* Search Capsule Input (Desktop) */}
               <form
                 onSubmit={handleSearchSubmit}
-                className="hidden md:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3.5 py-1.5 w-56 lg:w-72 border border-gray-200/80 dark:border-forest-700 shadow-2xs"
+                className="hidden md:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3.5 py-1.5 w-48 lg:w-72 border border-gray-200/80 dark:border-forest-700 shadow-2xs"
               >
                 <Search className="w-4 h-4 text-gray-500 shrink-0 mr-2" />
                 <input
@@ -177,34 +178,61 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
               {/* Mobile Search Trigger */}
               <button
                 onClick={() => setIsSearchModalOpen(true)}
-                className="md:hidden p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] rounded-full hover:bg-gray-100 dark:hover:bg-forest-800 transition-colors"
+                className="md:hidden p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5 stroke-[1.9]" />
               </button>
 
-              {/* User Account Popover */}
-              <div ref={accountRef} className="relative hidden md:block">
+              {/* Theme Toggle (Matching Reference Mockup) */}
+              <ThemeToggle />
+
+              {/* Wishlist Link (Mobile & Desktop Visible) */}
+              <Link
+                to="/wishlist"
+                className="p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative flex items-center justify-center cursor-pointer"
+                aria-label="Wishlist"
+              >
+                <Heart className="w-5 h-5 stroke-[1.9]" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#22C55E] text-forest-950 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Cart Button with Amber/Gold Counter Badge (Matching Reference Mockup) */}
+              <button
+                onClick={() => setIsCartDrawerOpen(true)}
+                className="p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer flex items-center justify-center"
+                aria-label="Cart"
+              >
+                <ShoppingBag className="w-5 h-5 stroke-[1.9]" />
+                <span className="absolute -top-1 -right-1.5 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
+                  {totalItemsCount}
+                </span>
+              </button>
+
+              {/* User Account Popover (Mobile & Desktop Visible) */}
+              <div ref={accountRef} className="relative flex items-center">
                 <button
                   onClick={() => setIsAccountOpen(!isAccountOpen)}
-                  className="p-1 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center shrink-0 overflow-hidden"
                   aria-label="Account"
                 >
                   {isAuthenticated && user?.avatar ? (
                     <img
                       src={user.avatar}
                       alt={user.name || 'User'}
-                      className="w-7 h-7 rounded-full object-cover border border-[#1b4332]/40 dark:border-lime-400/40 shadow-xs"
+                      className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <div className="p-0.5">
-                      <User className="w-5 h-5 stroke-[1.9]" />
-                    </div>
+                    <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
                   )}
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-forest-900 border border-gray-100 dark:border-leaf-500/30 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-2xl py-2 z-50 animate-scaleUp">
+                  <div className="absolute right-0 top-full mt-2 w-56 sm:w-60 bg-white dark:bg-forest-900 border border-gray-100 dark:border-leaf-500/30 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-2xl py-2 z-50 animate-scaleUp">
                     {isAuthenticated ? (
                       <>
                         <div className="px-4 py-3 border-b border-gray-100 dark:border-forest-800">
@@ -274,34 +302,6 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
                   </div>
                 )}
               </div>
-
-              {/* Wishlist Link */}
-              <Link
-                to="/wishlist"
-                className="p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative hidden md:block"
-                aria-label="Wishlist"
-              >
-                <Heart className="w-5 h-5 stroke-[1.9]" />
-                {wishlistCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-[#22C55E] text-forest-950 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
-                    {wishlistCount}
-                  </span>
-                )}
-              </Link>
-
-              {/* Cart Button with Live Green Counter Badge */}
-              <button
-                onClick={() => setIsCartDrawerOpen(true)}
-                className="p-1.5 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer"
-                aria-label="Cart"
-              >
-                <ShoppingBag className="w-5 h-5 stroke-[1.9]" />
-                {totalItemsCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-[#4ADE80] text-black font-extrabold text-[10px] sm:text-[11px] min-w-[17px] h-[19px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900">
-                    {totalItemsCount}
-                  </span>
-                )}
-              </button>
 
             </div>
 
