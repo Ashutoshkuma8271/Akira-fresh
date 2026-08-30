@@ -140,15 +140,22 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: data.message };
       }
 
-      setAuthMode('login');
-      setAuthNotice('Account verified! Please enter your password to sign in.');
-      addToast('Account verified', 'success');
-      return { success: true };
+      if (data.user) {
+        setUser(data.user);
+        if (data.token) {
+          localStorage.setItem('as_commerce_token', data.token);
+        }
+      }
+      setIsAuthModalOpen(false);
+      setAuthNotice('');
+      addToast(`Welcome, ${data.user ? data.user.name.split(' ')[0] : 'User'}!`, 'success');
+      return { success: true, user: data.user, token: data.token };
     } catch (e) {
       addToast('Verification failed', 'error');
       return { success: false };
     }
   };
+
 
   const resendSignupOtp = async (email) => {
     if (!email) {
