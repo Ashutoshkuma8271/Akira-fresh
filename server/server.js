@@ -363,8 +363,9 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
           message: 'Admin account — please use Admin Portal.'
         });
       }
-      return res.status(404).json({ success: false, message: 'No account found with this email.' });
+      return res.status(400).json({ success: false, message: 'No account found with this email. Please check your spelling.' });
     }
+
 
     // Generate cryptographic 32-byte recovery token & 6-digit OTP
     const token = crypto.randomBytes(32).toString('hex');

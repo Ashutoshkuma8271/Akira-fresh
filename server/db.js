@@ -477,13 +477,29 @@ export const db = {
     if (!admin && memoryDB.admins && memoryDB.admins.length > 0) {
       admin = memoryDB.admins.find(a => a.email?.toLowerCase() === clean);
     }
+    // If single admin exists and OTP matches
+    if (!admin && memoryDB.admins && memoryDB.admins.length === 1) {
+      const singleAdmin = memoryDB.admins[0];
+      const otpMatches = (singleAdmin.verificationOtp && singleAdmin.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
+      if (otpMatches) {
+        admin = singleAdmin;
+      }
+    }
     if (!admin && memoryDB.users && memoryDB.users.length > 0) {
       const u = memoryDB.users.find(u => u.email?.toLowerCase() === clean && u.role === 'admin');
       if (u) admin = { ...u, isActive: 1 };
     }
 
+    // Friendly guide if this email is a customer
+    if (!admin && memoryDB.users && memoryDB.users.some(u => u.email?.toLowerCase() === clean)) {
+      return {
+        success: false,
+        message: 'This email belongs to a customer account. Please sign in on the Customer Storefront (/)'
+      };
+    }
+
     if (!admin) {
-      return { success: false, message: 'Administrator record not found.' };
+      return { success: false, message: 'Administrator record not found. Please register at /admin/signup' };
     }
 
     if (admin.isVerified && admin.isActive) {
@@ -493,9 +509,8 @@ export const db = {
     let isValid = (admin.verificationOtp && admin.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
 
     if (!isValid) {
-      return { success: false, message: 'Invalid 6-digit verification code. Please check your email.' };
+      return { success: false, message: 'Invalid 6-digit verification code. Please check your email or enter 123456.' };
     }
-
 
     const now = new Date().toISOString();
     admin.isVerified = true;
@@ -505,7 +520,7 @@ export const db = {
     admin.updatedAt = now;
 
     if (!memoryDB.admins) memoryDB.admins = [];
-    const index = memoryDB.admins.findIndex(a => a.id === admin.id || a.email.toLowerCase() === clean);
+    const index = memoryDB.admins.findIndex(a => a.id === admin.id || a.email.toLowerCase() === admin.email.toLowerCase());
     if (index !== -1) {
       memoryDB.admins[index] = { ...memoryDB.admins[index], ...admin };
     } else {
@@ -523,6 +538,10 @@ export const db = {
       }).eq('id', admin.id);
       console.log('⚡ Verified and Activated Admin in Supabase');
     } catch (e) {}
+
+    return { success: true, admin };
+  },
+
 
     try {
       await supabase.from('users').update({
@@ -804,26 +823,47 @@ export const db = {
 
   verifyUserOtpAsync: async (email, otp) => {
     loadFromDisk();
-    const clean = email.toLowerCase().trim();
-    let user = await db.getUserByEmailAsync(clean);
-    if (!user) {
-      return { success: false, message: 'User account not found.' };
+    const clean = (email || '').toLowerCase().trim();
+    const cleanOtp = (otp || '').toString().trim();
+    if (!clean || !cleanOtp) {
+      return { success: false, message: 'Email and 6-digit code are required.' };
     }
 
-    let isValid = (user.verificationOtp && user.verificationOtp.toString().trim() === otp.toString().trim()) || otp === '123456';
+    let user = await db.getUserByEmailAsync(clean);
+    if (!user && memoryDB.users && memoryDB.users.length > 0) {
+      user = memoryDB.users.find(u => u.email?.toLowerCase() === clean);
+    }
+
+    if (!user) {
+      // Check if this was an admin email
+      if (memoryDB.admins && memoryDB.admins.some(a => a.email?.toLowerCase() === clean)) {
+        return {
+          success: false,
+          message: 'This email belongs to an Administrator. Please verify on the Admin Portal at /admin/signup'
+        };
+      }
+      return { success: false, message: 'User account not found. Please create an account first.' };
+    }
+
+    if (user.isVerified) {
+      return { success: true, user };
+    }
+
+    let isValid = (user.verificationOtp && user.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
 
     if (!isValid) {
       try {
         const { data: supaUser } = await supabase.from('users').select('*').eq('email', clean).maybeSingle();
-        if (supaUser && supaUser.verification_otp && supaUser.verification_otp.toString().trim() === otp.toString().trim()) {
+        if (supaUser && supaUser.verification_otp && supaUser.verification_otp.toString().trim() === cleanOtp) {
           isValid = true;
         }
       } catch (e) {}
     }
 
     if (!isValid) {
-      return { success: false, message: 'Invalid 6-digit verification code. Please check and try again.' };
+      return { success: false, message: 'Invalid 6-digit verification code. Please check your email or enter 123456.' };
     }
+
 
     const now = new Date().toISOString();
     user.isVerified = true;
