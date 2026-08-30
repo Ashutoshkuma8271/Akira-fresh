@@ -276,7 +276,12 @@ export const AuthModal = () => {
 
             <form onSubmit={handleVerifyOtpSubmit} className="space-y-4">
               <div>
+                <label htmlFor="auth-otp-code" className="sr-only">
+                  6-digit Verification Code
+                </label>
                 <input
+                  id="auth-otp-code"
+                  name="otp_code"
                   type="text"
                   required
                   autoFocus
@@ -345,8 +350,11 @@ export const AuthModal = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Reset Code *</label>
+                  <label htmlFor="auth-reset-otp" className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Reset Code *</label>
                   <input
+                    id="auth-reset-otp"
+                    name="reset_otp"
+                    autoComplete="one-time-code"
                     type="text"
                     required
                     maxLength={6}
@@ -358,10 +366,13 @@ export const AuthModal = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">New Strong Password *</label>
+                  <label htmlFor="auth-reset-new-password" className="block text-xs font-semibold text-gray-300 mb-1">New Password *</label>
                   <div className="relative">
                     <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
+                      id="auth-reset-new-password"
+                      name="reset_new_password"
+                      autoComplete="new-password"
                       type={showResetPassword ? 'text' : 'password'}
                       required
                       value={resetNewPassword}
@@ -399,10 +410,13 @@ export const AuthModal = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Confirm New Password *</label>
+                  <label htmlFor="auth-reset-confirm-password" className="block text-xs font-semibold text-gray-300 mb-1">Confirm New Password *</label>
                   <div className="relative">
                     <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
+                      id="auth-reset-confirm-password"
+                      name="reset_confirm_password"
+                      autoComplete="new-password"
                       type={showResetConfirmPassword ? 'text' : 'password'}
                       required
                       value={resetConfirmPassword}
@@ -425,7 +439,7 @@ export const AuthModal = () => {
                   disabled={submitting || resetOtp.length < 6}
                   className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all cursor-pointer disabled:opacity-50 mt-2"
                 >
-                  {submitting ? 'Updating...' : 'Update Password'}
+                  {submitting ? 'Updating Password...' : 'Save New Password'}
                 </button>
 
                 <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-navy-800">
@@ -452,10 +466,12 @@ export const AuthModal = () => {
             ) : (
               <form onSubmit={handleForgotSubmit} className="space-y-3.5 animate-fadeIn">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Account Email</label>
+                  <label htmlFor="auth-forgot-email" className="block text-xs font-semibold text-gray-300 mb-1">Account Email</label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                     <input
+                      id="auth-forgot-email"
+                      name="forgot_email"
                       type="email"
                       required
                       value={resetEmail}
@@ -509,10 +525,13 @@ export const AuthModal = () => {
           <form onSubmit={handleSubmit} className="p-6 pt-2 space-y-3.5">
             {authMode === 'register' && (
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
+                <label htmlFor="auth-register-name" className="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
                 <div className="relative">
                   <User className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                   <input
+                    id="auth-register-name"
+                    name="customer_name"
+                    autoComplete="name"
                     type="text"
                     required
                     value={name}
@@ -525,10 +544,13 @@ export const AuthModal = () => {
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
+              <label htmlFor="auth-customer-email" className="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                 <input
+                  id="auth-customer-email"
+                  name="customer_email"
+                  autoComplete="email"
                   type="email"
                   required
                   value={email}
@@ -541,10 +563,13 @@ export const AuthModal = () => {
 
             {authMode === 'register' && (
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Phone Number</label>
+                <label htmlFor="auth-register-phone" className="block text-xs font-semibold text-gray-300 mb-1">Phone Number</label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                   <input
+                    id="auth-register-phone"
+                    name="customer_phone"
+                    autoComplete="tel"
                     type="tel"
                     required
                     value={phone}
@@ -558,7 +583,7 @@ export const AuthModal = () => {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-gray-300">Password</label>
+                <label htmlFor="auth-customer-password" className="block text-xs font-semibold text-gray-300">Password</label>
                 {authMode === 'login' && (
                   <button
                     type="button"
@@ -575,6 +600,9 @@ export const AuthModal = () => {
               <div className="relative">
                 <Lock className="w-4 h-4 text-emerald-400 absolute left-3 top-3" />
                 <input
+                  id="auth-customer-password"
+                  name="customer_password"
+                  autoComplete={authMode === 'register' ? 'new-password' : 'current-password'}
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}

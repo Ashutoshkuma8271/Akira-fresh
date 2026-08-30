@@ -15,7 +15,13 @@ export const AdminSignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otp, setOtp] = useState('');
-  const [registeredEmail, setRegisteredEmail] = useState('');
+  const [registeredEmail, setRegisteredEmail] = useState(() => {
+    try {
+      return sessionStorage.getItem('as_admin_pending_email') || '';
+    } catch (e) {
+      return '';
+    }
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -74,11 +80,16 @@ export const AdminSignupPage = () => {
     }
 
     setIsSubmitting(true);
-    const result = await signup(name.trim(), email.trim(), password);
+    const cleanEmail = email.trim().toLowerCase();
+    const result = await signup(name.trim(), cleanEmail, password);
     setIsSubmitting(false);
 
     if (result.success) {
-      setRegisteredEmail(email.trim());
+      const emailToUse = result.email || cleanEmail;
+      setRegisteredEmail(emailToUse);
+      try {
+        sessionStorage.setItem('as_admin_pending_email', emailToUse);
+      } catch (e) {}
       setStep('otp');
     } else {
       setErrorMessage(result.message || 'Registration failed. Administrator may already exist.');
@@ -89,17 +100,26 @@ export const AdminSignupPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
+    const emailToVerify = (registeredEmail || email || sessionStorage.getItem('as_admin_pending_email') || '').trim();
+    if (!emailToVerify) {
+      setErrorMessage('Email address missing. Please go back to registration.');
+      return;
+    }
+
     if (!otp || otp.trim().length !== 6) {
       setErrorMessage('Please enter the valid 6-digit verification code.');
       return;
     }
 
     setIsSubmitting(true);
-    const result = await verifySignupOtp(registeredEmail, otp.trim());
+    const result = await verifySignupOtp(emailToVerify, otp.trim());
     setIsSubmitting(false);
 
     if (result.success) {
       setStep('verified');
+      try {
+        sessionStorage.removeItem('as_admin_pending_email');
+      } catch (e) {}
       setTimeout(() => {
         navigate('/admin/dashboard', { replace: true });
       }, 1200);
@@ -107,6 +127,7 @@ export const AdminSignupPage = () => {
       setErrorMessage(result.message || 'Invalid or expired OTP code. Please check your email.');
     }
   };
+
 
   // If backend reports an administrator already exists:
   if (adminExists === true && step === 'form') {
@@ -181,7 +202,13 @@ export const AdminSignupPage = () => {
 
           <form onSubmit={handleVerifyOtp} className="space-y-5">
             <div>
+              <label htmlFor="admin-signup-otp" className="sr-only">
+                6-digit Verification Passcode
+              </label>
               <input
+                id="admin-signup-otp"
+                name="admin_otp"
+                autoComplete="one-time-code"
                 type="text"
                 maxLength={6}
                 required
@@ -195,6 +222,7 @@ export const AdminSignupPage = () => {
                 ⏱️ Passcode is valid for 15 minutes.
               </p>
             </div>
+
 
             <button
               type="submit"
@@ -285,12 +313,15 @@ export const AdminSignupPage = () => {
         {/* Signup Form */}
         <form onSubmit={handleSubmitSignup} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+            <label htmlFor="admin-signup-name" className="block text-xs font-semibold text-gray-300 mb-1.5">
               Full Name
             </label>
             <div className="relative">
               <User className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
+                id="admin-signup-name"
+                name="admin_name"
+                autoComplete="name"
                 type="text"
                 required
                 value={name}
@@ -302,12 +333,15 @@ export const AdminSignupPage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+            <label htmlFor="admin-signup-email" className="block text-xs font-semibold text-gray-300 mb-1.5">
               Official Email Address
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
+                id="admin-signup-email"
+                name="admin_email"
+                autoComplete="email"
                 type="email"
                 required
                 value={email}
@@ -320,12 +354,15 @@ export const AdminSignupPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+              <label htmlFor="admin-signup-password" className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Master Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                 <input
+                  id="admin-signup-password"
+                  name="admin_password"
+                  autoComplete="new-password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
@@ -337,6 +374,7 @@ export const AdminSignupPage = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
+                  title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -344,12 +382,15 @@ export const AdminSignupPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+              <label htmlFor="admin-signup-confirm-password" className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Confirm Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
                 <input
+                  id="admin-signup-confirm-password"
+                  name="admin_confirm_password"
+                  autoComplete="new-password"
                   type={showConfirmPassword ? 'text' : 'password'}
                   required
                   value={confirmPassword}
@@ -361,12 +402,14 @@ export const AdminSignupPage = () => {
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-3 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
+                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
           </div>
+
 
           {/* Real-time Password Strength Meter */}
           {password && (

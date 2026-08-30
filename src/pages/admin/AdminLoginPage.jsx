@@ -70,12 +70,15 @@ export const AdminLoginPage = () => {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+            <label htmlFor="admin-login-email" className="block text-xs font-semibold text-gray-300 mb-1.5">
               Administrator Email
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
+                id="admin-login-email"
+                name="admin_email"
+                autoComplete="email"
                 type="email"
                 required
                 value={email}
@@ -88,7 +91,7 @@ export const AdminLoginPage = () => {
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-semibold text-gray-300">
+              <label htmlFor="admin-login-password" className="text-xs font-semibold text-gray-300">
                 Password
               </label>
               <Link
@@ -101,6 +104,9 @@ export const AdminLoginPage = () => {
             <div className="relative">
               <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3.5" />
               <input
+                id="admin-login-password"
+                name="admin_password"
+                autoComplete="current-password"
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
@@ -118,6 +124,7 @@ export const AdminLoginPage = () => {
               </button>
             </div>
           </div>
+
 
           <button
             type="submit"

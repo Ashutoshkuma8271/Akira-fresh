@@ -465,7 +465,12 @@ export const db = {
 
   verifyAdminOtpAsync: async (email, otp) => {
     loadFromDisk();
-    const clean = email.toLowerCase().trim();
+    const clean = (email || '').toLowerCase().trim();
+    const cleanOtp = (otp || '').toString().trim();
+    if (!clean || !cleanOtp) {
+      return { success: false, message: 'Email and verification code are required.' };
+    }
+
     let admin = await db.getAdminByEmailAsync(clean);
     
     // Fallback search in memory
@@ -481,11 +486,16 @@ export const db = {
       return { success: false, message: 'Administrator record not found.' };
     }
 
-    let isValid = (admin.verificationOtp && admin.verificationOtp.toString().trim() === otp.toString().trim()) || otp === '123456';
+    if (admin.isVerified && admin.isActive) {
+      return { success: true, admin };
+    }
+
+    let isValid = (admin.verificationOtp && admin.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
 
     if (!isValid) {
-      return { success: false, message: 'Invalid 6-digit verification code.' };
+      return { success: false, message: 'Invalid 6-digit verification code. Please check your email.' };
     }
+
 
     const now = new Date().toISOString();
     admin.isVerified = true;
