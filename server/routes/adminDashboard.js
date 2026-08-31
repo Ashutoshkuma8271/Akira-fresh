@@ -51,9 +51,9 @@ router.post('/upload-image', upload.single('image'), async (req, res) => {
 });
 
 // 1. GET /api/admin/stats — Dashboard Analytics & KPIs
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
-    const stats = db.getStats();
+    const stats = await db.getStatsAsync();
     return res.json({
       success: true,
       stats,
@@ -68,10 +68,10 @@ router.get('/stats', (req, res) => {
 
 // 2. PRODUCTS CRUD
 // GET /api/admin/products (with high-performance pagination & search)
-router.get('/products', (req, res) => {
+router.get('/products', async (req, res) => {
   try {
     const { page, limit, search, category } = req.query;
-    let products = db.getProducts();
+    let products = await db.getProductsAsync();
 
     if (category && category !== 'all') {
       products = products.filter(p => p.category === category);
@@ -198,9 +198,9 @@ router.delete('/products/:id', async (req, res) => {
 
 // 3. ORDERS & DELIVERY MANAGEMENT
 // GET /api/admin/orders
-router.get('/orders', (req, res) => {
+router.get('/orders', async (req, res) => {
   try {
-    const orders = db.getOrders();
+    const orders = await db.getOrdersAsync();
     return res.json({ success: true, orders });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Failed to fetch consignments' });
@@ -208,7 +208,7 @@ router.get('/orders', (req, res) => {
 });
 
 // PUT /api/admin/orders/:id/status — Advance Logistics & Delivery Status
-router.put('/orders/:id/status', (req, res) => {
+router.put('/orders/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
     const { status, carrier, trackingNumber, note } = req.body;
@@ -218,7 +218,7 @@ router.put('/orders/:id/status', (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found.' });
     }
 
-    const updated = db.updateOrderStatus(id, { status, carrier, trackingNumber, note });
+    const updated = await db.updateOrderStatusAsync(id, { status, carrier, trackingNumber, note });
 
     logAudit({
       action: 'Order status updated',
@@ -352,9 +352,9 @@ router.get('/audit-logs', (req, res) => {
 
 // 7. CUSTOMERS MANAGEMENT
 // GET /api/admin/customers
-router.get('/customers', (req, res) => {
+router.get('/customers', async (req, res) => {
   try {
-    const users = db.getUsers();
+    const users = await db.getCustomersAsync();
     const sanitized = users.map(u => ({
       id: u.id,
       name: u.name,

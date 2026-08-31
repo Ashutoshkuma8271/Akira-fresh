@@ -3,7 +3,6 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowLeft, ShieldCheck, Sparkles, KeyRound, Mail } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import confetti from 'canvas-confetti';
 
 export const CustomerResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
@@ -93,12 +92,14 @@ export const CustomerResetPasswordPage = () => {
     if (res && res.success) {
       setIsSuccess(true);
       try {
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ['#F5B83D', '#061A27', '#FFD36A', '#ffffff'],
-        });
+        if (typeof window !== 'undefined' && window.confetti) {
+          window.confetti({
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#10B981', '#061A27', '#34D399', '#ffffff'],
+          });
+        }
       } catch (err) {}
     }
   };

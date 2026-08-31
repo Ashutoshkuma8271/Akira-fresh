@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import confetti from 'canvas-confetti';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useOrder } from '../context/OrderContext';
@@ -328,12 +327,14 @@ export const CheckoutPage = () => {
     setIsProcessing(false);
 
     try {
-      confetti({
-        particleCount: 140,
-        spread: 90,
-        origin: { y: 0.6 },
-        colors: ['#F5B83D', '#061A27', '#FFD36A', '#ffffff'],
-      });
+      if (typeof window !== 'undefined' && window.confetti) {
+        window.confetti({
+          particleCount: 140,
+          spread: 90,
+          origin: { y: 0.6 },
+          colors: ['#10B981', '#061A27', '#34D399', '#ffffff'],
+        });
+      }
     } catch (e) {}
 
     navigate('/order-success');

@@ -545,10 +545,10 @@ app.put(['/api/users/me', '/api/users/profile'], async (req, res) => {
 });
 
 // Customer & Scoped Orders API
-app.get('/api/orders', (req, res) => {
+app.get('/api/orders', async (req, res) => {
   try {
     const { email, userId } = req.query || {};
-    let orders = db.getOrders();
+    let orders = await db.getOrdersAsync();
 
     if (email) {
       const cleanEmail = email.trim().toLowerCase();

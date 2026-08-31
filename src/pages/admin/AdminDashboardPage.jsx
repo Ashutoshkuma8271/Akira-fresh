@@ -35,6 +35,7 @@ import {
   EyeOff,
 } from 'lucide-react';
 import { Logo } from '../../components/common/Logo';
+import { supabase } from '../../lib/supabase';
 
 export const AdminDashboardPage = () => {
   const navigate = useNavigate();
@@ -141,9 +142,9 @@ export const AdminDashboardPage = () => {
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [passSubmitting, setPassSubmitting] = useState(false);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const headers = { Authorization: `Bearer ${token}` };
 
       const [statsRes, prodRes, ordersRes, couponsRes, auditRes, settingsRes, custRes] = await Promise.all([
@@ -187,12 +188,36 @@ export const AdminDashboardPage = () => {
     } catch (err) {
       console.warn('Backend server offline, loading local dashboard cache');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchDashboardData();
+
+    // 1. Supabase Realtime Channel Subscription for Live Orders, Products & Users
+    const channel = supabase
+      .channel('admin-realtime-listener')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        fetchDashboardData(true);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
+        fetchDashboardData(true);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+        fetchDashboardData(true);
+      })
+      .subscribe();
+
+    // 2. High-Reliability Silent Auto-Sync Polling Interval (every 10 seconds)
+    const interval = setInterval(() => {
+      fetchDashboardData(true);
+    }, 10000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, [token]);
 
   // Product Actions
@@ -738,60 +763,117 @@ export const AdminDashboardPage = () => {
                   <Truck className="w-6 h-6 text-emerald-400" />
                   <span>Order Fulfillment & Delivery Logistics</span>
                 </h3>
-                <p className="text-xs text-gray-400">
-                  Update delivery stages, carrier tracking numbers, and address dossiers.
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Real-time live customer orders synchronized with Supabase database.
                 </p>
               </div>
-              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max">
-                {orders.length} Total Shipments
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              {orders.map((order) => (
-                <div key={order.id} className="p-5 rounded-2xl bg-navy-850 border border-navy-800 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-navy-800 pb-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold font-mono text-emerald-400">Order #{order.id}</span>
-                        <span className="text-xs text-gray-400">• {order.date}</span>
-                      </div>
-                      <p className="text-xs text-gray-300 mt-0.5">
-                        Client: <strong className="text-white">{order.shippingAddress?.name || order.shippingAddress?.fullName || 'Customer'}</strong> ({order.shippingAddress?.phone || 'No phone'})
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-serif font-bold text-white">{formatINR(order.total)}</span>
-                      
-                      <button
-                        onClick={() => handleOpenDeliveryModal(order)}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs shadow-md hover:brightness-105 cursor-pointer"
-                      >
-                        <Truck className="w-3.5 h-3.5" />
-                        <span>Update Delivery ({order.status})</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-300">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Destination Address</span>
-                      <p className="leading-relaxed">
-                        {order.shippingAddress?.street}, {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Carrier Details</span>
-                      <p className="leading-relaxed">
-                        Carrier: <strong className="text-white">{order.carrier}</strong> | Waybill Tracking: <span className="font-mono text-emerald-400">{order.trackingNumber}</span>
-                      </p>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Supabase Live Sync</span>
                 </div>
-              ))}
+                <button
+                  onClick={() => fetchDashboardData(false)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy-800 hover:bg-navy-750 text-gray-300 hover:text-white border border-navy-700 text-xs cursor-pointer transition-all"
+                  title="Manual Refresh"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Refresh</span>
+                </button>
+                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max font-bold">
+                  {orders.length} Shipments
+                </span>
+              </div>
             </div>
+
+            {orders.length === 0 ? (
+              <div className="p-8 text-center bg-navy-850 rounded-2xl border border-navy-800 space-y-2">
+                <ShoppingBag className="w-8 h-8 text-gray-500 mx-auto" />
+                <p className="text-sm font-semibold text-gray-300">No Orders in Database Yet</p>
+                <p className="text-xs text-gray-500">Newly placed storefront orders will appear here automatically via Supabase Realtime.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <div key={order.id} className="p-5 rounded-2xl bg-navy-850 border border-navy-800 space-y-4 hover:border-navy-700 transition-all">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-navy-800 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-bold font-mono text-emerald-400">Order #{order.id}</span>
+                          <span className="text-xs text-gray-400">• {order.date || (order.createdAt ? order.createdAt.split('T')[0] : 'Today')}</span>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                            order.status === 'Delivered'
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              : order.status === 'Shipped' || order.status === 'Out for Delivery'
+                              ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                              : order.status === 'Cancelled'
+                              ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-300 mt-1">
+                          Client: <strong className="text-white">{order.shippingAddress?.name || order.shippingAddress?.fullName || order.customerName || 'Customer'}</strong> 
+                          {order.customerEmail ? ` • ${order.customerEmail}` : (order.shippingAddress?.email ? ` • ${order.shippingAddress.email}` : '')}
+                          {(order.shippingAddress?.phone || order.customerPhone) ? ` • 📞 ${order.shippingAddress?.phone || order.customerPhone}` : ''}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-base font-serif font-bold text-white">{formatINR(order.total)}</span>
+                        
+                        <button
+                          onClick={() => handleOpenDeliveryModal(order)}
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs shadow-md hover:brightness-105 cursor-pointer transition-all"
+                        >
+                          <Truck className="w-3.5 h-3.5" />
+                          <span>Update Delivery</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Ordered Items Preview */}
+                    {Array.isArray(order.items) && order.items.length > 0 && (
+                      <div className="p-3 bg-navy-900/70 rounded-xl border border-navy-800 space-y-2">
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Ordered Delicacies ({order.items.length} items)</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                          {order.items.map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-2.5 bg-navy-850/80 p-2 rounded-lg border border-navy-750">
+                              {item.image && (
+                                <img src={item.image} alt={item.name} className="w-9 h-9 rounded-md object-cover border border-navy-700 flex-shrink-0" />
+                              )}
+                              <div className="min-w-0 text-xs">
+                                <p className="text-white font-medium truncate">{item.name}</p>
+                                <p className="text-gray-400 text-[11px]">Qty: <strong className="text-emerald-400">{item.quantity || 1}</strong> &bull; {formatINR(item.price)}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-300">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Destination Address</span>
+                        <p className="leading-relaxed">
+                          {order.shippingAddress?.street ? `${order.shippingAddress.street}, ` : ''}
+                          {order.shippingAddress?.city ? `${order.shippingAddress.city}, ` : ''}
+                          {order.shippingAddress?.pincode ? `PIN: ${order.shippingAddress.pincode}` : 'Standard Shipping'}
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Carrier Details</span>
+                        <p className="leading-relaxed">
+                          Carrier: <strong className="text-white">{order.carrier || 'Bluedart Express Luxury Courier'}</strong> | Waybill Tracking: <span className="font-mono text-emerald-400">{order.trackingNumber || `BD-${order.id}IN`}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

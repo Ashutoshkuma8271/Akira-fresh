@@ -504,20 +504,6 @@ export const db = {
       });
     } catch (err) {}
 
-    // Also register in Supabase Auth
-    try {
-      await supabase.auth.signUp({
-        email: cleanEmail,
-        password: passwordHash.slice(0, 30) + 'Aa1!',
-        options: {
-          data: {
-            name,
-            role: 'admin'
-          }
-        }
-      });
-    } catch (authErr) {}
-
     return newAdmin;
   },
 
@@ -697,10 +683,51 @@ export const db = {
     }
   },
 
-  // 2. CUSTOMER USERS OPERATIONS
   getUsers: () => {
     loadFromDisk();
     return memoryDB.users || [];
+  },
+
+  getUsersAsync: async () => {
+    loadFromDisk();
+    try {
+      const { data, error } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        const mapped = data.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone || '',
+          passwordHash: u.password_hash || u.passwordHash,
+          role: u.role || 'customer',
+          isVerified: u.is_verified === true || u.isVerified === true,
+          verificationOtp: u.verification_otp || u.verificationOtp || null,
+          otpExpiresAt: u.otp_expires_at || u.otpExpiresAt || null,
+          addresses: Array.isArray(u.addresses) ? u.addresses : [],
+          wishlist: Array.isArray(u.wishlist) ? u.wishlist : [],
+          createdAt: u.created_at || new Date().toISOString(),
+          updatedAt: u.updated_at || new Date().toISOString()
+        }));
+
+        const userMap = new Map();
+        mapped.forEach(u => userMap.set(u.email.toLowerCase(), u));
+        (memoryDB.users || []).forEach(u => {
+          if (!userMap.has(u.email.toLowerCase())) {
+            userMap.set(u.email.toLowerCase(), u);
+          }
+        });
+        const combined = Array.from(userMap.values());
+        memoryDB.users = combined;
+        return combined;
+      }
+    } catch (e) {
+      console.warn('Supabase getUsersAsync note:', e.message);
+    }
+    return memoryDB.users || [];
+  },
+
+  getCustomersAsync: async () => {
+    return await db.getUsersAsync();
   },
 
   getUserById: (id) => {
@@ -831,6 +858,7 @@ export const db = {
         password_hash: newUser.passwordHash,
         is_verified: isVerified,
         verification_otp: verificationOtp,
+        otp_expires_at: otpExpiresAt,
         created_at: now,
         updated_at: now
       };
@@ -844,21 +872,6 @@ export const db = {
     } catch (err) {
       console.warn('Supabase users table write note:', err.message);
     }
-
-    // Also register in Supabase Auth
-    try {
-      await supabase.auth.signUp({
-        email: newUser.email,
-        password: passwordHash.slice(0, 30) + 'Aa1!',
-        options: {
-          data: {
-            name: newUser.name,
-            phone: newUser.phone,
-            role: 'customer'
-          }
-        }
-      });
-    } catch (authErr) {}
 
     return newUser;
   },
@@ -1030,6 +1043,64 @@ export const db = {
     return memoryDB.products || [];
   },
 
+  getProductsAsync: async () => {
+    loadFromDisk();
+    try {
+      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        const mapped = data.map(p => {
+          let parsedImages = [];
+          if (Array.isArray(p.images)) {
+            parsedImages = p.images;
+          } else if (typeof p.images === 'string') {
+            try {
+              parsedImages = JSON.parse(p.images);
+            } catch (err) {
+              parsedImages = [p.images];
+            }
+          }
+          return {
+            id: p.id,
+            name: p.name,
+            brand: p.brand || 'A_S FOODY',
+            category: p.category || 'men',
+            categoryName: p.category_name || 'Men Fashion',
+            price: Number(p.price) || 0,
+            originalPrice: Number(p.original_price) || Number(p.price) || 0,
+            discount: p.discount ? p.discount.toString() : '0',
+            stockCount: p.stock_count !== undefined ? Number(p.stock_count) : 15,
+            inStock: p.in_stock !== false,
+            badge: p.badge || '',
+            description: p.description || '',
+            images: parsedImages.length > 0 ? parsedImages : ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&auto=format&fit=crop&q=80'],
+            rating: Number(p.rating) || 5.0,
+            reviewCount: Number(p.review_count) || 0,
+            isFeatured: p.is_featured !== false,
+            isTrending: p.is_trending !== false,
+            isNewArrival: p.is_new_arrival !== false,
+            isSpecialOffer: p.is_special_offer !== false,
+            createdAt: p.created_at || new Date().toISOString(),
+            updatedAt: p.updated_at || new Date().toISOString()
+          };
+        });
+
+        const prodMap = new Map();
+        mapped.forEach(p => prodMap.set(p.id, p));
+        (memoryDB.products || []).forEach(p => {
+          if (!prodMap.has(p.id)) {
+            prodMap.set(p.id, p);
+          }
+        });
+        const combined = Array.from(prodMap.values());
+        memoryDB.products = combined;
+        return combined;
+      }
+    } catch (e) {
+      console.warn('Supabase getProductsAsync note:', e.message);
+    }
+    return memoryDB.products || [];
+  },
+
   getProductById: (id) => {
     loadFromDisk();
     return (memoryDB.products || []).find(p => p.id === id);
@@ -1119,6 +1190,61 @@ export const db = {
     return memoryDB.orders || [];
   },
 
+  getOrdersAsync: async () => {
+    loadFromDisk();
+    try {
+      const { data: supaOrders, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && supaOrders && supaOrders.length > 0) {
+        const mapped = supaOrders.map(o => ({
+          id: o.id,
+          customerEmail: o.user_email || o.customer_email || (o.shippingAddress?.email) || '',
+          customerName: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Valued Customer',
+          customerPhone: o.customer_phone || (o.shippingAddress?.phone) || '',
+          date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+          status: o.status || 'Order Placed',
+          statusCode: o.status === 'Delivered' ? 5 : (o.status === 'Out for Delivery' ? 4 : (o.status === 'Shipped' ? 3 : 2)),
+          carrier: o.carrier || 'Bluedart Express Luxury Courier',
+          trackingNumber: o.tracking_number || (o.trackingNumber) || `BD-${(o.id || '').replace(/\D/g, '').slice(-8) || '8839219'}IN`,
+          items: Array.isArray(o.items) ? o.items : [],
+          subtotal: Number(o.subtotal) || Number(o.total_amount) || 0,
+          total: Number(o.total_amount) || Number(o.subtotal) || 0,
+          paymentMethod: o.payment_method || (o.paymentMethod) || 'Razorpay / Online',
+          paymentStatus: o.payment_status || (o.paymentStatus) || 'Paid',
+          deliveryMode: o.delivery_mode || (o.deliveryMode) || 'Standard Delivery',
+          shippingAddress: {
+            fullName: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Customer',
+            name: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Customer',
+            email: o.user_email || '',
+            phone: o.customer_phone || '',
+            street: o.shipping_street || '',
+            city: o.shipping_city || '',
+            pincode: o.shipping_pincode || '',
+          },
+          createdAt: o.created_at,
+          updatedAt: o.updated_at
+        }));
+
+        const orderMap = new Map();
+        mapped.forEach(o => orderMap.set(o.id, o));
+        (memoryDB.orders || []).forEach(o => {
+          if (!orderMap.has(o.id)) {
+            orderMap.set(o.id, o);
+          }
+        });
+        const combined = Array.from(orderMap.values());
+        memoryDB.orders = combined;
+        return combined;
+      }
+    } catch (e) {
+      console.warn('Supabase getOrdersAsync note:', e.message);
+    }
+    return memoryDB.orders || [];
+  },
+
   getOrderById: (id) => {
     loadFromDisk();
     if (!id) return null;
@@ -1132,63 +1258,101 @@ export const db = {
   createOrder: async (orderData) => {
     loadFromDisk();
     const now = new Date().toISOString();
-    const id = `AS-${Date.now().toString().slice(-6)}`;
+    const orderId = orderData.id || `AS-${Math.floor(100000 + Math.random() * 900000)}`;
     const newOrder = {
-      id,
       ...orderData,
-      createdAt: now,
+      id: orderId,
+      createdAt: orderData.createdAt || now,
       updatedAt: now
     };
     if (!memoryDB.orders) memoryDB.orders = [];
+    
+    // Remove duplicate by ID if exists, then prepend
+    memoryDB.orders = memoryDB.orders.filter(o => o.id !== orderId);
     memoryDB.orders.unshift(newOrder);
     saveToDisk();
 
     try {
-      await supabase.from('orders').insert({
+      const userEmail = (newOrder.customerEmail || newOrder.shippingAddress?.email || 'customer@ascommerce.luxury').trim().toLowerCase();
+      const customerName = newOrder.customerName || newOrder.shippingAddress?.fullName || newOrder.shippingAddress?.name || 'Valued Customer';
+      const customerPhone = newOrder.customerPhone || newOrder.shippingAddress?.phone || '';
+      const shippingStreet = newOrder.shippingAddress?.street || newOrder.shippingAddress?.address || '';
+      const shippingCity = newOrder.shippingAddress?.city || '';
+      const shippingPincode = newOrder.shippingAddress?.pincode || '';
+
+      const { error: supaErr } = await supabase.from('orders').upsert({
         id: newOrder.id,
-        user_email: newOrder.shippingAddress?.email || 'customer@ascommerce.luxury',
-        customer_name: newOrder.shippingAddress?.name || newOrder.shippingAddress?.fullName || 'Customer',
-        customer_phone: newOrder.shippingAddress?.phone || '',
-        shipping_street: newOrder.shippingAddress?.street || '',
-        shipping_city: newOrder.shippingAddress?.city || '',
-        shipping_pincode: newOrder.shippingAddress?.pincode || '',
+        user_email: userEmail,
+        customer_name: customerName,
+        customer_phone: customerPhone,
+        shipping_street: shippingStreet,
+        shipping_city: shippingCity,
+        shipping_pincode: shippingPincode,
         items: newOrder.items || [],
-        subtotal: newOrder.subtotal || newOrder.total,
-        total_amount: newOrder.total,
-        payment_method: newOrder.paymentMethod || 'Razorpay',
+        subtotal: Number(newOrder.subtotal) || Number(newOrder.total) || 0,
+        total_amount: Number(newOrder.total) || 0,
+        payment_method: newOrder.paymentMethod || 'Razorpay / Online',
         payment_status: newOrder.paymentStatus || 'Paid',
-        status: newOrder.status || 'Processing',
-        created_at: now,
+        status: newOrder.status || 'Order Placed',
+        carrier: newOrder.carrier || 'Bluedart Express Luxury Courier',
+        tracking_number: newOrder.trackingNumber || `BD-${(newOrder.id || '').replace(/\D/g, '').slice(-8) || '8839219'}IN`,
+        created_at: newOrder.createdAt || now,
         updated_at: now
       });
-      console.log('⚡ Saved Order into Supabase table public.orders');
-    } catch (e) {}
+
+      if (supaErr) {
+        console.warn('Supabase orders upsert note:', supaErr.message);
+      } else {
+        console.log(`⚡ Order #${newOrder.id} successfully synced to Supabase public.orders table`);
+      }
+    } catch (e) {
+      console.warn('Supabase order creation note:', e.message);
+    }
 
     return newOrder;
   },
 
-  updateOrderStatus: async (orderId, { status, carrier, trackingNumber }) => {
-    loadFromDisk();
-    const index = memoryDB.orders.findIndex(o => o.id === orderId);
-    if (index === -1) return null;
+  updateOrderStatus: async (orderId, { status, carrier, trackingNumber, note }) => {
+    return await db.updateOrderStatusAsync(orderId, { status, carrier, trackingNumber, note });
+  },
 
+  updateOrderStatusAsync: async (orderId, { status, carrier, trackingNumber, note }) => {
+    loadFromDisk();
+    const index = (memoryDB.orders || []).findIndex(o => o.id === orderId);
     const now = new Date().toISOString();
-    memoryDB.orders[index].status = status || memoryDB.orders[index].status;
-    if (carrier) memoryDB.orders[index].carrier = carrier;
-    if (trackingNumber) memoryDB.orders[index].trackingNumber = trackingNumber;
-    memoryDB.orders[index].updatedAt = now;
-    saveToDisk();
+    let updatedOrder = null;
+
+    if (index !== -1) {
+      memoryDB.orders[index].status = status || memoryDB.orders[index].status;
+      if (carrier) memoryDB.orders[index].carrier = carrier;
+      if (trackingNumber) memoryDB.orders[index].trackingNumber = trackingNumber;
+      memoryDB.orders[index].updatedAt = now;
+      updatedOrder = memoryDB.orders[index];
+      saveToDisk();
+    }
 
     try {
-      await supabase.from('orders').update({
-        status,
-        carrier,
-        tracking_number: trackingNumber,
+      const supaUpdates = {
         updated_at: now
-      }).eq('id', orderId);
-    } catch (e) {}
+      };
+      if (status) supaUpdates.status = status;
+      if (carrier) supaUpdates.carrier = carrier;
+      if (trackingNumber) supaUpdates.tracking_number = trackingNumber;
 
-    return memoryDB.orders[index];
+      const { data, error } = await supabase
+        .from('orders')
+        .update(supaUpdates)
+        .eq('id', orderId)
+        .select();
+
+      if (!error && data && data.length > 0) {
+        console.log(`⚡ Order #${orderId} status "${status}" updated in Supabase cloud.`);
+      }
+    } catch (e) {
+      console.warn('Supabase order status update note:', e.message);
+    }
+
+    return updatedOrder || { id: orderId, status, carrier, trackingNumber, updatedAt: now };
   },
 
   // 5. COUPONS & SITE SETTINGS
@@ -1299,6 +1463,26 @@ export const db = {
       totalOrders: orders.length,
       totalRevenue: revenue,
       lowStockCount: lowStock,
+      recentOrders: orders.slice(0, 5),
+      recentAuditLogs: (memoryDB.audit_logs || []).slice(0, 5)
+    };
+  },
+
+  getStatsAsync: async () => {
+    const products = await db.getProductsAsync();
+    const orders = await db.getOrdersAsync();
+    const customers = await db.getUsersAsync();
+    const revenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+    const lowStock = products.filter(p => Number(p.stockCount) < 5).length;
+    const pendingShipments = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+
+    return {
+      totalProducts: products.length,
+      totalOrders: orders.length,
+      totalRevenue: revenue,
+      lowStockCount: lowStock,
+      totalCustomers: customers.filter(c => c.role !== 'admin').length,
+      pendingShipments,
       recentOrders: orders.slice(0, 5),
       recentAuditLogs: (memoryDB.audit_logs || []).slice(0, 5)
     };
