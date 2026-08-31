@@ -374,19 +374,27 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
       });
     }
 
-    // Generate 32-byte cryptographically secure random token & 6-digit OTP
-    const token = crypto.randomBytes(32).toString('hex');
+    // Generate stateless cryptographic JWT reset token & 6-digit OTP
+    const token = jwt.sign(
+      { email: cleanEmail, role: 'admin', type: 'password_reset' },
+      JWT_SECRET,
+      { expiresIn: '15m' }
+    );
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 15 * 60 * 1000; // 15 mins expiry
 
-    db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
+    await db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
 
     const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
     const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
     const baseUrl = req.headers.origin || `${protocol}://${host}`;
     const resetUrl = `${baseUrl}/admin/reset-password?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
 
-    await sendPasswordResetEmail(cleanEmail, resetUrl, 'admin', otp);
+    try {
+      await sendPasswordResetEmail(cleanEmail, resetUrl, 'admin', otp);
+    } catch (mErr) {
+      console.warn('Admin password reset email dispatch note:', mErr.message);
+    }
 
     logAudit({
       action: 'Password reset link sent',
@@ -411,7 +419,7 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
 });
 
 // 7. POST /api/admin/auth/reset-password — Execute Password Reset via Token or 6-Digit OTP
-router.post(['/reset-password', '/reset-password-with-otp'], async (req, res) => {
+router.post(['/reset-password', '/reset-password-with-otp', '/api/admin/auth/reset-password', '/api/admin/auth/reset-password-with-otp'], async (req, res) => {
   try {
     const { token, otp, email, newPassword } = req.body;
 
@@ -433,26 +441,33 @@ router.post(['/reset-password', '/reset-password-with-otp'], async (req, res) =>
       });
     }
 
-    let resetRecord = null;
     let targetEmail = (email || '').trim().toLowerCase();
+    let validatedBy = 'Token';
 
     if (token) {
-      resetRecord = db.getPasswordReset(token);
-      if (!resetRecord) {
-        return res.status(400).json({ success: false, message: 'Invalid or already used password reset token.' });
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded && decoded.email) {
+          targetEmail = decoded.email.trim().toLowerCase();
+          validatedBy = 'Magic Link Token (Signed JWT)';
+        }
+      } catch (jwtErr) {
+        const resetRecord = db.getPasswordReset(token);
+        if (!resetRecord) {
+          return res.status(400).json({ success: false, message: 'Invalid or already used password reset token.' });
+        }
+        if (Date.now() > resetRecord.expiresAt) {
+          return res.status(400).json({ success: false, message: 'Password reset token has expired. Please request a new one.' });
+        }
+        targetEmail = targetEmail || resetRecord.adminEmail;
+        validatedBy = 'Magic Link Token';
       }
-      if (Date.now() > resetRecord.expiresAt) {
-        return res.status(400).json({ success: false, message: 'Password reset token has expired. Please request a new one.' });
-      }
-      targetEmail = targetEmail || resetRecord.adminEmail;
     } else if (otp && targetEmail) {
-      resetRecord = db.getPasswordResetByOtp(targetEmail, otp);
-      if (!resetRecord) {
-        return res.status(400).json({ success: false, message: 'Invalid 6-digit password reset code.' });
+      const otpCheck = await db.verifyPasswordResetOtpAsync(targetEmail, otp);
+      if (!otpCheck.valid) {
+        return res.status(400).json({ success: false, message: otpCheck.message || 'Invalid 6-digit password reset code.' });
       }
-      if (Date.now() > resetRecord.expiresAt) {
-        return res.status(400).json({ success: false, message: 'Password reset code has expired. Please request a new one.' });
-      }
+      validatedBy = '6-Digit OTP';
     } else {
       return res.status(400).json({ success: false, message: 'Either a recovery token or email with 6-digit OTP is required.' });
     }
@@ -474,7 +489,7 @@ router.post(['/reset-password', '/reset-password-with-otp'], async (req, res) =>
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
-    db.updateAdmin(admin.id, { passwordHash });
+    await db.updateAdminAsync(admin.id, { passwordHash });
     db.markPasswordResetUsed(token || otp, targetEmail);
 
     logAudit({
@@ -482,7 +497,7 @@ router.post(['/reset-password', '/reset-password-with-otp'], async (req, res) =>
       adminId: admin ? admin.id : null,
       adminEmail: targetEmail,
       ip: req.ip,
-      details: 'Password successfully reset using recovery token / OTP'
+      details: `Password successfully reset via ${validatedBy}`
     });
 
     return res.json({
@@ -513,7 +528,11 @@ router.post('/change-password', requireAdmin, async (req, res) => {
       return res.status(400).json({ success: false, message: 'New passwords do not match.' });
     }
 
-    const admin = db.getAdminById(req.admin.id);
+    const admin = (await db.getAdminByIdAsync(req.admin.id)) || (await db.getAdminByEmailAsync(req.admin.email));
+    if (!admin) {
+      return res.status(404).json({ success: false, message: 'Admin account not found.' });
+    }
+
     const isMatch = await bcrypt.compare(currentPassword, admin.passwordHash);
 
     if (!isMatch) {
@@ -521,7 +540,7 @@ router.post('/change-password', requireAdmin, async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
-    db.updateAdmin(admin.id, { passwordHash });
+    await db.updateAdminAsync(admin.id, { passwordHash });
 
     logAudit({
       action: 'Password changed',

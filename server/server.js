@@ -150,14 +150,14 @@ app.post('/api/auth/register', authLimiter, async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     if (existing && !existing.isVerified) {
-      db.updateUser(existing.id, {
+      await db.updateUserAsync(existing.id, {
         name,
         phone: phone || '',
         passwordHash,
         verificationOtp: otp,
         otpExpiresAt
       });
-      db.setSignupOtp(cleanEmail, otp, otpExpiresAt);
+      await db.setSignupOtpAsync(cleanEmail, otp, otpExpiresAt);
     } else {
       await db.createUser({
         name,
@@ -254,7 +254,7 @@ app.post('/api/auth/resend-signup-otp', authLimiter, async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 15 * 60 * 1000;
 
-    db.setSignupOtp(cleanEmail, otp, expiresAt);
+    await db.setSignupOtpAsync(cleanEmail, otp, expiresAt);
     try {
       await sendSignupOtpEmail(cleanEmail, user.name, otp);
     } catch (mailErr) {
@@ -287,7 +287,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
       return res.status(403).json({
         success: false,
         isAdminAccount: true,
-        message: 'This email is reserved for store administration. Please log in through the Admin Portal (/admin/login).'
+        message: 'Admin account — please use Admin Portal.'
       });
     }
 
@@ -306,7 +306,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
     if (user.isVerified === false) {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 15 * 60 * 1000;
-      db.setSignupOtp(cleanEmail, otp, expiresAt);
+      await db.setSignupOtpAsync(cleanEmail, otp, expiresAt);
       try {
         await sendSignupOtpEmail(cleanEmail, user.name, otp);
       } catch (mailErr) {
@@ -369,19 +369,27 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
     }
 
 
-    // Generate cryptographic 32-byte recovery token & 6-digit OTP
-    const token = crypto.randomBytes(32).toString('hex');
+    // Generate cryptographic stateless JWT recovery token & 6-digit OTP
+    const token = jwt.sign(
+      { email: cleanEmail, role: 'customer', type: 'password_reset' },
+      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
+      { expiresIn: '15m' }
+    );
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 15 * 60 * 1000; // 15 minutes
 
-    db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
+    await db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
 
     const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
     const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
     const baseUrl = req.headers.origin || `${protocol}://${host}`;
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
 
-    await sendPasswordResetEmail(cleanEmail, resetUrl, 'customer', otp);
+    try {
+      await sendPasswordResetEmail(cleanEmail, resetUrl, 'customer', otp);
+    } catch (mErr) {
+      console.warn('Password reset email dispatch note:', mErr.message);
+    }
 
     return res.json({
       success: true,
@@ -409,22 +417,27 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-
     let validatedBy = 'Token';
 
     if (token) {
-      const resetRecord = db.getPasswordReset(token);
-      if (!resetRecord) {
-        return res.status(400).json({ success: false, message: 'Invalid or expired password recovery link. Please request a new link.' });
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026');
+        if (decoded && decoded.email) {
+          cleanEmail = decoded.email.trim().toLowerCase();
+          validatedBy = 'Magic Link Token (Signed JWT)';
+        }
+      } catch (jwtErr) {
+        const resetRecord = db.getPasswordReset(token);
+        if (!resetRecord) {
+          return res.status(400).json({ success: false, message: 'Invalid or expired password recovery link. Please request a new link.' });
+        }
+        if (Date.now() > resetRecord.expiresAt) {
+          return res.status(400).json({ success: false, message: 'This recovery link has expired. Please request a fresh link.' });
+        }
+        cleanEmail = cleanEmail || (resetRecord.adminEmail || '').trim().toLowerCase();
+        validatedBy = 'Magic Link Token';
       }
-      if (Date.now() > resetRecord.expiresAt) {
-        return res.status(400).json({ success: false, message: 'This recovery link has expired. Please request a fresh link.' });
-      }
-      cleanEmail = cleanEmail || (resetRecord.adminEmail || '').trim().toLowerCase();
-      validatedBy = 'Magic Link Token';
     } else if (otp && cleanEmail) {
-      const resetRecord = db.getPasswordResetByOtp(cleanEmail, otp);
-      if (!resetRecord) {
-        return res.status(400).json({ success: false, message: 'Invalid 6-digit password reset code.' });
-      }
-      if (Date.now() > resetRecord.expiresAt) {
-        return res.status(400).json({ success: false, message: 'This reset code has expired. Please request a new one.' });
+      const otpCheck = await db.verifyPasswordResetOtpAsync(cleanEmail, otp);
+      if (!otpCheck.valid) {
+        return res.status(400).json({ success: false, message: otpCheck.message || 'Invalid 6-digit password reset code.' });
       }
       validatedBy = '6-Digit OTP';
     } else {
@@ -466,7 +479,7 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
-    db.updateUser(user.id, { passwordHash });
+    await db.updateUserAsync(user.id, { passwordHash });
 
     db.markPasswordResetUsed(token || otp, cleanEmail);
 
