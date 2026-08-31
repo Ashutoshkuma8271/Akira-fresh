@@ -42,21 +42,6 @@ export async function syncAllToSupabase() {
     } else {
       console.log(`✅ Synced user ${user.email} (${user.id})`);
     }
-
-    // Also sync to Supabase Auth
-    try {
-      await supabase.auth.signUp({
-        email: user.email,
-        password: (user.passwordHash || 'TemporaryPass123!').slice(0, 30) + 'Aa1!',
-        options: {
-          data: {
-            name: user.name,
-            phone: user.phone,
-            role: user.role || 'customer'
-          }
-        }
-      });
-    } catch (e) {}
   }
 
   // 2. Sync Admins
