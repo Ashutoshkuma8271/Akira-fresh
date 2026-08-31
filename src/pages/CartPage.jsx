@@ -5,6 +5,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { formatINR } from '../utils/currency';
 import { Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag, Heart, Plus, Minus, Check, Truck } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const CartPage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const CartPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+      <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-charcoal-900 dark:text-ivory-100">
         <div className="max-w-md mx-auto bg-white dark:bg-forest-900 rounded-3xl p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
           <div className="w-20 h-20 rounded-full bg-sage-50 dark:bg-forest-800 mx-auto flex items-center justify-center border border-leaf-500/20 text-[#1b4332] dark:text-lime-400">
             <ShoppingBag className="w-10 h-10" />
@@ -76,12 +77,12 @@ export const CartPage = () => {
             Start Exploring Delicacies
           </Link>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Title */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-forest-800">
@@ -311,6 +312,6 @@ export const CartPage = () => {
 
       </div>
 
-    </div>
+    </PageTransition>
   );
 };

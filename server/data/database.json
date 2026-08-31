@@ -1,17 +1,61 @@
 {
   "admins": [],
-  "users": [],
-  "password_resets": [
+  "users": [
     {
-      "token": "dbd6b5876554663c6560e9aa7361accdb0bbd35f4304e6a5bdca8aec0c8f14de",
-      "otp": "617283",
-      "adminEmail": "customer.test@akirafresh.com",
-      "expiresAt": 1788037744299,
-      "used": true,
-      "createdAt": "2026-08-29T20:54:04.301Z"
+      "id": "usr-1788123131288",
+      "name": "Ashutosh Kumar",
+      "email": "ashukumarfbg8271@gmail.com",
+      "phone": "+918271936044",
+      "passwordHash": "$2b$10$TnU4vdhHbx./Y5sYR1gAv.bHOEL0oK7B/ev4CS7OzXnlOcwc59Lvu",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": null,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-08-30T20:52:11.288Z",
+      "updatedAt": "2026-08-30T21:14:27.843Z"
+    },
+    {
+      "id": "usr-1788123751266",
+      "name": "Ashutosh Kumar",
+      "email": "shrutiashutosh139@gmail.com",
+      "phone": "+919334993904",
+      "passwordHash": "$2b$10$93b.AeMJ5FITi3e2MqKJHuPz5fYlBBveIionrAoBFgWmFBG9iZIdq",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": null,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-08-30T21:02:31.266Z",
+      "updatedAt": "2026-08-30T21:04:25.280Z"
     }
   ],
+  "password_resets": [],
   "audit_logs": [
+    {
+      "id": "audit-1788124561943-5eeno",
+      "action": "Admin email verified",
+      "adminId": "adm-1788124516857",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "2409:40d0:133a:ac01:613a:db04:5665:cf42",
+      "resource": null,
+      "details": "Administrator account activated via OTP verification.",
+      "timestamp": "2026-08-30T21:16:01.943Z",
+      "createdAt": "2026-08-30T21:16:01.943Z"
+    },
+    {
+      "id": "audit-1788124520928-mz5jh",
+      "action": "Admin signup initiated",
+      "adminId": "adm-1788124516857",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "2409:40d0:133a:ac01:613a:db04:5665:cf42",
+      "resource": null,
+      "details": "First administrator (Ashutosh Kumar yadav) registered. Awaiting OTP verification.",
+      "timestamp": "2026-08-30T21:15:20.928Z",
+      "createdAt": "2026-08-30T21:15:20.929Z"
+    },
     {
       "id": "audit-1787992370833",
       "action": "System Initialized",
@@ -23,7 +67,260 @@
       "createdAt": "2026-08-29T08:32:50.842Z"
     }
   ],
-  "orders": [],
+  "orders": [
+    {
+      "id": "AS-684033",
+      "customerId": "usr-1788123131288",
+      "customerEmail": "ashukumarfbg8271@gmail.com",
+      "customerName": "Ashutosh Kumar",
+      "customerPhone": "+918271936044",
+      "date": "2026-08-30",
+      "status": "Order Placed",
+      "statusCode": 2,
+      "estimatedDelivery": "2026-09-01",
+      "carrier": "Bluedart Express Luxury Courier",
+      "trackingNumber": "BD-778107753IN",
+      "items": [
+        {
+          "cartItemId": "prod-patty-Grilled Golden-250 g (4 Patties)",
+          "id": "prod-patty",
+          "name": "Chicken Burger Patty",
+          "brand": "A_S FOODY Gourmet Meat Lab",
+          "price": 190,
+          "originalPrice": 220,
+          "discount": 13,
+          "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80",
+          "selectedColor": "Grilled Golden",
+          "selectedSize": "250 g (4 Patties)",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 190,
+      "discount": 0,
+      "shipping": 348,
+      "total": 538,
+      "paymentMethod": "Cash on Delivery (Pay upon Receipt at Doorstep)",
+      "paymentStatus": "Pending (Cash on Delivery)",
+      "deliveryMode": "Same-Day Express (Mon, 31 Aug) • anytime",
+      "shippingAddress": {
+        "fullName": "Ashutosh Kumar",
+        "phone": "+918271936044",
+        "email": "ashukumarfbg8271@gmail.com",
+        "street": "H no 132 2nd floor Dhaka Village near kumar tailor,Pin code 110009",
+        "city": "Delhi",
+        "state": "Delhi",
+        "pincode": "110009"
+      },
+      "timeline": [
+        {
+          "step": "Order Placed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Order confirmed in A_S FOODY system"
+        },
+        {
+          "step": "Payment Confirmed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Payment of ₹538 confirmed"
+        },
+        {
+          "step": "Processing",
+          "time": "Scheduled today",
+          "done": false,
+          "desc": "Insulated sub-zero packaging & quality check"
+        },
+        {
+          "step": "Shipped",
+          "time": "Pending dispatch",
+          "done": false,
+          "desc": "Handed over to carrier"
+        },
+        {
+          "step": "Out for Delivery",
+          "time": "Pending",
+          "done": false,
+          "desc": "On final delivery vehicle"
+        },
+        {
+          "step": "Delivered",
+          "time": "Estimated Wed Sep 02 2026",
+          "done": false,
+          "desc": "Delivered to shipping address"
+        }
+      ],
+      "createdAt": "2026-08-30T21:07:05.858Z",
+      "updatedAt": "2026-08-30T21:07:05.858Z"
+    },
+    {
+      "id": "AS-324920",
+      "customerId": "usr-1788123751266",
+      "customerEmail": "shrutiashutosh139@gmail.com",
+      "customerName": "Ashutosh Kumar",
+      "customerPhone": "+919334993904",
+      "date": "2026-08-30",
+      "status": "Order Placed",
+      "statusCode": 2,
+      "estimatedDelivery": "2026-09-03",
+      "carrier": "Bluedart Express Luxury Courier",
+      "trackingNumber": "BD-741398316IN",
+      "items": [
+        {
+          "cartItemId": "prod-seekh-Spiced Herb-250 g (5 Skewers)",
+          "id": "prod-seekh",
+          "name": "Chicken Seekh Kebab",
+          "brand": "A_S FOODY Gourmet Meat Lab",
+          "price": 205,
+          "originalPrice": 235,
+          "discount": 12,
+          "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80",
+          "selectedColor": "Spiced Herb",
+          "selectedSize": "250 g (5 Skewers)",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 205,
+      "discount": 0,
+      "shipping": 99,
+      "total": 304,
+      "paymentMethod": "Cash on Delivery (Pay upon Receipt at Doorstep)",
+      "paymentStatus": "Pending (Cash on Delivery)",
+      "deliveryMode": "Standard White-Glove (Thu, 3 Sept) • anytime",
+      "shippingAddress": {
+        "fullName": "Ashutosh Kumar",
+        "phone": "+919334993904",
+        "email": "shrutiashutosh139@gmail.com",
+        "street": "H no 132 2nd floor Dhaka Village near kumar tailor,Pin code 110009",
+        "city": "Delhi",
+        "state": "Delhi",
+        "pincode": "110009"
+      },
+      "timeline": [
+        {
+          "step": "Order Placed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Order confirmed in A_S FOODY system"
+        },
+        {
+          "step": "Payment Confirmed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Payment of ₹304 confirmed"
+        },
+        {
+          "step": "Processing",
+          "time": "Scheduled today",
+          "done": false,
+          "desc": "Insulated sub-zero packaging & quality check"
+        },
+        {
+          "step": "Shipped",
+          "time": "Pending dispatch",
+          "done": false,
+          "desc": "Handed over to carrier"
+        },
+        {
+          "step": "Out for Delivery",
+          "time": "Pending",
+          "done": false,
+          "desc": "On final delivery vehicle"
+        },
+        {
+          "step": "Delivered",
+          "time": "Estimated Fri Sep 04 2026",
+          "done": false,
+          "desc": "Delivered to shipping address"
+        }
+      ],
+      "createdAt": "2026-08-30T21:03:23.011Z",
+      "updatedAt": "2026-08-30T21:03:23.011Z"
+    },
+    {
+      "id": "AS-929041",
+      "customerId": "usr-1788123131288",
+      "customerEmail": "ashukumarfbg8271@gmail.com",
+      "customerName": "Ashutosh Kumar",
+      "customerPhone": "+918271936044",
+      "date": "2026-08-30",
+      "status": "Order Placed",
+      "statusCode": 2,
+      "estimatedDelivery": "2026-09-01",
+      "carrier": "Bluedart Express Luxury Courier",
+      "trackingNumber": "BD-303677245IN",
+      "items": [
+        {
+          "cartItemId": "prod-seekh-Spiced Herb-250 g (5 Skewers)",
+          "id": "prod-seekh",
+          "name": "Chicken Seekh Kebab",
+          "brand": "A_S FOODY Gourmet Meat Lab",
+          "price": 205,
+          "originalPrice": 235,
+          "discount": 12,
+          "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80",
+          "selectedColor": "Spiced Herb",
+          "selectedSize": "250 g (5 Skewers)",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 205,
+      "discount": 0,
+      "shipping": 348,
+      "total": 553,
+      "paymentMethod": "Cash on Delivery (Pay upon Receipt at Doorstep)",
+      "paymentStatus": "Pending (Cash on Delivery)",
+      "deliveryMode": "Same-Day Express (Mon, 31 Aug) • anytime",
+      "shippingAddress": {
+        "fullName": "Ashutosh Kumar",
+        "phone": "+918271936044",
+        "email": "ashukumarfbg8271@gmail.com",
+        "street": "H no 132 2nd floor Dhaka Village near kumar tailor,Pin code 110009",
+        "city": "Delhi",
+        "state": "Delhi",
+        "pincode": "110009"
+      },
+      "timeline": [
+        {
+          "step": "Order Placed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Order confirmed in A_S FOODY system"
+        },
+        {
+          "step": "Payment Confirmed",
+          "time": "Just now",
+          "done": true,
+          "desc": "Payment of ₹553 confirmed"
+        },
+        {
+          "step": "Processing",
+          "time": "Scheduled today",
+          "done": false,
+          "desc": "Insulated sub-zero packaging & quality check"
+        },
+        {
+          "step": "Shipped",
+          "time": "Pending dispatch",
+          "done": false,
+          "desc": "Handed over to carrier"
+        },
+        {
+          "step": "Out for Delivery",
+          "time": "Pending",
+          "done": false,
+          "desc": "On final delivery vehicle"
+        },
+        {
+          "step": "Delivered",
+          "time": "Estimated Wed Sep 02 2026",
+          "done": false,
+          "desc": "Delivered to shipping address"
+        }
+      ],
+      "createdAt": "2026-08-30T20:59:45.759Z",
+      "updatedAt": "2026-08-30T20:59:45.759Z"
+    }
+  ],
   "coupons": [
     {
       "code": "WELCOME10",
@@ -54,8 +351,6 @@
       "price": 18999,
       "originalPrice": 24999,
       "discount": 24,
-      "rating": 4.9,
-      "reviewCount": 128,
       "stockCount": 8,
       "inStock": true,
       "badge": "LUXURY SELECTION",
@@ -66,8 +361,8 @@
       ],
       "isFeatured": true,
       "isTrending": true,
-      "isNewArrival": false,
-      "isSpecialOffer": false
+      "createdAt": "2026-08-30T21:08:33.62+00:00",
+      "updatedAt": "2026-08-30T21:08:33.62+00:00"
     },
     {
       "id": "prod-2",
@@ -78,8 +373,6 @@
       "price": 9499,
       "originalPrice": 14999,
       "discount": 36,
-      "rating": 4.8,
-      "reviewCount": 94,
       "stockCount": 12,
       "inStock": true,
       "badge": "BESTSELLER",
@@ -89,9 +382,9 @@
         "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&auto=format&fit=crop&q=80"
       ],
       "isFeatured": true,
-      "isTrending": false,
-      "isNewArrival": false,
-      "isSpecialOffer": true
+      "isTrending": true,
+      "createdAt": "2026-08-30T21:08:33.756+00:00",
+      "updatedAt": "2026-08-30T21:08:33.756+00:00"
     },
     {
       "id": "prod-3",
@@ -102,8 +395,6 @@
       "price": 12999,
       "originalPrice": 19999,
       "discount": 35,
-      "rating": 5,
-      "reviewCount": 76,
       "stockCount": 5,
       "inStock": true,
       "badge": "NEW ARRIVAL",
@@ -114,8 +405,8 @@
       ],
       "isFeatured": true,
       "isTrending": true,
-      "isNewArrival": true,
-      "isSpecialOffer": false
+      "createdAt": "2026-08-30T21:08:33.885+00:00",
+      "updatedAt": "2026-08-30T21:08:33.885+00:00"
     },
     {
       "id": "prod-4",
@@ -126,8 +417,6 @@
       "price": 24999,
       "originalPrice": 32999,
       "discount": 24,
-      "rating": 4.9,
-      "reviewCount": 42,
       "stockCount": 4,
       "inStock": true,
       "badge": "ARCHITECTURE EDITION",
@@ -137,9 +426,9 @@
         "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&auto=format&fit=crop&q=80"
       ],
       "isFeatured": true,
-      "isTrending": false,
-      "isNewArrival": false,
-      "isSpecialOffer": false
+      "isTrending": true,
+      "createdAt": "2026-08-30T21:08:34.023+00:00",
+      "updatedAt": "2026-08-30T21:08:34.023+00:00"
     }
   ],
   "settings": {

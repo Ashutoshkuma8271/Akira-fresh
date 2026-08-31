@@ -36,7 +36,7 @@ const condenseMessage = (msg) => {
     'Admin password updated successfully.': 'Password updated',
     'Master password updated successfully.': 'Password updated',
     'Password updated securely!': 'Password updated',
-    'Invalid 6-digit verification code. Please check your email or enter 123456.': 'Invalid verification code',
+    'Invalid 6-digit verification code. Please check your email and enter the code sent to you.': 'Invalid verification code',
     'Invalid 6-digit verification code. Please check and try again.': 'Invalid verification code',
     'Invalid 6-digit verification code. Please check your email.': 'Invalid verification code',
     'Invalid or expired OTP.': 'Invalid or expired OTP',

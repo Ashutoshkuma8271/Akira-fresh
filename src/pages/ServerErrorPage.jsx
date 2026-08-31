@@ -51,3 +51,5 @@ export const ServerErrorPage = () => {
     </div>
   );
 };
+
+export default ServerErrorPage;

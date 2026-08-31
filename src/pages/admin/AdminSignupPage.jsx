@@ -215,7 +215,7 @@ export const AdminSignupPage = () => {
                 autoFocus
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="123456"
+                placeholder="••••••"
                 className="w-full py-4 bg-navy-850 text-emerald-400 text-center text-3xl font-mono tracking-[12px] font-bold rounded-2xl border-2 border-emerald-500/50 focus:outline-none focus:border-emerald-400 transition-colors shadow-inner placeholder:text-gray-600"
               />
               <p className="text-[11px] text-gray-400 mt-2">

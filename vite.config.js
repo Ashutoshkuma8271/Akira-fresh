@@ -4,18 +4,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
+    port: 3000,
     host: '0.0.0.0',
-    hmr: {
-      clientPort: 5173,
-    },
-    proxy: {
-      '/api': {
-        target: process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
+    hmr: process.env.DISABLE_HMR === 'true' ? false : undefined,
   },
 
 

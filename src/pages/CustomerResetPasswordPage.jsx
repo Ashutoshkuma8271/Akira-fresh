@@ -11,7 +11,9 @@ export const CustomerResetPasswordPage = () => {
   const { addToast } = useToast();
   const { resetPasswordWithToken, resetPasswordWithOtp, setIsAuthModalOpen, setAuthMode } = useAuth();
 
-  const tokenParam = searchParams.get('token') || '';
+  // Support token from query param, code param (PKCE), or Supabase recovery hash (#access_token=...)
+  const hashParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.hash.replace(/^#/, '')) : new URLSearchParams();
+  const tokenParam = searchParams.get('token') || searchParams.get('code') || hashParams.get('access_token') || '';
   const emailParam = searchParams.get('email') || '';
 
   const [activeTab, setActiveTab] = useState(tokenParam ? 'token' : 'otp'); // 'token' | 'otp'
@@ -219,7 +221,7 @@ export const CustomerResetPasswordPage = () => {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                      placeholder="123456"
+                      placeholder="••••••"
                       className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-emerald-400 text-xs tracking-widest font-mono font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 placeholder:text-gray-600"
                     />
                   </div>

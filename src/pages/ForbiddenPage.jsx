@@ -47,3 +47,5 @@ export const ForbiddenPage = () => {
     </div>
   );
 };
+
+export default ForbiddenPage;

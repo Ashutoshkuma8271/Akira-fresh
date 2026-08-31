@@ -5,6 +5,8 @@ import { useOrder } from '../context/OrderContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
 import { formatINR } from '../utils/currency';
+import { MyOrders } from '../components/account/MyOrders';
+import { ProfileSkeleton } from '../components/common/SkeletonLoader';
 import {
   User,
   Package,
@@ -33,6 +35,7 @@ import {
   ShoppingBag,
   Camera
 } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const AccountPage = () => {
   const navigate = useNavigate();
@@ -218,7 +221,7 @@ export const AccountPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       {/* Account Dashboard Layout: Sidebar + Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
@@ -438,144 +441,23 @@ export const AccountPage = () => {
               </div>
 
               {/* Recent Orders Overview */}
-              <div className="bg-white dark:bg-navy-900 rounded-3xl p-6 border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-navy-800">
-                  <h3 className="font-serif text-lg font-bold text-navy-950 dark:text-white">Recent Orders</h3>
-                  <Link to="/account/orders" className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
-                    View All →
+              <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 border border-gray-200/80 dark:border-forest-750 shadow-sm space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-forest-800">
+                  <h3 className="font-serif text-lg font-bold text-charcoal-950 dark:text-white">Recent Purchases</h3>
+                  <Link to="/account/orders" className="text-xs text-leaf-600 dark:text-leaf-400 font-bold hover:underline">
+                    View All Orders →
                   </Link>
                 </div>
 
-                {orders.length === 0 ? (
-                  <div className="text-center py-8 space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 dark:bg-navy-800 text-emerald-500 flex items-center justify-center mx-auto">
-                      <ShoppingBag className="w-6 h-6" />
-                    </div>
-                    <p className="text-sm font-semibold text-navy-950 dark:text-white">No orders placed yet</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                      Your completed purchases and delivery tracking will appear here once you place your first order.
-                    </p>
-                    <Link
-                      to="/shop"
-                      className="inline-block px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
-                    >
-                      Start Shopping
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {orders.slice(0, 2).map((ord) => (
-                      <div
-                        key={ord.id}
-                        className="p-4 bg-gray-50 dark:bg-navy-850 rounded-2xl border border-gray-100 dark:border-navy-750 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                      >
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-navy-950 dark:text-white text-sm">#{ord.id}</span>
-                            <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-500/30">
-                              {ord.status}
-                            </span>
-                          </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {ord.items?.length || 1} item(s) • Total: {formatINR(ord.total)}
-                          </p>
-                        </div>
-                        <Link
-                          to={`/track-order?id=${ord.id}`}
-                          className="px-4 py-2 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold text-xs rounded-xl hover:bg-navy-850 border border-emerald-500/30"
-                        >
-                          Track Order
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <MyOrders limit={2} showHeader={false} />
               </div>
             </div>
           )}
 
-          {/* TAB 2: Orders History */}
+          {/* TAB 2: Orders History & Supabase Audit */}
           {activeTab === 'orders' && (
-            <div className="bg-white dark:bg-navy-900 rounded-3xl p-6 sm:p-8 border border-gray-200/80 dark:border-navy-750 shadow-sm space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-navy-800">
-                <div>
-                  <h2 className="font-serif text-2xl font-bold text-navy-950 dark:text-white">
-                    Order History & Invoices
-                  </h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Track the live delivery progress of your items.
-                  </p>
-                </div>
-              </div>
-
-              {orders.length === 0 ? (
-                <div className="text-center py-12 space-y-4">
-                  <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 dark:bg-navy-850 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/20 shadow-sm">
-                    <Package className="w-8 h-8" />
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-navy-950 dark:text-white">No Orders Found</h3>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
-                    You have not placed any orders yet. Discover our latest catalog items and enjoy seamless online shopping.
-                  </p>
-                  <Link
-                    to="/shop"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-lg hover:brightness-110"
-                  >
-                    <span>Browse Luxury Catalog</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {orders.map((ord) => (
-                    <div
-                      key={ord.id}
-                      className="p-5 rounded-2xl border border-gray-200 dark:border-navy-750 bg-gray-50/60 dark:bg-navy-850 space-y-4 transition-all hover:border-emerald-500/40"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-200/60 dark:border-navy-700 text-xs">
-                        <div>
-                          <span className="font-mono text-sm font-bold text-navy-950 dark:text-white">Order #{ord.id}</span>
-                          <p className="text-gray-500 dark:text-gray-400">Placed on {ord.date || new Date().toLocaleDateString()}</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="px-3 py-1 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold rounded-full text-xs border border-emerald-500/30">
-                            {ord.status}
-                          </span>
-                          <Link
-                            to={`/track-order?id=${ord.id}`}
-                            className="px-3.5 py-1.5 bg-navy-900 dark:bg-navy-800 text-emerald-400 font-bold rounded-xl hover:bg-navy-850 border border-emerald-500/30"
-                          >
-                            Track Shipment
-                          </Link>
-                        </div>
-                      </div>
-
-                      {/* Items */}
-                      <div className="space-y-2">
-                        {ord.items && ord.items.map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between text-xs">
-                            <div className="flex items-center gap-3">
-                              <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-gray-200 dark:border-navy-700 bg-white" />
-                              <div>
-                                <p className="font-bold text-navy-950 dark:text-white">{item.name}</p>
-                                <p className="text-gray-500 dark:text-gray-400 text-[11px]">Qty: {item.quantity}</p>
-                              </div>
-                            </div>
-                            <span className="font-bold text-navy-950 dark:text-white font-serif">
-                              {formatINR(item.price * item.quantity)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="pt-2 border-t border-gray-200 dark:border-navy-700 flex justify-between items-center text-xs">
-                        <span className="text-gray-500 dark:text-gray-400">Payment: {ord.paymentMethod || 'Online Gateway'}</span>
-                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-serif">Total: {formatINR(ord.total)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-8 border border-gray-200/80 dark:border-forest-750 shadow-sm space-y-6 animate-fadeIn">
+              <MyOrders showHeader={true} />
             </div>
           )}
 
@@ -1049,6 +931,6 @@ export const AccountPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 };

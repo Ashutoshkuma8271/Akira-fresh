@@ -3,6 +3,8 @@ import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/common/ProductCard';
 import { QuickViewModal } from '../components/common/QuickViewModal';
 import { Flame, Star, Award, Sparkles, Filter } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
+import { AnimatedSection } from '../components/common/AnimatedSection';
 
 export const BestsellersPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -20,7 +22,7 @@ export const BestsellersPage = () => {
   }, [activeFilter]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-charcoal-900 dark:text-ivory-100">
       
       {/* Bestseller Hero Header */}
       <div className="rounded-[2.5rem] bg-gradient-to-r from-[#061e14] via-[#092b1d] to-[#0d3b27] text-white p-8 sm:p-12 mb-10 border border-leaf-500/30 shadow-2xl relative overflow-hidden">
@@ -63,15 +65,17 @@ export const BestsellersPage = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-        {bestsellers.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-        ))}
-      </div>
+      <AnimatedSection>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          {bestsellers.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onQuickView={(p) => setQuickViewProduct(p)}
+            />
+          ))}
+        </div>
+      </AnimatedSection>
 
       {/* Quick View Modal */}
       <QuickViewModal
@@ -80,6 +84,6 @@ export const BestsellersPage = () => {
         onClose={() => setQuickViewProduct(null)}
       />
 
-    </div>
+    </PageTransition>
   );
 };

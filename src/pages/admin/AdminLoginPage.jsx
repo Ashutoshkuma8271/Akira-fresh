@@ -135,12 +135,20 @@ export const AdminLoginPage = () => {
           </button>
         </form>
 
-        {/* Switch to Admin Signup */}
+        {/* Switch to Admin Signup or Locked Note */}
         <div className="text-center text-xs text-gray-400">
-          <span>New administrator? </span>
-          <Link to="/admin/signup" className="text-emerald-400 font-semibold hover:underline">
-            Create Admin Account
-          </Link>
+          {!adminExists ? (
+            <div>
+              <span>First-time setup? </span>
+              <Link to="/admin/signup" className="text-emerald-400 font-semibold hover:underline">
+                Create Master Admin Account
+              </Link>
+            </div>
+          ) : (
+            <div className="text-gray-400 bg-navy-850 py-2 px-3 rounded-xl border border-navy-800 text-[11px]">
+              🔒 <span className="text-emerald-400 font-medium">Single-Admin Lock Active</span> &bull; Only the verified store administrator can sign in or reset password.
+            </div>
+          )}
         </div>
 
         {/* Return to Storefront at bottom */}

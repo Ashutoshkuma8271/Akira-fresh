@@ -7,15 +7,18 @@ import { supabase } from '../services/supabase.js';
 const getTransporter = () => {
   const host = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
-  const user = process.env.SMTP_USER || process.env.BREVO_SMTP_USER;
-  const pass = process.env.SMTP_PASS || process.env.BREVO_SMTP_KEY || process.env.BREVO_API_KEY;
+  const user = process.env.SMTP_USER || process.env.BREVO_SMTP_USER || '';
+  const pass = process.env.SMTP_PASS || process.env.BREVO_SMTP_KEY || process.env.BREVO_API_KEY || '';
 
   if (user && pass) {
     return nodemailer.createTransport({
       host,
       port,
       secure: port === 465,
-      auth: { user, pass }
+      auth: { user, pass },
+      tls: {
+        rejectUnauthorized: false
+      }
     });
   }
   return null;
@@ -161,7 +164,7 @@ export const sendSignupOtpEmail = async (email, name, otp, role = 'customer') =>
 export const sendPasswordResetEmail = async (email, resetUrl, role = 'customer', otp = null) => {
   const cleanEmail = email.toLowerCase().trim();
   const isAdmin = role === 'admin';
-  const displayOtp = otp || '123456';
+  const displayOtp = otp || '';
 
   const htmlContent = `
 <!DOCTYPE html>

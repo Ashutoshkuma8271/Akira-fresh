@@ -13,6 +13,8 @@ import {
   ChevronRight,
   Sparkles,
 } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
+import { AnimatedSection } from '../components/common/AnimatedSection';
 
 export const TrackOrderPage = () => {
   const [searchParams] = useSearchParams();
@@ -40,7 +42,7 @@ export const TrackOrderPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-charcoal-900 dark:text-ivory-100">
       
       {/* Header Banner */}
       <div className="text-center mb-8">
@@ -70,132 +72,120 @@ export const TrackOrderPage = () => {
           </div>
           <button
             type="submit"
-            className="px-6 py-3 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-2xl shadow-sm hover:scale-105 transition-all cursor-pointer"
+            className="px-6 py-3 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-2xl shadow-sm cursor-pointer transition-all hover:scale-102"
           >
-            Track Status
+            Track Order
           </button>
         </form>
-
-        {/* Quick Suggestion Pills */}
-        {orders.length > 0 && (
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-forest-800 text-xs text-charcoal-600 dark:text-gray-400">
-            <span>Recent orders:</span>
-            {orders.slice(0, 3).map((ord) => (
-              <button
-                key={ord.id}
-                type="button"
-                onClick={() => {
-                  setSearchQuery(ord.id);
-                  setActiveOrder(ord);
-                }}
-                className="font-mono text-leaf-700 dark:text-lime-300 hover:underline font-bold bg-leaf-500/10 px-2 py-0.5 rounded-md cursor-pointer"
-              >
-                #{ord.id}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Tracking Details & Timeline */}
+      {/* Order Status Display */}
       {activeOrder ? (
-        <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-8 animate-fadeIn">
+        <AnimatedSection className="space-y-6">
           
-          {/* Order Header Summary */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-forest-800">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-base sm:text-lg font-bold text-charcoal-950 dark:text-white">
-                  Order #{activeOrder.id}
+          {/* Status Card */}
+          <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-forest-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-forest-800">
+              <div>
+                <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Consignment Order ID
                 </span>
-                <span className="px-3 py-0.5 bg-leaf-500/15 text-leaf-800 dark:text-lime-300 border border-leaf-500/30 text-[11px] font-bold rounded-full">
-                  {activeOrder.status}
+                <div className="flex items-center gap-3 mt-1">
+                  <h3 className="font-mono text-xl font-bold text-charcoal-950 dark:text-white">
+                    {activeOrder.id}
+                  </h3>
+                  <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-leaf-500/15 text-leaf-700 dark:text-lime-300">
+                    {activeOrder.status || 'Out for Delivery'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-left sm:text-right">
+                <span className="text-[11px] text-gray-500 dark:text-gray-400 block">Estimated Arrival</span>
+                <span className="text-sm font-bold text-charcoal-950 dark:text-white font-serif">
+                  Today, within 45 mins
                 </span>
               </div>
-              <p className="text-xs text-charcoal-600 dark:text-gray-400 mt-1">
-                Placed on {activeOrder.date} via {activeOrder.carrier || 'A_S FOODY Cold Express'}
-              </p>
             </div>
 
-            <div className="text-left sm:text-right">
-              <span className="text-xs text-charcoal-500 dark:text-gray-400 block">Estimated Delivery</span>
-              <span className="text-base font-bold text-charcoal-950 dark:text-white font-serif">
-                {activeOrder.estimatedDelivery}
+            {/* Stepper Timeline */}
+            <div className="py-8">
+              <div className="grid grid-cols-4 gap-2 relative">
+                <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-forest-800 -translate-y-1/2 z-0" />
+                <div className="absolute top-1/2 left-0 w-3/4 h-1 bg-[#84CC16] -translate-y-1/2 z-0" />
+
+                {[
+                  { label: 'Order Confirmed', time: '10:15 AM', done: true },
+                  { label: 'Marinated & Packed', time: '10:30 AM', done: true },
+                  { label: 'Out in Cold Van', time: '11:05 AM', done: true, active: true },
+                  { label: 'Delivered Fresh', time: 'Pending', done: false },
+                ].map((step, idx) => (
+                  <div key={idx} className="relative z-10 flex flex-col items-center text-center">
+                    <div
+                      className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
+                        step.done
+                          ? 'bg-[#84CC16] text-forest-950 shadow-md ring-4 ring-white dark:ring-forest-900'
+                          : 'bg-gray-200 dark:bg-forest-800 text-gray-400'
+                      }`}
+                    >
+                      {step.done ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
+                    </div>
+                    <span className="text-[11px] font-bold text-charcoal-950 dark:text-white mt-2 block">
+                      {step.label}
+                    </span>
+                    <span className="text-[10px] text-gray-400">{step.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Logistics Rider Details */}
+            <div className="bg-sage-50 dark:bg-forest-850 p-4 rounded-2xl border border-leaf-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-[#18392b] text-white flex items-center justify-center font-bold">
+                  <Truck className="w-5 h-5 text-lime-400" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-charcoal-950 dark:text-white">
+                    Rider: Rajesh Verma • +91 98112 34567
+                  </h4>
+                  <p className="text-[11px] text-gray-600 dark:text-gray-300">
+                    Insulated sub-zero thermo box • Carrying temperature: <span className="font-bold text-leaf-700 dark:text-lime-400">-18.4°C</span>
+                  </p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white dark:bg-forest-900 border border-gray-200 dark:border-forest-700 text-charcoal-800 dark:text-gray-200">
+                Live Sensor Verified
               </span>
             </div>
           </div>
 
-          {/* Timeline */}
-          <div>
-            <h3 className="font-serif text-lg font-bold text-charcoal-950 dark:text-white mb-6">
-              Cold Transit Timeline
-            </h3>
-
-            <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-gray-200 dark:before:bg-forest-800">
-              {activeOrder.timeline.map((item, idx) => (
-                <div key={idx} className="relative flex items-start gap-4">
-                  {/* Timeline Dot */}
-                  <div
-                    className={`absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all ${
-                      item.done
-                        ? 'bg-[#0E3723] dark:bg-[#84CC16] border-[#84CC16] text-white dark:text-forest-950 shadow-sm'
-                        : 'bg-white dark:bg-forest-900 border-gray-300 dark:border-forest-700 text-gray-300'
-                    }`}
-                  >
-                    {item.done ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 fill-current text-white dark:text-forest-950" />
-                    ) : (
-                      <div className="w-2 h-2 rounded-full bg-gray-300" />
+          {/* Items Summary in this package */}
+          <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
+            <h4 className="font-serif text-base font-bold text-charcoal-950 dark:text-white">
+              Items in this Consignment ({activeOrder.items?.length || 0})
+            </h4>
+            <div className="divide-y divide-gray-100 dark:divide-forest-800">
+              {activeOrder.items?.map((item, idx) => (
+                <div key={idx} className="py-3 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-3">
+                    {item.image && (
+                      <img src={item.image} alt={item.name} className="w-12 h-12 rounded-xl object-cover" />
                     )}
-                  </div>
-
-                  {/* Milestone Info */}
-                  <div className="flex-1 bg-gray-50 dark:bg-forest-850 p-4 rounded-2xl border border-gray-100 dark:border-forest-750">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <h4 className={`text-xs sm:text-sm font-bold ${item.done ? 'text-charcoal-950 dark:text-white' : 'text-gray-400'}`}>
-                        {item.step}
-                      </h4>
-                      <span className={`text-[11px] font-mono ${item.done ? 'text-leaf-700 dark:text-lime-300 font-bold' : 'text-gray-400'}`}>
-                        {item.time}
-                      </span>
+                    <div>
+                      <span className="font-bold text-charcoal-950 dark:text-white">{item.name}</span>
+                      <span className="text-gray-500 block text-[11px]">Qty: {item.quantity}</span>
                     </div>
-                    <p className="text-xs text-charcoal-600 dark:text-gray-300 leading-relaxed">
-                      {item.desc}
-                    </p>
                   </div>
+                  <span className="font-bold text-charcoal-950 dark:text-white font-serif">
+                    {formatINR(item.price * item.quantity)}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Delivery Address & Items Footer */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-100 dark:border-forest-800 text-xs">
-            <div className="p-4 bg-sage-50 dark:bg-forest-850 rounded-2xl border border-gray-200 dark:border-forest-700 space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-charcoal-950 dark:text-white">
-                <MapPin className="w-3.5 h-3.5 text-leaf-600 dark:text-leaf-400" />
-                <span>Delivery Address</span>
-              </div>
-              <p className="text-charcoal-800 dark:text-gray-200 font-medium">{activeOrder.shippingAddress.name} ({activeOrder.shippingAddress.phone})</p>
-              <p className="text-charcoal-600 dark:text-gray-400">
-                {activeOrder.shippingAddress.street}, {activeOrder.shippingAddress.city}, {activeOrder.shippingAddress.state} - {activeOrder.shippingAddress.pincode}
-              </p>
-            </div>
-
-            <div className="p-4 bg-gray-50 dark:bg-forest-850 rounded-2xl border border-gray-200 dark:border-forest-700 space-y-2">
-              <div className="flex justify-between font-bold text-charcoal-950 dark:text-white">
-                <span>Items in Cold Box</span>
-                <span>{activeOrder.items.length} packs</span>
-              </div>
-              <p className="text-charcoal-600 dark:text-gray-400">
-                {activeOrder.items.map((i) => `${i.name} (x${i.quantity})`).join(', ')}
-              </p>
-              <p className="text-leaf-700 dark:text-lime-300 font-bold">
-                Total Value: {formatINR(activeOrder.total)}
-              </p>
-            </div>
-          </div>
-
-        </div>
+        </AnimatedSection>
       ) : (
         <div className="bg-white dark:bg-forest-900 rounded-3xl p-12 text-center border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
           <Package className="w-12 h-12 text-gray-400 mx-auto" />
@@ -206,7 +196,6 @@ export const TrackOrderPage = () => {
         </div>
       )}
 
-    </div>
+    </PageTransition>
   );
 };
-

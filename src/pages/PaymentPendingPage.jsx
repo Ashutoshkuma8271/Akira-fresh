@@ -74,3 +74,5 @@ export const PaymentPendingPage = () => {
     </div>
   );
 };
+
+export default PaymentPendingPage;

@@ -2,12 +2,14 @@ import React from 'react';
 import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/common/ProductCard';
 import { Sparkles, Flame } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
+import { AnimatedSection } from '../components/common/AnimatedSection';
 
 export const NewArrivalsPage = () => {
   const newProducts = PRODUCTS.filter((p) => p.isNew || p.isBestseller);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Banner */}
       <div className="rounded-[2.5rem] bg-gradient-to-r from-[#061e14] via-[#092b1d] to-[#0d3b27] text-white p-8 sm:p-12 mb-10 border border-leaf-500/30 shadow-2xl relative overflow-hidden">
@@ -27,13 +29,14 @@ export const NewArrivalsPage = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-        {newProducts.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <AnimatedSection>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          {newProducts.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      </AnimatedSection>
 
-    </div>
+    </PageTransition>
   );
 };
-

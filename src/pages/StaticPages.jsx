@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useToast } from '../context/ToastContext';
 import { Mail, Phone, MapPin, Send, HelpCircle, ShieldCheck, Truck, RotateCcw, Snowflake, Flame } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const HelpPage = () => {
   const [openFaq, setOpenFaq] = useState(0);
@@ -25,7 +26,7 @@ export const HelpPage = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn space-y-8 text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-charcoal-900 dark:text-ivory-100">
       <div className="text-center">
         <span className="text-xs font-bold uppercase tracking-widest text-leaf-700 dark:text-lime-400">Customer Support & FAQs</span>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-charcoal-950 dark:text-white mt-1">
@@ -54,7 +55,7 @@ export const HelpPage = () => {
           </div>
         ))}
       </div>
-    </div>
+    </PageTransition>
   );
 };
 
@@ -69,7 +70,7 @@ export const ContactPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-charcoal-900 dark:text-ivory-100">
       <div className="bg-white dark:bg-forest-900 rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-6">
         <div className="text-center max-w-md mx-auto">
           <span className="text-xs font-bold uppercase tracking-widest text-leaf-700 dark:text-lime-400">Direct Support</span>
@@ -112,7 +113,6 @@ export const ContactPage = () => {
           </button>
         </form>
       </div>
-    </div>
+    </PageTransition>
   );
 };
-

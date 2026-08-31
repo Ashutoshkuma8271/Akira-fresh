@@ -5,13 +5,16 @@ import { PRODUCTS } from '../data/products';
 import { CATEGORIES } from '../data/categories';
 import { ProductCard } from '../components/common/ProductCard';
 import { QuickViewModal } from '../components/common/QuickViewModal';
+import { ProductGallerySkeleton } from '../components/common/SkeletonLoader';
 import { formatINR } from '../utils/currency';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const ShopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const initialCategory = searchParams.get('category') || '';
 
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSub, setSelectedSub] = useState(searchParams.get('sub') || '');
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -118,7 +121,7 @@ export const ShopPage = () => {
   }, [filteredProducts, currentPage]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Page Header with High-Contrast Dark Emerald Background */}
       <div className="bg-gradient-to-r from-[#061e14] via-[#092b1d] to-[#0d3b27] text-white rounded-3xl p-6 sm:p-10 mb-8 border border-leaf-500/30 shadow-xl relative overflow-hidden">
@@ -346,7 +349,9 @@ export const ShopPage = () => {
           )}
 
           {/* Products Grid */}
-          {paginatedProducts.length > 0 ? (
+          {isLoading ? (
+            <ProductGallerySkeleton count={itemsPerPage} className="lg:grid-cols-3" />
+          ) : paginatedProducts.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {paginatedProducts.map((product) => (
                 <ProductCard
@@ -404,6 +409,6 @@ export const ShopPage = () => {
         onClose={() => setQuickViewProduct(null)}
       />
 
-    </div>
+    </PageTransition>
   );
 };

@@ -136,7 +136,7 @@ app.post('/api/auth/register', authLimiter, async (req, res) => {
     if (adminExisting) {
       return res.status(403).json({
         success: false,
-        message: 'Admin email — please use Admin Portal.'
+        message: 'This email is reserved for store administration. It cannot be used as a customer account.'
       });
     }
 
@@ -209,7 +209,7 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
     const user = result.user;
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'customer' },
-      process.env.JWT_SECRET || 'as_commerce_master_jwt_secret_key_2026_luxury',
+      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
       { expiresIn: '7d' }
     );
 
@@ -287,7 +287,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
       return res.status(403).json({
         success: false,
         isAdminAccount: true,
-        message: 'Admin account — please use Admin Portal.'
+        message: 'This email is reserved for store administration. Please log in through the Admin Portal (/admin/login).'
       });
     }
 
@@ -323,7 +323,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'customer' },
-      process.env.JWT_SECRET || 'as_commerce_master_jwt_secret_key_2026_luxury',
+      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
       { expiresIn: '7d' }
     );
 
@@ -376,7 +376,9 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
 
     db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
 
-    const baseUrl = req.headers.origin || 'http://localhost:5173';
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+    const baseUrl = req.headers.origin || `${protocol}://${host}`;
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
 
     await sendPasswordResetEmail(cleanEmail, resetUrl, 'customer', otp);
@@ -611,30 +613,25 @@ async function startServer() {
 
     // Mount Vite dev middleware in development or static assets in production
     if (process.env.NODE_ENV !== 'production') {
-      const http = await import('http');
-      const server = http.createServer(app);
-
       const { createServer: createViteServer } = await import('vite');
       const vite = await createViteServer({
         root: rootDir,
         server: {
           middlewareMode: true,
-          hmr: {
-            server: server,
-          },
+          hmr: process.env.DISABLE_HMR === 'true' ? false : undefined,
         },
         appType: 'spa',
       });
       app.use(vite.middlewares);
 
-      server.listen(PORT, '0.0.0.0', () => {
+      app.listen(PORT, '0.0.0.0', () => {
         console.log(`[A_S FOODY Server] Server running on http://localhost:${PORT}`);
       });
       return;
     } else {
       const distPath = path.join(rootDir, 'dist');
       app.use(express.static(distPath));
-      app.get('*', (req, res) => {
+      app.use((req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
       });
 

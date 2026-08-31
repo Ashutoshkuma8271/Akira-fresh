@@ -65,3 +65,5 @@ export const PaymentFailedPage = () => {
     </div>
   );
 };
+
+export default PaymentFailedPage;

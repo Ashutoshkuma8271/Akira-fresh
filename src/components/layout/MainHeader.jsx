@@ -8,7 +8,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
 
-export const MainHeader = ({ onOpenMobileMenu }) => {
+export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { totalItemsCount, setIsCartDrawerOpen } = useCart();
@@ -16,10 +16,12 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
   const { user, isAuthenticated, setIsAuthModalOpen, setAuthMode, logout } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [internalSearchModalOpen, setInternalSearchModalOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const accountRef = useRef(null);
+
+  const openSearch = onOpenSearch || (() => setInternalSearchModalOpen(true));
 
   const isActive = (path) => location.pathname === path;
 
@@ -47,7 +49,7 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
     } else {
-      setIsSearchModalOpen(true);
+      openSearch();
     }
   };
 
@@ -177,7 +179,7 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
 
               {/* Mobile Search Trigger */}
               <button
-                onClick={() => setIsSearchModalOpen(true)}
+                onClick={openSearch}
                 className="md:hidden p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
                 aria-label="Search"
               >
@@ -312,11 +314,13 @@ export const MainHeader = ({ onOpenMobileMenu }) => {
         </div>
       </div>
 
-      {/* Global Search Modal */}
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-      />
+      {/* Global Search Modal fallback if standalone */}
+      {!onOpenSearch && (
+        <SearchModal
+          isOpen={internalSearchModalOpen}
+          onClose={() => setInternalSearchModalOpen(false)}
+        />
+      )}
     </>
   );
 };

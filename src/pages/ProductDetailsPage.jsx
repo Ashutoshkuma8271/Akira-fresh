@@ -30,6 +30,8 @@ import {
   Award,
   Lock
 } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
+import { AnimatedSection } from '../components/common/AnimatedSection';
 
 const RECENTLY_VIEWED_KEY = 'as_commerce_recently_viewed';
 
@@ -158,7 +160,7 @@ export const ProductDetailsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-xs text-charcoal-600 dark:text-gray-400 mb-6 flex-wrap font-medium">
@@ -662,7 +664,7 @@ export const ProductDetailsPage = () => {
         </div>
       )}
 
-    </div>
+    </PageTransition>
   );
 };
 

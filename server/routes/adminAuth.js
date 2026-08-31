@@ -65,17 +65,24 @@ router.post('/signup', signupRateLimiter, async (req, res) => {
     const activeAdmin = (await db.getAdminByEmailAsync(cleanEmail)) || null;
     const existingCount = await db.getAdminCountAsync();
     
-    if (existingCount > 0 && (!activeAdmin || (activeAdmin.isVerified && activeAdmin.isActive))) {
-      logAudit({
-        action: 'Blocked Duplicate Admin Creation Attempt',
-        adminEmail: cleanEmail,
-        ip: req.ip,
-        details: 'Attempted admin signup when active admin already exists in database'
-      });
-      return res.status(403).json({
-        success: false,
-        message: 'Administrator account is already registered and active. Please sign in.'
-      });
+    if (existingCount > 0) {
+      if (!activeAdmin) {
+        logAudit({
+          action: 'Blocked Duplicate Admin Creation Attempt',
+          adminEmail: cleanEmail,
+          ip: req.ip,
+          details: 'Attempted admin signup when another admin already exists in database'
+        });
+        return res.status(403).json({
+          success: false,
+          message: 'Only one master store administrator account is permitted. Administrator registration is closed.'
+        });
+      } else if (activeAdmin.isVerified && activeAdmin.isActive) {
+        return res.status(403).json({
+          success: false,
+          message: 'Administrator account is already registered and active. Please sign in.'
+        });
+      }
     }
 
 
@@ -219,6 +226,21 @@ router.post('/login', loginRateLimiter, async (req, res) => {
     // Query admin record asynchronously from Supabase
     const admin = await db.getAdminByEmailAsync(cleanEmail);
 
+    // Check if customer account exists with this email to give a dedicated message
+    const customerUser = await db.getUserByEmailAsync(cleanEmail);
+    if (customerUser) {
+      logAudit({
+        action: 'Blocked Customer Access to Admin Portal',
+        adminEmail: cleanEmail,
+        ip: req.ip,
+        details: 'Customer attempted to log in to Admin Portal'
+      });
+      return res.status(403).json({
+        success: false,
+        message: 'This email belongs to a customer account. Customer accounts cannot access the Admin Portal.'
+      });
+    }
+
     if (!admin) {
       logAudit({
         action: 'Failed login',
@@ -359,8 +381,10 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
 
     db.createPasswordReset({ token, otp, adminEmail: cleanEmail, expiresAt });
 
-    const baseUrl = req.headers.origin || 'http://localhost:5173';
-    const resetUrl = `${baseUrl}/admin/reset-password?token=${token}`;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+    const baseUrl = req.headers.origin || `${protocol}://${host}`;
+    const resetUrl = `${baseUrl}/admin/reset-password?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
 
     await sendPasswordResetEmail(cleanEmail, resetUrl, 'admin', otp);
 
@@ -387,7 +411,7 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
 });
 
 // 7. POST /api/admin/auth/reset-password — Execute Password Reset via Token or 6-Digit OTP
-router.post(['/api/admin/auth/reset-password', '/api/admin/auth/reset-password-with-otp'], async (req, res) => {
+router.post(['/reset-password', '/reset-password-with-otp'], async (req, res) => {
   try {
     const { token, otp, email, newPassword } = req.body;
 

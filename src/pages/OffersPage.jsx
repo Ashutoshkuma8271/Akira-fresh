@@ -4,6 +4,8 @@ import { COUPONS } from '../data/coupons';
 import { ProductCard } from '../components/common/ProductCard';
 import { useCart } from '../context/CartContext';
 import { Tag, Sparkles, Flame, Copy, Check } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
+import { AnimatedSection } from '../components/common/AnimatedSection';
 
 export const OffersPage = () => {
   const { applyCoupon } = useCart();
@@ -19,7 +21,7 @@ export const OffersPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Header Banner */}
       <div className="rounded-[2.5rem] bg-gradient-to-r from-[#061e14] via-[#092b1d] to-[#0d3b27] text-white p-8 sm:p-12 mb-10 border border-leaf-500/30 shadow-2xl relative overflow-hidden">
@@ -39,7 +41,7 @@ export const OffersPage = () => {
       </div>
 
       {/* Available Coupons Grid */}
-      <div className="mb-12">
+      <AnimatedSection className="mb-12">
         <h3 className="font-serif text-xl font-bold text-charcoal-950 dark:text-white mb-4 flex items-center gap-2">
           <Tag className="w-5 h-5 text-leaf-600 dark:text-leaf-400" />
           <span>Active Promo Coupons</span>
@@ -72,10 +74,10 @@ export const OffersPage = () => {
             </div>
           ))}
         </div>
-      </div>
+      </AnimatedSection>
 
       {/* Discounted Products Grid */}
-      <div>
+      <AnimatedSection>
         <h3 className="font-serif text-xl font-bold text-charcoal-950 dark:text-white mb-6">
           Featured Non-Veg Offers ({offerProducts.length})
         </h3>
@@ -84,9 +86,8 @@ export const OffersPage = () => {
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
-      </div>
+      </AnimatedSection>
 
-    </div>
+    </PageTransition>
   );
 };
-

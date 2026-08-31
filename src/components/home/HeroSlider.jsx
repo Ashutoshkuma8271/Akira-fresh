@@ -154,67 +154,67 @@ export const HeroSlider = () => {
               </div>
 
               {/* Slide Content */}
-              <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12 relative z-10 w-full">
-                <div className="max-w-xl lg:max-w-2xl space-y-6 text-left">
+              <div className="max-w-7xl mx-auto px-4 sm:px-10 lg:px-16 py-8 sm:py-12 relative z-10 w-full">
+                <div className="max-w-xl lg:max-w-2xl space-y-4 sm:space-y-6 text-left">
                   
                   {/* Pill Tag (Matching Mockup: Dark Capsule + Lime Border/Text) */}
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0a2316]/90 border border-[#84CC16]/60 text-xs font-bold uppercase tracking-wider text-[#84CC16] backdrop-blur-md shadow-lg">
-                    <Icon className="w-3.5 h-3.5 text-[#84CC16]" />
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#0a2316]/90 border border-[#84CC16]/60 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#84CC16] backdrop-blur-md shadow-lg">
+                    <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#84CC16]" />
                     <span>{slide.badge}</span>
                   </div>
 
                   {/* Main Headline (Matching Mockup: White Line 1, Lime Green Line 2) */}
-                  <h1 className="font-serif text-4xl sm:text-5xl lg:text-[62px] font-black tracking-tight text-white leading-[1.08] drop-shadow-md">
+                  <h1 className="font-serif text-3xl xs:text-4xl sm:text-5xl lg:text-[62px] font-black tracking-tight text-white leading-[1.12] sm:leading-[1.08] drop-shadow-md">
                     {slide.titleLine1} <br />
                     <span className="text-[#84CC16] sm:text-[#9ae62e]">{slide.titleLine2}</span>
                   </h1>
 
                   {/* Subtitle */}
-                  <p className="text-sm sm:text-base lg:text-lg text-gray-200 leading-relaxed font-sans max-w-lg drop-shadow-sm font-medium">
+                  <p className="text-xs xs:text-sm sm:text-base lg:text-lg text-gray-200 leading-relaxed font-sans max-w-lg drop-shadow-sm font-medium line-clamp-3 sm:line-clamp-none">
                     {slide.subtitle}
                   </p>
 
                   {/* Optional Countdown on Slide 3 */}
                   {slide.countdown && (
-                    <div className="flex items-center gap-2 pt-1">
-                      <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[50px]">
-                        <div className="font-mono text-sm sm:text-base font-black text-white">{String(timeLeft.days).padStart(2, '0')}</div>
-                        <div className="text-[9px] uppercase tracking-wider text-gray-400 font-sans">Days</div>
+                    <div className="flex items-center gap-1.5 sm:gap-2 pt-1">
+                      <div className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[42px] sm:min-w-[50px]">
+                        <div className="font-mono text-xs sm:text-base font-black text-white">{String(timeLeft.days).padStart(2, '0')}</div>
+                        <div className="text-[8px] sm:text-[9px] uppercase tracking-wider text-gray-400 font-sans">Days</div>
                       </div>
-                      <span className="font-bold text-white">:</span>
-                      <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[50px]">
-                        <div className="font-mono text-sm sm:text-base font-black text-white">{String(timeLeft.hours).padStart(2, '0')}</div>
-                        <div className="text-[9px] uppercase tracking-wider text-gray-400 font-sans">Hours</div>
+                      <span className="font-bold text-white text-xs sm:text-base">:</span>
+                      <div className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[42px] sm:min-w-[50px]">
+                        <div className="font-mono text-xs sm:text-base font-black text-white">{String(timeLeft.hours).padStart(2, '0')}</div>
+                        <div className="text-[8px] sm:text-[9px] uppercase tracking-wider text-gray-400 font-sans">Hours</div>
                       </div>
-                      <span className="font-bold text-white">:</span>
-                      <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[50px]">
-                        <div className="font-mono text-sm sm:text-base font-black text-white">{String(timeLeft.minutes).padStart(2, '0')}</div>
-                        <div className="text-[9px] uppercase tracking-wider text-gray-400 font-sans">Mins</div>
+                      <span className="font-bold text-white text-xs sm:text-base">:</span>
+                      <div className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[42px] sm:min-w-[50px]">
+                        <div className="font-mono text-xs sm:text-base font-black text-white">{String(timeLeft.minutes).padStart(2, '0')}</div>
+                        <div className="text-[8px] sm:text-[9px] uppercase tracking-wider text-gray-400 font-sans">Mins</div>
                       </div>
-                      <span className="font-bold text-white">:</span>
-                      <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[50px]">
-                        <div className="font-mono text-sm sm:text-base font-black text-white">{String(timeLeft.seconds).padStart(2, '0')}</div>
-                        <div className="text-[9px] uppercase tracking-wider text-gray-400 font-sans">Secs</div>
+                      <span className="font-bold text-white text-xs sm:text-base">:</span>
+                      <div className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/20 text-center min-w-[42px] sm:min-w-[50px]">
+                        <div className="font-mono text-xs sm:text-base font-black text-white">{String(timeLeft.seconds).padStart(2, '0')}</div>
+                        <div className="text-[8px] sm:text-[9px] uppercase tracking-wider text-gray-400 font-sans">Secs</div>
                       </div>
                     </div>
                   )}
 
                   {/* CTA Buttons (Exact match to Mockup: Lime Green Shop Now + Translucent Dark Explore Collection) */}
-                  <div className="flex flex-wrap items-center gap-4 pt-2">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
                     <Link
                       to={slide.primaryBtnLink}
-                      className="px-8 py-3.5 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                      className="px-5 sm:px-8 py-2.5 sm:py-3.5 bg-[#84CC16] hover:bg-[#65a30d] text-forest-950 font-black text-xs sm:text-sm rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
                     >
                       <span>{slide.primaryBtnText}</span>
-                      <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
                     </Link>
 
                     <Link
                       to={slide.secondaryBtnLink}
-                      className="px-7 py-3.5 bg-black/40 hover:bg-black/60 text-white font-bold text-xs sm:text-sm rounded-full border border-white/30 backdrop-blur-sm hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                      className="px-4 sm:px-7 py-2.5 sm:py-3.5 bg-black/40 hover:bg-black/60 text-white font-bold text-xs sm:text-sm rounded-full border border-white/30 backdrop-blur-sm hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
                     >
                       <span>{slide.secondaryBtnText}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </Link>
                   </div>
 

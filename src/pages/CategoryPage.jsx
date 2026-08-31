@@ -4,7 +4,9 @@ import { CATEGORIES } from '../data/categories';
 import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/common/ProductCard';
 import { QuickViewModal } from '../components/common/QuickViewModal';
+import { ProductGallerySkeleton } from '../components/common/SkeletonLoader';
 import { ChevronRight, Sparkles, Layers, Flame, Truck } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const CategoryPage = () => {
   const { slug } = useParams();
@@ -47,7 +49,7 @@ export const CategoryPage = () => {
   }, [categoryProducts, currentPage]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-charcoal-600 dark:text-gray-400 mb-6 flex-wrap font-medium">
@@ -211,7 +213,7 @@ export const CategoryPage = () => {
         onClose={() => setQuickViewProduct(null)}
       />
 
-    </div>
+    </PageTransition>
   );
 };
 

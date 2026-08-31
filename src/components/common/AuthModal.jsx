@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   X,
   Lock,
@@ -20,6 +21,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
 export const AuthModal = () => {
+  const navigate = useNavigate();
   const {
     isAuthModalOpen,
     setIsAuthModalOpen,
@@ -142,6 +144,8 @@ export const AuthModal = () => {
       setEmail(verificationEmail);
       setPassword('');
       setOtpCode('');
+      setIsAuthModalOpen(false);
+      navigate('/');
     }
   };
 
@@ -288,7 +292,7 @@ export const AuthModal = () => {
                   maxLength={6}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="123456"
+                  placeholder="••••••"
                   autoComplete="one-time-code"
                   className="w-full text-center tracking-[12px] font-mono text-2xl py-3.5 bg-navy-850 text-emerald-400 font-bold rounded-2xl border-2 border-emerald-500/50 focus:outline-none focus:border-emerald-400 transition-all placeholder:text-gray-600 shadow-inner"
                 />
@@ -360,7 +364,7 @@ export const AuthModal = () => {
                     maxLength={6}
                     value={resetOtp}
                     onChange={(e) => setResetOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                    placeholder="123456"
+                    placeholder="••••••"
                     className="w-full text-center tracking-[8px] font-mono text-xl py-2.5 bg-navy-850 text-emerald-400 font-bold rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-all placeholder:text-gray-600"
                   />
                 </div>

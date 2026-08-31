@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { db } from '../db.js';
 import rateLimit from 'express-rate-limit';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'as_commerce_super_secret_luxury_key_2026_!@#$%^';
+export const JWT_SECRET = process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026';
 
 // Audit Logger Helper
 export function logAudit({ action, adminId = null, adminEmail = null, ip = null, resource = null, details = null }) {

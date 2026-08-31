@@ -7,13 +7,15 @@ import { Logo } from '../../components/common/Logo';
 export const AdminResetPasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const tokenFromUrl = searchParams.get('token') || '';
+  const hashParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.hash.replace(/^#/, '')) : new URLSearchParams();
+  const tokenFromUrl = searchParams.get('token') || searchParams.get('code') || hashParams.get('access_token') || '';
+  const emailFromUrl = searchParams.get('email') || '';
 
   const { resetPassword, resetPasswordWithOtp } = useAdminAuth();
 
   const [activeTab, setActiveTab] = useState(tokenFromUrl ? 'token' : 'otp');
   const [token, setToken] = useState(tokenFromUrl);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(emailFromUrl);
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -221,7 +223,7 @@ export const AdminResetPasswordPage = () => {
                         maxLength={6}
                         value={otp}
                         onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                        placeholder="123456"
+                        placeholder="••••••"
                         className="w-full pl-10 pr-4 py-3 bg-navy-850 text-emerald-400 font-mono tracking-widest text-lg font-bold text-center rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-gray-600"
                       />
                     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Shield, FileText, Lock, RefreshCcw, Truck, HelpCircle, AlertTriangle, Eye, Activity, Heart } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 const SECTIONS = [
   { id: 'privacy', label: 'Privacy Policy', icon: Shield },
@@ -31,7 +32,7 @@ export const StaticLegalPages = () => {
   const IconComponent = SECTIONS.find(s => s.id === activeSection)?.icon || Shield;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fadeIn text-charcoal-900 dark:text-ivory-100 min-h-screen">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-charcoal-900 dark:text-ivory-100 min-h-screen">
       <div className="flex flex-col lg:flex-row gap-10 items-start">
         
         {/* Sticky Left Sidebar Navigation */}
@@ -248,6 +249,6 @@ export const StaticLegalPages = () => {
 
         </main>
       </div>
-    </div>
+    </PageTransition>
   );
 };

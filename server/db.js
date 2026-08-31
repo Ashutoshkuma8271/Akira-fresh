@@ -287,6 +287,50 @@ export async function initDB() {
     memoryDB.orders = [];
     saveToDisk();
   }
+
+  // Automatic background synchronization of local users and orders to Supabase
+  try {
+    for (const u of (memoryDB.users || [])) {
+      supabase.from('users').upsert({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone || null,
+        password_hash: u.passwordHash || u.password_hash || '',
+        is_verified: !!u.isVerified,
+        verification_otp: u.verificationOtp || null,
+        otp_expires_at: u.otpExpiresAt || null,
+        addresses: u.addresses || [],
+        wishlist: u.wishlist || [],
+        created_at: u.createdAt || new Date().toISOString(),
+        updated_at: u.updatedAt || new Date().toISOString()
+      }).then().catch(() => {});
+    }
+
+    for (const o of (memoryDB.orders || [])) {
+      supabase.from('orders').upsert({
+        id: o.id,
+        user_email: o.customerEmail || o.shippingAddress?.email || null,
+        customer_name: o.customerName || o.shippingAddress?.fullName || 'Customer',
+        customer_phone: o.customerPhone || o.shippingAddress?.phone || null,
+        shipping_street: o.shippingAddress?.street || null,
+        shipping_city: o.shippingAddress?.city || null,
+        shipping_pincode: o.shippingAddress?.pincode || null,
+        items: o.items || [],
+        subtotal: o.subtotal || 0,
+        total_amount: o.total || o.totalAmount || 0,
+        payment_method: o.paymentMethod || 'COD',
+        payment_status: o.paymentStatus || 'Pending',
+        status: o.status || 'Processing',
+        carrier: o.carrier || null,
+        tracking_number: o.trackingNumber || null,
+        created_at: o.createdAt || (o.date ? new Date(o.date).toISOString() : new Date().toISOString()),
+        updated_at: o.updatedAt || new Date().toISOString()
+      }).then().catch(() => {});
+    }
+  } catch (e) {
+    console.warn('Auto background sync note:', e.message);
+  }
 }
 
 // Database Operations Layer with Strict Single-Admin Constraint & Supabase Sync
@@ -422,27 +466,29 @@ export const db = {
     }
     saveToDisk();
 
-    // Direct write to Supabase table (using standard columns)
+    // Direct write to Supabase table (using standard columns with fallback)
     try {
-      await supabase.from('admins').upsert({
+      const adminPayload = {
         id: newAdmin.id,
         name: newAdmin.name,
         email: newAdmin.email,
         password_hash: newAdmin.passwordHash,
-        role: 'admin',
         is_active: isActive ? 1 : 0,
         is_verified: isVerified,
         verification_otp: verificationOtp,
-        otp_expires_at: otpExpiresAt,
-        single_admin_lock: 1,
         created_at: newAdmin.createdAt,
         updated_at: now
-      });
-      console.log('⚡ Saved Admin into Supabase table public.admins');
+      };
+      
+      const { error: supaErr } = await supabase.from('admins').upsert(adminPayload);
+      if (supaErr) {
+        console.warn('Supabase admins upsert error:', supaErr.message);
+      } else {
+        console.log('⚡ Saved Admin into Supabase table public.admins');
+      }
     } catch (err) {
       console.warn('Supabase admins table write note:', err.message);
     }
-
 
     // Also persist in users table as fallback
     try {
@@ -451,14 +497,26 @@ export const db = {
         name: newAdmin.name,
         email: newAdmin.email,
         password_hash: newAdmin.passwordHash,
-        role: 'admin',
         is_verified: isVerified,
         verification_otp: verificationOtp,
-        otp_expires_at: otpExpiresAt,
         created_at: now,
         updated_at: now
       });
     } catch (err) {}
+
+    // Also register in Supabase Auth
+    try {
+      await supabase.auth.signUp({
+        email: cleanEmail,
+        password: passwordHash.slice(0, 30) + 'Aa1!',
+        options: {
+          data: {
+            name,
+            role: 'admin'
+          }
+        }
+      });
+    } catch (authErr) {}
 
     return newAdmin;
   },
@@ -476,14 +534,6 @@ export const db = {
     // Fallback search in memory
     if (!admin && memoryDB.admins && memoryDB.admins.length > 0) {
       admin = memoryDB.admins.find(a => a.email?.toLowerCase() === clean);
-    }
-    // If single admin exists and OTP matches
-    if (!admin && memoryDB.admins && memoryDB.admins.length === 1) {
-      const singleAdmin = memoryDB.admins[0];
-      const otpMatches = (singleAdmin.verificationOtp && singleAdmin.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
-      if (otpMatches) {
-        admin = singleAdmin;
-      }
     }
     if (!admin && memoryDB.users && memoryDB.users.length > 0) {
       const u = memoryDB.users.find(u => u.email?.toLowerCase() === clean && u.role === 'admin');
@@ -506,10 +556,14 @@ export const db = {
       return { success: true, admin };
     }
 
-    let isValid = (admin.verificationOtp && admin.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
+    if (admin.otpExpiresAt && Date.now() > admin.otpExpiresAt) {
+      return { success: false, message: 'Verification code has expired. Please sign up again to receive a fresh code.' };
+    }
+
+    let isValid = Boolean(admin.verificationOtp && admin.verificationOtp.toString().trim() === cleanOtp);
 
     if (!isValid) {
-      return { success: false, message: 'Invalid 6-digit verification code. Please check your email or enter 123456.' };
+      return { success: false, message: 'Invalid 6-digit verification code. Please check your email and enter the code sent to you.' };
     }
 
     const now = new Date().toISOString();
@@ -622,7 +676,7 @@ export const db = {
     return (memoryDB.password_resets || []).find(r => {
       if (r.used) return false;
       if (r.adminEmail?.toLowerCase() !== cleanEmail) return false;
-      const isOtpMatch = r.otp === cleanOtp || cleanOtp === '123456';
+      const isOtpMatch = r.otp === cleanOtp;
       return isOtpMatch;
     });
   },
@@ -633,7 +687,7 @@ export const db = {
     const target = (memoryDB.password_resets || []).find(r => {
       if (r.used) return false;
       if (r.token === tokenOrOtp) return true;
-      if (cleanEmail && r.adminEmail?.toLowerCase() === cleanEmail && (r.otp === tokenOrOtp || tokenOrOtp === '123456')) return true;
+      if (cleanEmail && r.adminEmail?.toLowerCase() === cleanEmail && r.otp === tokenOrOtp) return true;
       return false;
     });
 
@@ -769,24 +823,42 @@ export const db = {
 
     // Direct write to Supabase table
     try {
-      await supabase.from('users').insert({
+      const userPayload = {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
         phone: newUser.phone,
         password_hash: newUser.passwordHash,
-        role: 'customer',
         is_verified: isVerified,
         verification_otp: verificationOtp,
-        addresses: [],
-        wishlist: [],
         created_at: now,
         updated_at: now
-      });
-      console.log('⚡ Saved Customer User into Supabase table public.users');
+      };
+
+      const { error: supaErr } = await supabase.from('users').upsert(userPayload);
+      if (supaErr) {
+        console.warn('Supabase users table write note:', supaErr.message);
+      } else {
+        console.log('⚡ Saved Customer User into Supabase table public.users');
+      }
     } catch (err) {
       console.warn('Supabase users table write note:', err.message);
     }
+
+    // Also register in Supabase Auth
+    try {
+      await supabase.auth.signUp({
+        email: newUser.email,
+        password: passwordHash.slice(0, 30) + 'Aa1!',
+        options: {
+          data: {
+            name: newUser.name,
+            phone: newUser.phone,
+            role: 'customer'
+          }
+        }
+      });
+    } catch (authErr) {}
 
     return newUser;
   },
@@ -800,7 +872,7 @@ export const db = {
     }
 
     const user = memoryDB.users[userIndex];
-    let isValid = (user.verificationOtp && user.verificationOtp.toString().trim() === otp.toString().trim()) || otp === '123456';
+    let isValid = Boolean(user.verificationOtp && user.verificationOtp.toString().trim() === otp.toString().trim());
     if (!isValid) {
       return { success: false, message: 'Invalid 6-digit verification code. Please check and try again.' };
     }
@@ -847,7 +919,11 @@ export const db = {
       return { success: true, user };
     }
 
-    let isValid = (user.verificationOtp && user.verificationOtp.toString().trim() === cleanOtp) || cleanOtp === '123456';
+    if (user.otpExpiresAt && Date.now() > user.otpExpiresAt) {
+      return { success: false, message: 'Verification code has expired. Please sign up again to receive a fresh code.' };
+    }
+
+    let isValid = Boolean(user.verificationOtp && user.verificationOtp.toString().trim() === cleanOtp);
 
     if (!isValid) {
       try {
@@ -859,7 +935,7 @@ export const db = {
     }
 
     if (!isValid) {
-      return { success: false, message: 'Invalid 6-digit verification code. Please check your email or enter 123456.' };
+      return { success: false, message: 'Invalid 6-digit verification code. Please check your email and enter the code sent to you.' };
     }
 
 

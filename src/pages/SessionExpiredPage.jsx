@@ -61,3 +61,5 @@ export const SessionExpiredPage = () => {
     </div>
   );
 };
+
+export default SessionExpiredPage;

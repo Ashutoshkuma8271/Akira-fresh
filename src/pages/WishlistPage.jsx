@@ -4,6 +4,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { Heart, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const WishlistPage = () => {
   const { wishlistItems, wishlistCount, clearWishlist } = useWishlist();
@@ -17,7 +18,7 @@ export const WishlistPage = () => {
 
   if (wishlistCount === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+      <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-charcoal-900 dark:text-ivory-100">
         <div className="max-w-md mx-auto bg-white dark:bg-forest-900 rounded-3xl p-10 border border-gray-200 dark:border-forest-800 shadow-sm space-y-4">
           <div className="w-20 h-20 rounded-full bg-sage-100 dark:bg-forest-800 mx-auto flex items-center justify-center border border-leaf-500/20">
             <Heart className="w-10 h-10 text-leaf-600 dark:text-leaf-400" />
@@ -33,12 +34,12 @@ export const WishlistPage = () => {
             Discover Delicacies
           </Link>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn text-charcoal-900 dark:text-ivory-100">
+    <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-gray-200 dark:border-forest-800">
@@ -76,7 +77,6 @@ export const WishlistPage = () => {
         ))}
       </div>
 
-    </div>
+    </PageTransition>
   );
 };
-

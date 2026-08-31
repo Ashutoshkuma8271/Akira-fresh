@@ -35,3 +35,5 @@ export const MaintenancePage = () => {
     </div>
   );
 };
+
+export default MaintenancePage;

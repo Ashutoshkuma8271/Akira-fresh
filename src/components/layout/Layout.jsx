@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { AnnouncementBar } from './AnnouncementBar';
 import { MainHeader } from './MainHeader';
 import { MobileNav } from './MobileNav';
+import { BottomNav } from './BottomNav';
 import { Footer } from './Footer';
 import { CartDrawer } from '../common/CartDrawer';
 import { AuthModal } from '../common/AuthModal';
+import { SearchModal } from '../common/SearchModal';
 import { WifiOff } from 'lucide-react';
 
 export const Layout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(typeof navigator !== 'undefined' ? !navigator.onLine : false);
 
   useEffect(() => {
@@ -35,11 +38,23 @@ export const Layout = ({ children }) => {
       {/* Sticky Header Stack */}
       <header className="sticky top-0 z-40 shadow-sm">
         <AnnouncementBar />
-        <MainHeader onOpenMobileMenu={() => setIsMobileMenuOpen(true)} />
+        <MainHeader
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+          onOpenSearch={() => setIsSearchModalOpen(true)}
+        />
       </header>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Navigation */}
       <MobileNav isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+
+      {/* Mobile Sticky Bottom Navigation Bar */}
+      <BottomNav onOpenSearch={() => setIsSearchModalOpen(true)} />
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
 
       {/* Cart Drawer */}
       <CartDrawer />
@@ -47,13 +62,15 @@ export const Layout = ({ children }) => {
       {/* Auth Modal */}
       <AuthModal />
 
-      {/* Page Content */}
-      <main className="flex-1">
+      {/* Page Content with mobile bottom nav safe offset */}
+      <main className="flex-1 pb-16 lg:pb-0">
         {children}
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer with mobile bottom spacing */}
+      <div className="pb-12 lg:pb-0">
+        <Footer />
+      </div>
     </div>
   );
 };
