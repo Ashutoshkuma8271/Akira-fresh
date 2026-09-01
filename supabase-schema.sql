@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SUPABASE DATABASE SCHEMA FOR AS COMMERCE (E-COMMERCE PLATFORM)
+-- SUPABASE DATABASE SCHEMA FOR AS FOODY / AS COMMERCE PLATFORM
 -- Run this in your Supabase Dashboard -> SQL Editor -> Click 'Run'
 -- ==============================================================================
 
@@ -92,6 +92,36 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 6. SECURITY AUDIT LOGS TABLE (Real-Time Immutable Audit Trail)
+CREATE TABLE IF NOT EXISTS public.audit_logs (
+  id TEXT PRIMARY KEY,
+  action TEXT NOT NULL,
+  admin_id TEXT,
+  admin_email TEXT,
+  ip_address TEXT,
+  resource TEXT,
+  details TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. COUPONS & PROMOTIONS TABLE
+CREATE TABLE IF NOT EXISTS public.coupons (
+  code TEXT PRIMARY KEY,
+  discount_percent NUMERIC NOT NULL,
+  min_order NUMERIC DEFAULT 0,
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ==============================================================================
+-- INDEXES FOR FAST REAL-TIME LOOKUPS
+-- ==============================================================================
+CREATE INDEX IF NOT EXISTS idx_orders_user_email ON public.orders(user_email);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON public.audit_logs(created_at DESC);
+
 -- ==============================================================================
 -- ENABLE ROW LEVEL SECURITY (RLS) POLICIES FOR SECURE & SEAMLESS SYNC
 -- ==============================================================================
@@ -102,6 +132,8 @@ ALTER TABLE public.admins DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons DISABLE ROW LEVEL SECURITY;
 
 -- Grant permissions to public roles
 GRANT ALL ON TABLE public.users TO anon, authenticated, service_role;
@@ -109,3 +141,13 @@ GRANT ALL ON TABLE public.admins TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.products TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.orders TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.site_settings TO anon, authenticated, service_role;
+GRANT ALL ON TABLE public.audit_logs TO anon, authenticated, service_role;
+GRANT ALL ON TABLE public.coupons TO anon, authenticated, service_role;
+
+-- Enable Realtime publication for all tables
+ALTER PUBLICATION supabase_realtime ADD TABLE public.users;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.audit_logs;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.coupons;

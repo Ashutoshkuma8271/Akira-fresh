@@ -341,11 +341,12 @@ router.delete('/coupons/:code', (req, res) => {
 
 // 6. SECURITY AUDIT TRAIL
 // GET /api/admin/audit-logs
-router.get('/audit-logs', (req, res) => {
+router.get('/audit-logs', async (req, res) => {
   try {
-    const logs = db.getAuditLogs(100);
+    const logs = await db.getAuditLogsAsync(100);
     return res.json({ success: true, logs });
   } catch (err) {
+    console.error('Fetch audit logs error:', err);
     return res.status(500).json({ success: false, message: 'Server error fetching audit trail' });
   }
 });
@@ -369,6 +370,31 @@ router.get('/customers', async (req, res) => {
     return res.json({ success: true, customers: sanitized, total: sanitized.length });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Server error fetching customers' });
+  }
+});
+
+// DELETE /api/admin/customers/:id
+router.delete('/customers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existing = (db.getUsers() || []).find(u => u.id === id || u.email?.toLowerCase() === id.toLowerCase());
+    const targetEmail = existing?.email || id;
+
+    await db.deleteUserAsync(id);
+
+    logAudit({
+      action: 'Customer account deleted',
+      adminId: req.admin.id,
+      adminEmail: req.admin.email,
+      ip: req.ip,
+      resource: `Customer ${targetEmail}`,
+      details: `Removed account record for "${targetEmail}" from system & Supabase`
+    });
+
+    return res.json({ success: true, message: `Customer account ${targetEmail} deleted successfully.` });
+  } catch (err) {
+    console.error('Delete customer error:', err);
+    return res.status(500).json({ success: false, message: 'Server error deleting customer' });
   }
 });
 

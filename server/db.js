@@ -278,6 +278,32 @@ export async function initDB() {
     saveToDisk();
   }
 
+  // Try to pull audit logs from Supabase cloud
+  try {
+    const { data: supaLogs, error: logsErr } = await supabase
+      .from('audit_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (!logsErr && supaLogs && supaLogs.length > 0) {
+      memoryDB.audit_logs = supaLogs.map(l => ({
+        id: l.id,
+        action: l.action,
+        adminId: l.admin_id,
+        adminEmail: l.admin_email,
+        ip: l.ip_address || l.ip,
+        resource: l.resource,
+        details: l.details,
+        createdAt: l.created_at || l.timestamp,
+        timestamp: l.created_at || l.timestamp
+      }));
+      saveToDisk();
+      console.log(`⚡ Loaded ${supaLogs.length} Security Audit Logs from Supabase Cloud`);
+    }
+  } catch (e) {
+    // Supabase audit log sync fallback
+  }
+
   if (!memoryDB.users) {
     memoryDB.users = [];
     saveToDisk();
@@ -844,13 +870,15 @@ export const db = {
 
   getUserByEmailAsync: async (email) => {
     loadFromDisk();
-    const clean = email.toLowerCase().trim();
-    let user = (memoryDB.users || []).find(u => u.email.toLowerCase() === clean);
+    const clean = (email || '').toLowerCase().trim();
+    if (!clean) return null;
 
-    if (!user) {
-      try {
-        const { data, error } = await supabase.from('users').select('*').eq('email', clean).maybeSingle();
-        if (data && !error) {
+    let user = null;
+
+    try {
+      const { data, error } = await supabase.from('users').select('*').eq('email', clean).maybeSingle();
+      if (!error) {
+        if (data) {
           user = {
             id: data.id,
             name: data.name,
@@ -867,20 +895,29 @@ export const db = {
             updatedAt: data.updated_at || new Date().toISOString()
           };
           if (!memoryDB.users) memoryDB.users = [];
-          const existingIdx = memoryDB.users.findIndex(u => u.id === user.id);
+          const existingIdx = memoryDB.users.findIndex(u => u.id === user.id || u.email?.toLowerCase() === clean);
           if (existingIdx === -1) {
             memoryDB.users.push(user);
           } else {
             memoryDB.users[existingIdx] = user;
           }
           saveToDisk();
+          return user;
+        } else {
+          // User was deleted from Supabase cloud table — purge from memory cache so they can re-register
+          if (memoryDB.users && memoryDB.users.some(u => u.email?.toLowerCase() === clean)) {
+            memoryDB.users = memoryDB.users.filter(u => u.email?.toLowerCase() !== clean);
+            saveToDisk();
+            console.log(`⚡ Synced user deletion from Supabase for: ${clean}`);
+          }
+          return null;
         }
-      } catch (e) {
-        // Supabase lookup note
       }
+    } catch (e) {
+      // Supabase lookup note
     }
 
-    return user;
+    return (memoryDB.users || []).find(u => u.email?.toLowerCase() === clean) || null;
   },
 
   getAdminByEmailAsync: async (email) => {
@@ -1242,6 +1279,38 @@ export const db = {
     }
 
     return null;
+  },
+
+  deleteUser: async (id) => {
+    return await db.deleteUserAsync(id);
+  },
+
+  deleteUserAsync: async (id) => {
+    loadFromDisk();
+    const cleanId = id?.toString().trim();
+    if (!cleanId) return false;
+
+    const existing = (memoryDB.users || []).find(u => u.id === cleanId || u.email?.toLowerCase() === cleanId.toLowerCase());
+    const userEmail = existing?.email?.toLowerCase();
+
+    memoryDB.users = (memoryDB.users || []).filter(u => u.id !== cleanId && u.email?.toLowerCase() !== userEmail && u.email?.toLowerCase() !== cleanId.toLowerCase());
+    saveToDisk();
+
+    try {
+      if (cleanId.includes('@')) {
+        await supabase.from('users').delete().eq('email', cleanId.toLowerCase());
+      } else {
+        await supabase.from('users').delete().eq('id', cleanId);
+      }
+      if (userEmail) {
+        await supabase.from('users').delete().eq('email', userEmail);
+      }
+      console.log(`⚡ Deleted User #${cleanId} from Supabase cloud.`);
+      return true;
+    } catch (e) {
+      console.warn('Supabase delete user note:', e.message);
+      return true;
+    }
   },
 
   // 3. PRODUCTS OPERATIONS
@@ -1630,31 +1699,80 @@ export const db = {
   // 6. AUDIT LOGS
   createAuditLog: async (log) => {
     loadFromDisk();
-    const id = `audit-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const id = log.id || `audit-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
     const now = new Date().toISOString();
-    const entry = { id, ...log, createdAt: now };
+    const entry = { id, ...log, createdAt: now, timestamp: now };
     if (!memoryDB.audit_logs) memoryDB.audit_logs = [];
     memoryDB.audit_logs.unshift(entry);
     saveToDisk();
 
     try {
-      await supabase.from('audit_logs').insert({
+      const { error } = await supabase.from('audit_logs').insert({
         id: entry.id,
         action: entry.action,
-        admin_id: entry.adminId,
-        admin_email: entry.adminEmail,
-        ip_address: entry.ip,
-        resource: entry.resource,
-        details: entry.details,
+        admin_id: entry.adminId || null,
+        admin_email: entry.adminEmail || null,
+        ip_address: entry.ip || null,
+        resource: entry.resource || null,
+        details: entry.details || null,
         created_at: now
       });
-    } catch (e) {}
+      if (error) {
+        console.warn('Supabase audit log insert note:', error.message);
+      } else {
+        console.log(`⚡ Audit Log synced to Supabase: [${entry.action}] ${entry.resource || ''}`);
+      }
+    } catch (e) {
+      console.warn('Supabase audit log creation note:', e.message);
+    }
 
     return entry;
   },
 
   getAuditLogs: (limit = 100) => {
     loadFromDisk();
+    return (memoryDB.audit_logs || []).slice(0, limit);
+  },
+
+  getAuditLogsAsync: async (limit = 100) => {
+    loadFromDisk();
+    try {
+      const { data: supaLogs, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (!error && supaLogs && supaLogs.length > 0) {
+        const mapped = supaLogs.map(l => ({
+          id: l.id,
+          action: l.action,
+          adminId: l.admin_id,
+          adminEmail: l.admin_email,
+          ip: l.ip_address || l.ip,
+          resource: l.resource,
+          details: l.details,
+          createdAt: l.created_at || l.timestamp,
+          timestamp: l.created_at || l.timestamp
+        }));
+
+        const logMap = new Map();
+        mapped.forEach(l => logMap.set(l.id, l));
+        (memoryDB.audit_logs || []).forEach(l => {
+          if (l.id && !logMap.has(l.id)) logMap.set(l.id, l);
+        });
+
+        const combined = Array.from(logMap.values())
+          .sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0))
+          .slice(0, limit);
+
+        memoryDB.audit_logs = combined;
+        return combined;
+      }
+    } catch (e) {
+      console.warn('Supabase getAuditLogsAsync note:', e.message);
+    }
+
     return (memoryDB.audit_logs || []).slice(0, limit);
   },
 
@@ -1679,6 +1797,7 @@ export const db = {
     const products = await db.getProductsAsync();
     const orders = await db.getOrdersAsync();
     const customers = await db.getUsersAsync();
+    const logs = await db.getAuditLogsAsync(5);
     const revenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
     const lowStock = products.filter(p => Number(p.stockCount) < 5).length;
     const pendingShipments = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
@@ -1691,7 +1810,7 @@ export const db = {
       totalCustomers: customers.filter(c => c.role !== 'admin').length,
       pendingShipments,
       recentOrders: orders.slice(0, 5),
-      recentAuditLogs: (memoryDB.audit_logs || []).slice(0, 5)
+      recentAuditLogs: logs
     };
   }
 };

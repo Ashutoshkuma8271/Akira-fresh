@@ -195,7 +195,7 @@ export const AdminDashboardPage = () => {
   useEffect(() => {
     fetchDashboardData();
 
-    // 1. Supabase Realtime Channel Subscription for Live Orders, Products & Users
+    // 1. Supabase Realtime Channel Subscription for Live Orders, Products, Users, Audit Logs, Coupons & Settings
     const channel = supabase
       .channel('admin-realtime-listener')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
@@ -205,6 +205,15 @@ export const AdminDashboardPage = () => {
         fetchDashboardData(true);
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+        fetchDashboardData(true);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'audit_logs' }, () => {
+        fetchDashboardData(true);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'coupons' }, () => {
+        fetchDashboardData(true);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, () => {
         fetchDashboardData(true);
       })
       .subscribe();
@@ -400,6 +409,23 @@ export const AdminDashboardPage = () => {
       }
     } catch (err) {
       console.error('Delete coupon error', err);
+    }
+  };
+
+  const handleDeleteCustomer = async (id, email) => {
+    if (!window.confirm(`Are you sure you want to permanently delete customer account "${email}"? This will allow them to recreate their account or clear stale data.`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/customers/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        fetchDashboardData();
+      }
+    } catch (err) {
+      console.error('Delete customer error', err);
     }
   };
 
@@ -924,6 +950,7 @@ export const AdminDashboardPage = () => {
                       <th className="p-3.5">Verification</th>
                       <th className="p-3.5">Role</th>
                       <th className="p-3.5">Joined Date</th>
+                      <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-navy-800">
@@ -972,6 +999,15 @@ export const AdminDashboardPage = () => {
                           </td>
                           <td className="p-3.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
                             {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'N/A'}
+                          </td>
+                          <td className="p-3.5 text-right">
+                            <button
+                              onClick={() => handleDeleteCustomer(c.id, c.email)}
+                              title="Delete customer record"
+                              className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </td>
                         </tr>
                       ))}

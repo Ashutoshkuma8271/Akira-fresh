@@ -16,29 +16,110 @@ import {
 import { PageTransition } from '../components/common/PageTransition';
 import { AnimatedSection } from '../components/common/AnimatedSection';
 
+import { supabase } from '../lib/supabase';
+
 export const TrackOrderPage = () => {
   const [searchParams] = useSearchParams();
   const { getOrderById, orders } = useOrder();
 
   const urlId = searchParams.get('id') || '';
-  const [searchQuery, setSearchQuery] = useState(urlId || (orders[0] ? orders[0].id : 'AF-884219'));
+  const [searchQuery, setSearchQuery] = useState(urlId || (orders[0] ? orders[0].id : ''));
   const [activeOrder, setActiveOrder] = useState(() => getOrderById(urlId) || orders[0] || null);
+  const [searching, setSearching] = useState(false);
+
+  const fetchLiveOrder = async (queryId) => {
+    if (!queryId) return;
+    const cleanId = queryId.trim();
+    
+    // 1. Context lookup
+    const local = getOrderById(cleanId);
+    if (local) {
+      setActiveOrder(local);
+    }
+
+    setSearching(true);
+    try {
+      // 2. Direct Supabase Query
+      const { data: supaOrder, error } = await supabase
+        .from('orders')
+        .select('*')
+        .or(`id.ilike.${cleanId},tracking_number.ilike.${cleanId}`)
+        .maybeSingle();
+
+      if (!error && supaOrder) {
+        const mapped = {
+          id: supaOrder.id,
+          customerEmail: supaOrder.user_email,
+          customerName: supaOrder.customer_name || 'Customer',
+          customerPhone: supaOrder.customer_phone || '',
+          total: Number(supaOrder.total_amount || 0),
+          subtotal: Number(supaOrder.subtotal || supaOrder.total_amount || 0),
+          status: supaOrder.status || 'Processing',
+          paymentMethod: supaOrder.payment_method || 'Online Gateway',
+          paymentStatus: supaOrder.payment_status || 'Paid',
+          carrier: supaOrder.carrier || 'Bluedart Express Luxury Courier',
+          trackingNumber: supaOrder.tracking_number || `BD-${cleanId.replace(/\D/g, '').slice(-8) || '8839219'}IN`,
+          items: typeof supaOrder.items === 'string' ? JSON.parse(supaOrder.items) : (supaOrder.items || []),
+          createdAt: supaOrder.created_at || new Date().toISOString()
+        };
+        setActiveOrder(mapped);
+      } else {
+        // 3. Fallback to API
+        const res = await fetch(`/api/orders/${encodeURIComponent(cleanId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.order) {
+            setActiveOrder(data.order);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Live order tracking fetch note:', e);
+    } finally {
+      setSearching(false);
+    }
+  };
 
   useEffect(() => {
-    if (urlId) {
-      const found = getOrderById(urlId);
-      if (found) {
-        setActiveOrder(found);
-        setSearchQuery(urlId);
-      }
+    const idToUse = urlId || (orders[0] ? orders[0].id : '');
+    if (idToUse) {
+      setSearchQuery(idToUse);
+      fetchLiveOrder(idToUse);
     }
-  }, [urlId]);
+  }, [urlId, orders]);
+
+  // Real-time updates subscription for the active order
+  useEffect(() => {
+    if (!activeOrder?.id) return;
+
+    const channel = supabase
+      .channel(`track-order-${activeOrder.id.replace(/[^a-zA-Z0-9]/g, '_')}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${activeOrder.id}` },
+        (payload) => {
+          if (payload.new) {
+            setActiveOrder((prev) => ({
+              ...prev,
+              status: payload.new.status || prev.status,
+              carrier: payload.new.carrier || prev.carrier,
+              trackingNumber: payload.new.tracking_number || prev.trackingNumber,
+              updatedAt: payload.new.updated_at
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [activeOrder?.id]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    const found = getOrderById(searchQuery.trim());
-    setActiveOrder(found || null);
+    fetchLiveOrder(searchQuery.trim());
   };
 
   return (
@@ -109,35 +190,51 @@ export const TrackOrderPage = () => {
             </div>
 
             {/* Stepper Timeline */}
-            <div className="py-8">
-              <div className="grid grid-cols-4 gap-2 relative">
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-forest-800 -translate-y-1/2 z-0" />
-                <div className="absolute top-1/2 left-0 w-3/4 h-1 bg-[#84CC16] -translate-y-1/2 z-0" />
+            {(() => {
+              const s = (activeOrder?.status || '').toLowerCase();
+              let currentStep = 1;
+              if (s.includes('deliver')) currentStep = 4;
+              else if (s.includes('out') || s.includes('van') || s.includes('transit') || s.includes('ship')) currentStep = 3;
+              else if (s.includes('pack') || s.includes('process') || s.includes('marin')) currentStep = 2;
+              
+              const progressWidth = currentStep === 1 ? '0%' : currentStep === 2 ? '33%' : currentStep === 3 ? '66%' : '100%';
+              const steps = [
+                { label: 'Order Confirmed', time: activeOrder?.createdAt ? new Date(activeOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Confirmed', done: currentStep >= 1 },
+                { label: 'Marinated & Packed', time: currentStep >= 2 ? 'Completed' : 'Queued', done: currentStep >= 2 },
+                { label: 'Out in Cold Van', time: currentStep >= 3 ? (activeOrder?.carrier || 'In Transit') : 'Scheduled', done: currentStep >= 3, active: currentStep === 3 },
+                { label: 'Delivered Fresh', time: currentStep >= 4 ? 'Delivered' : 'Pending', done: currentStep >= 4 },
+              ];
 
-                {[
-                  { label: 'Order Confirmed', time: '10:15 AM', done: true },
-                  { label: 'Marinated & Packed', time: '10:30 AM', done: true },
-                  { label: 'Out in Cold Van', time: '11:05 AM', done: true, active: true },
-                  { label: 'Delivered Fresh', time: 'Pending', done: false },
-                ].map((step, idx) => (
-                  <div key={idx} className="relative z-10 flex flex-col items-center text-center">
+              return (
+                <div className="py-8">
+                  <div className="grid grid-cols-4 gap-2 relative">
+                    <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-forest-800 -translate-y-1/2 z-0" />
                     <div
-                      className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
-                        step.done
-                          ? 'bg-[#84CC16] text-forest-950 shadow-md ring-4 ring-white dark:ring-forest-900'
-                          : 'bg-gray-200 dark:bg-forest-800 text-gray-400'
-                      }`}
-                    >
-                      {step.done ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
-                    </div>
-                    <span className="text-[11px] font-bold text-charcoal-950 dark:text-white mt-2 block">
-                      {step.label}
-                    </span>
-                    <span className="text-[10px] text-gray-400">{step.time}</span>
+                      className="absolute top-1/2 left-0 h-1 bg-[#84CC16] -translate-y-1/2 z-0 transition-all duration-500"
+                      style={{ width: progressWidth }}
+                    />
+
+                    {steps.map((step, idx) => (
+                      <div key={idx} className="relative z-10 flex flex-col items-center text-center">
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                            step.done
+                              ? 'bg-[#84CC16] text-forest-950 shadow-md ring-4 ring-white dark:ring-forest-900'
+                              : 'bg-gray-200 dark:bg-forest-800 text-gray-400'
+                          }`}
+                        >
+                          {step.done ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
+                        </div>
+                        <span className="text-[11px] font-bold text-charcoal-950 dark:text-white mt-2 block">
+                          {step.label}
+                        </span>
+                        <span className="text-[10px] text-gray-400">{step.time}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              );
+            })()}
 
             {/* Logistics Rider Details */}
             <div className="bg-sage-50 dark:bg-forest-850 p-4 rounded-2xl border border-leaf-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

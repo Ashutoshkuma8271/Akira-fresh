@@ -138,7 +138,29 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
 
   useEffect(() => {
     fetchUserOrders();
-  }, [fetchUserOrders]);
+
+    if (!userEmail) return;
+
+    // Supabase Realtime Listener for Live Customer Orders & Status Updates
+    const channel = supabase
+      .channel(`customer-orders-${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        (payload) => {
+          // If the changed order belongs to this customer, refresh quietly
+          const orderEmail = (payload?.new?.user_email || payload?.old?.user_email || '').toLowerCase();
+          if (!orderEmail || orderEmail === userEmail) {
+            fetchUserOrders(false);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchUserOrders, userEmail]);
 
   const handleCopyOrderId = (id) => {
     navigator.clipboard.writeText(id);

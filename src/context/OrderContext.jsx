@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useCart } from './CartContext';
 import { useToast } from './ToastContext';
 import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabase';
 
 const OrderContext = createContext(null);
 
@@ -55,6 +56,25 @@ export const OrderProvider = ({ children }) => {
     };
 
     fetchBackendOrders();
+
+    // Supabase Realtime Channel for automatic order status and history sync
+    const channel = supabase
+      .channel(`order-context-${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        (payload) => {
+          const changedEmail = (payload?.new?.user_email || payload?.old?.user_email || '').toLowerCase();
+          if (!changedEmail || changedEmail === userEmail) {
+            fetchBackendOrders();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userEmail, storageKey]);
 
   useEffect(() => {
