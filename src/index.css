@@ -15,14 +15,14 @@
   }
   
   body {
-    background-color: #FBF9F4;
-    color: #13231B;
+    background-color: #FBFBF9;
+    color: #111915;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   html.dark body {
-    background-color: #06170E;
-    color: #FBF9F4;
+    background-color: #0D1512;
+    color: #FBFBF9;
   }
 
   h1, h2, h3, .font-editorial {

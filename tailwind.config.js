@@ -9,73 +9,80 @@ export default {
     extend: {
       colors: {
         forest: {
-          950: '#06170E',
-          900: '#0B2B1B', // Primary Deep Forest Green
-          850: '#0E3723', // Rich Forest Green
-          800: '#13462D',
-          750: '#185437',
-          700: '#1D613F',
-          600: '#2A8257',
+          950: '#0D1512', // Deep Obsidian Truffle
+          900: '#121C18', // Midnight Cold Truffle
+          850: '#17241F',
+          800: '#1C2E28',
+          750: '#233A33',
+          700: '#0B4D3C', // Deep Forest Emerald
+          600: '#15803D', // Fresh Gourmet Green
         },
         // Fallback aliases ensuring older templates never render transparent
         navy: {
-          950: '#061e14',
-          900: '#0B2B1B',
-          850: '#0E3723',
-          800: '#13462D',
-          750: '#185437',
-          700: '#1D613F',
+          950: '#0D1512',
+          900: '#121C18',
+          850: '#17241F',
+          800: '#1C2E28',
+          750: '#233A33',
+          700: '#0B4D3C',
         },
         lime: {
           300: '#BEF264',
           400: '#A3E635',
-          500: '#84CC16', // Fresh Vibrant Olive/Lime
-          600: '#65A30D',
+          500: '#15803D', // Harmonized to Rich Gourmet Green
+          600: '#0B4D3C',
         },
         leaf: {
           300: '#86EFAC',
           400: '#4ADE80',
-          500: '#22C55E', // Fresh Produce Green
-          600: '#16A34A',
-          700: '#15803D',
+          500: '#15803D', // Deep Forest Emerald
+          600: '#0B4D3C',
+          700: '#073227',
         },
         gold: {
-          400: '#A3E635',
-          500: '#84CC16',
-          600: '#15803D',
-          700: '#166534',
+          400: '#FBBF24',
+          500: '#EAB308',
+          600: '#D97706', // Saffron Honey / Warm Amber CTA
+          700: '#B45309',
+        },
+        ruby: {
+          500: '#EF4444',
+          600: '#DC2626',
+          700: '#B91C1C', // Rich Ruby Crimson for Offer Badges
         },
         ivory: {
-          50: '#FDFCF9',
-          100: '#FBF9F4', // Warm Ivory Background
-          200: '#F5F1E8',
-          300: '#EDE5D5',
+          50: '#FFFFFF',
+          100: '#FBFBF9', // Warm Alabaster / Crisp Porcelain
+          200: '#F4F4F0',
+          300: '#E6E9E6',
         },
         cream: {
-          50: '#FDFCF9',
-          100: '#FBF9F4',
-          200: '#F5F1E8',
+          50: '#FFFFFF',
+          100: '#FBFBF9',
+          200: '#F4F4F0',
         },
         sage: {
-          50: '#F4F7F5',
-          100: '#E8EFE9', // Soft Sage Tone
-          200: '#D2E0D5',
-          300: '#B8CCBD',
-          800: '#2C4435',
-          900: '#1A2C21',
+          50: '#FBFBF9',
+          100: '#F4F4F0',
+          200: '#E6E9E6', // Subtle 1px clean border
+          300: '#D2D9D3',
+          800: '#1C2E28',
+          900: '#121C18',
         },
         charcoal: {
-          950: '#0E1712',
-          900: '#13231B', // Deep Charcoal Typography
-          800: '#1E3328',
-          700: '#34473D',
-          600: '#52665B',
+          950: '#0D1512',
+          900: '#111915', // Deep Crisp Charcoal Typography
+          800: '#1F2B24',
+          700: '#374151',
+          600: '#4B5563',
         },
         brand: {
-          dark: '#13231B',
-          muted: '#63796D',
-          border: '#E3ECE5',
-          lightBorder: '#233F31',
+          dark: '#0D1512',
+          emerald: '#0B4D3C',
+          gold: '#D97706',
+          ruby: '#B91C1C',
+          border: '#E6E9E6',
+          lightBorder: '#1C2E28',
         }
       },
       fontFamily: {
@@ -84,22 +91,22 @@ export default {
         display: ['"Cinzel"', '"Playfair Display"', 'serif'],
       },
       boxShadow: {
-        'leaf-glow': '0 0 25px rgba(34, 197, 94, 0.35)',
-        'leaf-sm': '0 2px 10px rgba(34, 197, 94, 0.2)',
-        'gold-sm': '0 2px 10px rgba(132, 204, 22, 0.3)',
-        'forest-card': '0 10px 30px -5px rgba(11, 43, 27, 0.12)',
-        'premium': '0 20px 40px -15px rgba(11, 43, 27, 0.18)',
-        'soft-float': '0 15px 35px -5px rgba(19, 70, 45, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05)',
-        'elevated': '0 25px 50px -12px rgba(6, 23, 14, 0.25)',
+        'leaf-glow': '0 0 25px rgba(21, 128, 61, 0.35)',
+        'leaf-sm': '0 2px 10px rgba(21, 128, 61, 0.2)',
+        'gold-sm': '0 2px 10px rgba(217, 119, 6, 0.3)',
+        'forest-card': '0 10px 30px -5px rgba(13, 21, 18, 0.08)',
+        'premium': '0 20px 40px -15px rgba(13, 21, 18, 0.12)',
+        'soft-float': '0 15px 35px -5px rgba(13, 21, 18, 0.1), 0 5px 15px rgba(0, 0, 0, 0.04)',
+        'elevated': '0 25px 50px -12px rgba(13, 21, 18, 0.25)',
       },
       backgroundImage: {
-        'leaf-gradient': 'linear-gradient(135deg, #4ADE80 0%, #22C55E 50%, #16A34A 100%)',
-        'gold-gradient': 'linear-gradient(135deg, #A3E635 0%, #84CC16 50%, #65A30D 100%)',
-        'navy-gradient': 'linear-gradient(145deg, #061e14 0%, #092b1d 50%, #0d3b27 100%)',
-        'forest-gradient': 'linear-gradient(145deg, #0E3723 0%, #0B2B1B 100%)',
-        'hero-organic': 'radial-gradient(circle at 75% 45%, #1D613F 0%, #0E3723 50%, #0B2B1B 100%)',
-        'soft-sage-gradient': 'linear-gradient(180deg, #FBF9F4 0%, #E8EFE9 100%)',
-        'gold-shimmer': 'linear-gradient(90deg, transparent, rgba(163, 230, 53, 0.15), transparent)',
+        'leaf-gradient': 'linear-gradient(135deg, #15803D 0%, #0B4D3C 100%)',
+        'gold-gradient': 'linear-gradient(135deg, #FBBF24 0%, #D97706 100%)',
+        'navy-gradient': 'linear-gradient(145deg, #0D1512 0%, #121C18 50%, #1C2E28 100%)',
+        'forest-gradient': 'linear-gradient(145deg, #17241F 0%, #0D1512 100%)',
+        'hero-organic': 'radial-gradient(circle at 75% 45%, #0B4D3C 0%, #121C18 60%, #0D1512 100%)',
+        'soft-sage-gradient': 'linear-gradient(180deg, #FBFBF9 0%, #F4F4F0 100%)',
+        'gold-shimmer': 'linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.15), transparent)',
       },
       keyframes: {
         fadeIn: {
