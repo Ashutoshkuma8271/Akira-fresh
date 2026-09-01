@@ -200,13 +200,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const updateProfile = (data) => {
+  const updateProfile = (data, options = { notify: true }) => {
     setUser((prev) => {
       const updated = { ...prev, ...data };
       syncUserToBackend(data);
       return updated;
     });
-    addToast('Profile updated successfully', 'success');
+    if (options?.notify !== false) {
+      addToast('Profile updated successfully', 'success');
+    }
   };
 
   const addAddress = (address) => {

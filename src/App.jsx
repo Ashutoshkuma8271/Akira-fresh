@@ -52,13 +52,13 @@ const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage')
 const PageLoader = () => (
   <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4 p-8">
     <div className="relative">
-      <div className="w-12 h-12 rounded-full border-2 border-gold-500/20 border-t-gold-500 animate-spin" />
+      <div className="w-12 h-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-600 animate-spin" />
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-2 h-2 rounded-full bg-gold-400 animate-ping" />
+        <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
       </div>
     </div>
-    <p className="text-xs font-mono uppercase tracking-widest text-gold-400/80 animate-pulse">
-      Loading Luxury Experience...
+    <p className="text-xs font-serif font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-400 animate-pulse">
+      Curating Gourmet Experience...
     </p>
   </div>
 );

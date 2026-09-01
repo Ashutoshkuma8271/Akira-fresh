@@ -135,7 +135,6 @@ export const AccountPage = () => {
       return;
     }
     updateProfile({ name: profileName.trim(), phone: profilePhone.trim() });
-    addToast('Profile information updated successfully!', 'success');
   };
 
   const handlePasswordChange = (e) => {
@@ -186,7 +185,7 @@ export const AccountPage = () => {
     reader.onload = async (event) => {
       const dataUrl = event.target?.result;
       if (dataUrl) {
-        updateProfile({ avatar: dataUrl });
+        updateProfile({ avatar: dataUrl }, { notify: false });
         addToast('Profile picture updated successfully!', 'success');
       }
 
@@ -201,7 +200,7 @@ export const AccountPage = () => {
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.url) {
-            updateProfile({ avatar: data.url });
+            updateProfile({ avatar: data.url }, { notify: false });
           }
         }
       } catch (err) {

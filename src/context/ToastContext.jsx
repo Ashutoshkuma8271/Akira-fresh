@@ -101,24 +101,43 @@ const condenseMessage = (msg) => {
 };
 
 
+// In-memory debounce cache to prevent duplicate toast messages within 1.8 seconds
+const recentToasts = new Map();
+
 export const ToastProvider = ({ children }) => {
   const addToast = useCallback((message, type = 'success', duration = 2200) => {
     const compactMessage = condenseMessage(message);
+    if (!compactMessage) return;
+
+    // Deduplication check: ignore duplicate toast message within 1800ms
+    const now = Date.now();
+    const key = `${type}:${compactMessage.toLowerCase()}`;
+    if (recentToasts.has(key) && now - recentToasts.get(key) < 1800) {
+      return;
+    }
+    recentToasts.set(key, now);
+
+    // Garbage-collect old keys
+    if (recentToasts.size > 25) {
+      for (const [k, timestamp] of recentToasts.entries()) {
+        if (now - timestamp > 4000) recentToasts.delete(k);
+      }
+    }
 
     const baseStyle = {
-      background: 'rgba(4, 28, 21, 0.96)',
-      color: '#FAF7F0',
+      background: 'rgba(13, 21, 18, 0.96)',
+      color: '#FBFBF9',
       backdropFilter: 'blur(14px)',
       borderRadius: '9999px',
-      padding: '5px 12px',
-      fontSize: '11.5px',
+      padding: '6px 14px',
+      fontSize: '12px',
       fontWeight: '600',
       lineHeight: '1.25',
-      maxWidth: '300px',
+      maxWidth: '320px',
       letterSpacing: '0.01em',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '6px',
+      gap: '7px',
     };
 
     if (type === 'success') {
@@ -126,40 +145,40 @@ export const ToastProvider = ({ children }) => {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(16, 185, 129, 0.45)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.25)',
+          border: '1px solid rgba(21, 128, 61, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(21, 128, 61, 0.25)',
         },
-        icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
+        icon: <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />,
       });
     } else if (type === 'error') {
       toast(compactMessage, {
         duration: duration + 400,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(239, 68, 68, 0.45)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(239, 68, 68, 0.2)',
+          border: '1px solid rgba(220, 38, 38, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(220, 38, 38, 0.2)',
         },
-        icon: <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />,
+        icon: <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />,
       });
     } else if (type === 'info') {
       toast(compactMessage, {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(132, 204, 22, 0.45)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(132, 204, 22, 0.2)',
+          border: '1px solid rgba(217, 119, 6, 0.45)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(217, 119, 6, 0.2)',
         },
-        icon: <Info className="w-3.5 h-3.5 text-lime-400 shrink-0" />,
+        icon: <Info className="w-4 h-4 text-amber-400 shrink-0" />,
       });
     } else {
       toast(compactMessage, {
         duration,
         style: {
           ...baseStyle,
-          border: '1px solid rgba(245, 158, 11, 0.4)',
-          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(245, 158, 11, 0.2)',
+          border: '1px solid rgba(217, 119, 6, 0.4)',
+          boxShadow: '0 4px 14px -2px rgba(0, 0, 0, 0.6), 0 0 10px rgba(217, 119, 6, 0.2)',
         },
-        icon: <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />,
+        icon: <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />,
       });
     }
   }, []);
