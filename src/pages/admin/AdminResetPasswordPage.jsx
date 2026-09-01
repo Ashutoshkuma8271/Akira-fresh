@@ -102,8 +102,8 @@ export const AdminResetPasswordPage = () => {
         
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
-            <Key className="w-7 h-7 text-emerald-400" />
+          <div className="flex justify-center mb-3">
+            <Logo size="large" variant="white" />
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
             Reset Master Password

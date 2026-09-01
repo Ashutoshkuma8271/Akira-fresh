@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { ShieldCheck, Lock, Mail, User, ShieldAlert, ArrowLeft, CheckCircle2, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { Logo } from '../../components/common/Logo';
 
 export const AdminSignupPage = () => {
   const navigate = useNavigate();
@@ -288,8 +289,8 @@ export const AdminSignupPage = () => {
         
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
-            <ShieldCheck className="w-7 h-7 text-emerald-400" />
+          <div className="flex justify-center mb-3">
+            <Logo size="large" variant="white" />
           </div>
           <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 block w-max mx-auto">
             A_S FOODY Administration

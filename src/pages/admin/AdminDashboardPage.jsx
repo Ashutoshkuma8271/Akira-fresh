@@ -464,7 +464,7 @@ export const AdminDashboardPage = () => {
       {/* Top Admin Header */}
       <header className="bg-navy-900 border-b border-emerald-500/20 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-4">
-          <Logo size="small" />
+          <Logo size="small" variant="white" />
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-mono">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Master Control & Logistics Suite</span>

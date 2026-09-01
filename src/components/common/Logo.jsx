@@ -4,18 +4,19 @@ import { Link } from 'react-router-dom';
 export const Logo = ({ size = 'normal', showTagline = true, variant = 'default', className = '' }) => {
   const isLarge = size === 'large';
   const isSmall = size === 'small';
+  const isWhiteVariant = variant === 'white' || variant === 'light';
 
   return (
-    <Link to="/" className={`inline-flex items-center gap-2.5 sm:gap-3 group select-none ${className}`}>
+    <Link to="/" className={`inline-flex items-center gap-2 sm:gap-2.5 group select-none ${className}`}>
       {/* Golden Cutlery & Chef Hat Emblem representing A_S FOODY */}
       <div className="relative flex items-center justify-center shrink-0">
         <div
           className={`relative rounded-full bg-gradient-to-br from-[#0c1b14] via-[#05110c] to-[#010503] flex items-center justify-center shadow-lg border border-[#D4AF37] transition-transform duration-300 group-hover:scale-105 ${
             isLarge
-              ? 'w-14 h-14 p-2'
+              ? 'w-13 h-13 sm:w-14 sm:h-14 p-2'
               : isSmall
-              ? 'w-9 h-9 p-1.5'
-              : 'w-11 h-11 p-1.5'
+              ? 'w-8 h-8 sm:w-9 sm:h-9 p-1'
+              : 'w-10 h-10 sm:w-11 sm:h-11 p-1.5'
           }`}
         >
           <svg
@@ -101,18 +102,41 @@ export const Logo = ({ size = 'normal', showTagline = true, variant = 'default',
         </div>
       </div>
 
-      {/* Brand Wordmark & Subtitle */}
-      <div className="hidden min-[350px]:flex flex-col text-left justify-center">
-        <span className="font-serif text-[15px] sm:text-[19px] md:text-[22px] font-black tracking-[-0.01em] text-[#0D1F18] dark:text-white leading-[1.05] group-hover:text-[#D4AF37] dark:group-hover:text-[#FBBF24] transition-colors">
+      {/* Brand Wordmark & Subtitle (Always visible and styled properly) */}
+      <div className="flex flex-col text-left justify-center shrink-0">
+        <span
+          className={`font-serif font-black tracking-[-0.01em] leading-[1.05] transition-colors ${
+            isLarge
+              ? 'text-xl sm:text-2xl md:text-3xl'
+              : isSmall
+              ? 'text-[14px] sm:text-[16px]'
+              : 'text-[15px] sm:text-[18px] md:text-[20px]'
+          } ${
+            isWhiteVariant
+              ? 'text-white group-hover:text-[#D4AF37]'
+              : 'text-[#0D1F18] dark:text-white group-hover:text-[#D4AF37] dark:group-hover:text-[#FBBF24]'
+          }`}
+        >
           A_S FOODY
         </span>
         {showTagline && (
-          <span className="text-[6.5px] sm:text-[7.5px] md:text-[8px] font-bold tracking-[0.14em] text-[#4B5563] dark:text-gray-350 uppercase mt-0.5 font-sans leading-none">
+          <span
+            className={`font-bold tracking-[0.12em] sm:tracking-[0.14em] uppercase mt-0.5 font-sans leading-none ${
+              isLarge
+                ? 'text-[8px] sm:text-[9px]'
+                : isSmall
+                ? 'text-[6px] sm:text-[7px]'
+                : 'text-[6.5px] sm:text-[7.5px]'
+            } ${
+              isWhiteVariant
+                ? 'text-emerald-400/90'
+                : 'text-[#4B5563] dark:text-emerald-400'
+            }`}
+          >
             FRESH • TASTY • ALWAYS
           </span>
         )}
       </div>
     </Link>
-
   );
 };

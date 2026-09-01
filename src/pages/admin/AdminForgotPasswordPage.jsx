@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { KeyRound, Mail, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Logo } from '../../components/common/Logo';
 
 export const AdminForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ export const AdminForgotPasswordPage = () => {
       <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
-            <KeyRound className="w-7 h-7 text-emerald-400" />
+          <div className="flex justify-center mb-3">
+            <Logo size="large" variant="white" />
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
             Admin Password Recovery

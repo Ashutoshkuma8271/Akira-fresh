@@ -180,19 +180,21 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
               {/* Mobile Search Trigger */}
               <button
                 onClick={openSearch}
-                className="md:hidden p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
+                className="md:hidden p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5 stroke-[1.9]" />
               </button>
 
-              {/* Theme Toggle (Matching Reference Mockup) */}
-              <ThemeToggle />
+              {/* Theme Toggle (Desktop & Tablet) */}
+              <div className="hidden sm:flex items-center">
+                <ThemeToggle />
+              </div>
 
-              {/* Wishlist Link (Mobile & Desktop Visible) */}
+              {/* Wishlist Link (Desktop & Tablet) */}
               <Link
                 to="/wishlist"
-                className="p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative flex items-center justify-center cursor-pointer"
+                className="hidden md:flex p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative items-center justify-center cursor-pointer"
                 aria-label="Wishlist"
               >
                 <Heart className="w-5 h-5 stroke-[1.9]" />
@@ -203,23 +205,22 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                 )}
               </Link>
 
-              {/* Cart Button with Amber/Gold Counter Badge (Matching Reference Mockup) */}
+              {/* Cart Button with Amber/Gold Counter Badge (Universal Mobile & Desktop) */}
               <button
                 onClick={() => setIsCartDrawerOpen(true)}
-                className="p-1.5 sm:p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer flex items-center justify-center"
+                className="p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer flex items-center justify-center"
                 aria-label="Cart"
               >
                 <ShoppingBag className="w-5 h-5 stroke-[1.9]" />
                 {totalItemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1.5 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
+                  <span className="absolute -top-1 -right-1 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
                     {totalItemsCount}
                   </span>
                 )}
               </button>
 
-
-              {/* User Account Popover (Mobile & Desktop Visible) */}
-              <div ref={accountRef} className="relative flex items-center">
+              {/* User Account Popover (Desktop & Tablet) */}
+              <div ref={accountRef} className="hidden sm:flex relative items-center">
                 <button
                   onClick={() => setIsAccountOpen(!isAccountOpen)}
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center shrink-0 overflow-hidden"

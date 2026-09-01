@@ -43,16 +43,16 @@ export const AdminLoginPage = () => {
     <div className="min-h-screen bg-navy-950 text-white flex flex-col justify-center items-center p-4 selection:bg-emerald-500/30">
       <div className="w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 animate-fadeIn relative overflow-hidden">
         
-        {/* Header with Monogram */}
+        {/* Header with Brand Logo & Monogram */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-800 border border-emerald-500/40 mb-2 shadow-sm">
-            <ShieldCheck className="w-7 h-7 text-emerald-400" />
+          <div className="flex justify-center mb-3">
+            <Logo size="large" variant="white" />
           </div>
           <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 block w-max mx-auto">
             Authorized Personnel Only
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
-            A_S FOODY Admin Portal
+            Admin Master Portal
           </h1>
           <p className="text-xs text-gray-400 leading-relaxed">
             Enter your credentials to access the secure administrative control center.

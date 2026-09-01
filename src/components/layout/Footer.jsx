@@ -36,7 +36,7 @@ export const Footer = () => {
           
           {/* Col 1: Brand Info & Newsletter (Col span 4) */}
           <div className="lg:col-span-4 space-y-4">
-            <Logo size="normal" />
+            <Logo size="normal" variant="white" />
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed pr-4">
               A_S FOODY delivers restaurant-grade Awadhi Galouti kebabs, Afghani tikkas, gourmet patties, and sub-zero cold-chain delicacies directly to your kitchen across Delhi NCR.
             </p>
