@@ -204,6 +204,19 @@
   ],
   "orders": [
     {
+      "id": "AS-TEST-1788623010689",
+      "customerEmail": "test_customer_1788623008934@example.com",
+      "customerName": "Test Customer",
+      "customerPhone": "+919876543210",
+      "total": 2499,
+      "subtotal": 2499,
+      "status": "Out for Delivery",
+      "carrier": "Sub-Zero Cold Chain Logistics",
+      "trackingNumber": "SZ-TEST-999",
+      "createdAt": "2026-09-05T15:43:30.694Z",
+      "updatedAt": "2026-09-05T15:43:30.904Z"
+    },
+    {
       "id": "AS-684033",
       "customerId": "usr-1788123131288",
       "customerEmail": "ashukumarfbg8271@gmail.com",
@@ -564,7 +577,7 @@
       "updatedAt": "2026-08-31T21:40:10.015+00:00"
     },
     {
-      "id": "fixture-prod-galouti-001",
+      "id": "prod-1",
       "name": "A_S FOODY Signature Chicken Galouti Kebabs (Pack of 8)",
       "brand": "A_S FOODY Gourmet Meat Lab",
       "category": "chicken-kebabs",
@@ -587,7 +600,7 @@
       "updatedAt": "2026-08-31T21:40:10.647+00:00"
     },
     {
-      "id": "fixture-prod-kakori-001",
+      "id": "prod-3",
       "name": "Royal Awadhi Mutton Kakori Kebabs (Pack of 6)",
       "brand": "A_S FOODY Gourmet Meat Lab",
       "category": "mutton-delights",
@@ -653,7 +666,7 @@
       "updatedAt": "2026-08-31T21:40:10.439+00:00"
     },
     {
-      "id": "fixture-prod-malaichicken-001",
+      "id": "prod-2",
       "name": "Afghani Cream & Cashew Malai Chicken Tikka",
       "brand": "A_S FOODY Chef Reserve",
       "category": "chicken-kebabs",
@@ -675,7 +688,7 @@
       "updatedAt": "2026-08-31T21:40:10.855+00:00"
     },
     {
-      "id": "fixture-prod-periperi-001",
+      "id": "prod-4",
       "name": "Zesty Flame-Grilled Peri-Peri Chicken Wings",
       "brand": "A_S FOODY Flame Grill",
       "category": "wings-drumsticks",

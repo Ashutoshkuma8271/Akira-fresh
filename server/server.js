@@ -514,6 +514,49 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-
   }
 });
 
+// Authenticated Customer Change Password
+app.post('/api/auth/change-password', requireCustomer, async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body || {};
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Current password and new password are required.' });
+    }
+
+    if (confirmPassword && newPassword !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'New passwords do not match.' });
+    }
+
+    const user = await db.getUserByIdAsync(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    if (user.passwordHash) {
+      const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, message: 'Incorrect current password.' });
+      }
+
+      const isSame = await bcrypt.compare(newPassword, user.passwordHash);
+      if (isSame) {
+        return res.status(400).json({ success: false, message: 'New password cannot be identical to your current password.' });
+      }
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 8 characters long.' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await db.updateUserAsync(user.id, { passwordHash });
+
+    return res.json({ success: true, message: 'Password updated successfully!' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to update password.' });
+  }
+});
+
 // Customer Profile Picture Upload to Cloudinary & Supabase
 app.post('/api/users/upload-avatar', requireCustomer, upload.single('avatar'), async (req, res) => {
   try {
@@ -610,10 +653,15 @@ app.post('/api/orders', requireCustomer, async (req, res) => {
   }
 });
 
-app.get('/api/orders/:id', (req, res) => {
+app.get('/api/orders/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const order = db.getOrderById(id);
+    let order = db.getOrderById(id);
+    if (!order) {
+      const allOrders = await db.getOrdersAsync();
+      const clean = (id || '').toString().trim().toUpperCase();
+      order = allOrders.find(o => o.id?.toUpperCase() === clean || o.trackingNumber?.toUpperCase() === clean);
+    }
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }

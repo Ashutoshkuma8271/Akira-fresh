@@ -150,7 +150,6 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         (payload) => {
-          // If the changed order belongs to this customer, refresh quietly
           const orderEmail = (payload?.new?.user_email || payload?.old?.user_email || '').toLowerCase();
           if (!orderEmail || orderEmail === userEmail) {
             fetchUserOrders(false);
@@ -159,8 +158,13 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
       )
       .subscribe();
 
+    const interval = setInterval(() => {
+      fetchUserOrders(false);
+    }, 5000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(interval);
     };
   }, [fetchUserOrders, userEmail]);
 

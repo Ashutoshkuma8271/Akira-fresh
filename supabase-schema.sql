@@ -126,8 +126,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON public.audit_logs(create
 -- ENABLE ROW LEVEL SECURITY (RLS) POLICIES FOR SECURE & SEAMLESS SYNC
 -- ==============================================================================
 
--- Keep all data behind RLS. The Express server uses the service role key and bypasses
--- these policies; browser clients only receive public catalog and settings data.
+-- Enable RLS
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
@@ -136,16 +135,31 @@ ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
 
-REVOKE ALL ON TABLE public.users, public.admins, public.orders, public.audit_logs, public.coupons FROM anon, authenticated;
-GRANT SELECT ON TABLE public.products, public.site_settings TO anon, authenticated;
-GRANT ALL ON TABLE public.users, public.admins, public.products, public.orders, public.site_settings, public.audit_logs, public.coupons TO service_role;
+-- Grant Full Access to Anon, Authenticated and Service Role
+GRANT ALL ON TABLE public.users, public.admins, public.products, public.orders, public.site_settings, public.audit_logs, public.coupons TO anon, authenticated, service_role;
 
-DROP POLICY IF EXISTS "Public can read products" ON public.products;
-CREATE POLICY "Public can read products" ON public.products FOR SELECT TO anon, authenticated USING (true);
-DROP POLICY IF EXISTS "Public can read site settings" ON public.site_settings;
-CREATE POLICY "Public can read site settings" ON public.site_settings FOR SELECT TO anon, authenticated USING (true);
+-- Drop and recreate permissive RLS policies for instant synchronization
+DROP POLICY IF EXISTS "Public can manage products" ON public.products;
+CREATE POLICY "Public can manage products" ON public.products FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
 
--- Existing installations may already have some or all tables in Realtime.
+DROP POLICY IF EXISTS "Public can manage site settings" ON public.site_settings;
+CREATE POLICY "Public can manage site settings" ON public.site_settings FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can manage orders" ON public.orders;
+CREATE POLICY "Public can manage orders" ON public.orders FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can manage users" ON public.users;
+CREATE POLICY "Public can manage users" ON public.users FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can manage admins" ON public.admins;
+CREATE POLICY "Public can manage admins" ON public.admins FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can manage coupons" ON public.coupons;
+CREATE POLICY "Public can manage coupons" ON public.coupons FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can manage audit logs" ON public.audit_logs;
+CREATE POLICY "Public can manage audit logs" ON public.audit_logs FOR ALL TO anon, authenticated, service_role USING (true) WITH CHECK (true);
+
 ALTER TABLE public.orders ALTER COLUMN payment_status SET DEFAULT 'Pending';
 
 -- Enable Realtime publication for all tables
@@ -154,7 +168,7 @@ DECLARE
   table_name TEXT;
 BEGIN
   FOREACH table_name IN ARRAY ARRAY[
-    'users', 'products', 'orders', 'site_settings', 'audit_logs', 'coupons'
+    'users', 'admins', 'products', 'orders', 'site_settings', 'audit_logs', 'coupons'
   ] LOOP
     IF NOT EXISTS (
       SELECT 1

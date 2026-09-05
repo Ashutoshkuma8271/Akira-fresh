@@ -137,20 +137,42 @@ export const AccountPage = () => {
     updateProfile({ name: profileName.trim(), phone: profilePhone.trim() });
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
+    if (!currentPassword) {
+      addToast('Please enter your current password.', 'error');
+      return;
+    }
     if (newPassword.length < 8) {
-      addToast('New password must be at least 8 characters with letters, numbers and symbols.', 'error');
+      addToast('New password must be at least 8 characters long.', 'error');
       return;
     }
     if (newPassword !== confirmNewPassword) {
       addToast('New passwords do not match.', 'error');
       return;
     }
-    addToast('Password updated securely!', 'success');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmNewPassword('');
+
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}`,
+        },
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword: confirmNewPassword }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        addToast(data.message || 'Failed to update password.', 'error');
+        return;
+      }
+      addToast('Password updated securely!', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    } catch (err) {
+      addToast('Connection error. Could not change password.', 'error');
+    }
   };
 
   const handleSaveAddress = (e) => {

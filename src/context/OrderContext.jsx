@@ -39,18 +39,21 @@ export const OrderProvider = ({ children }) => {
 
     const fetchBackendOrders = async () => {
       try {
-          const res = await fetch('/api/orders', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}` }
-          });
+        const res = await fetch('/api/orders', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}` }
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {
             setOrders((prev) => {
               const map = new Map();
-              [...data.orders, ...prev].forEach((o) => {
-                if (o && o.id && !map.has(o.id)) map.set(o.id, o);
+              (prev || []).forEach(o => {
+                if (o && o.id) map.set(o.id, o);
               });
-              return Array.from(map.values());
+              data.orders.forEach(o => {
+                if (o && o.id) map.set(o.id, o);
+              });
+              return Array.from(map.values()).sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
             });
           }
         }
@@ -59,7 +62,7 @@ export const OrderProvider = ({ children }) => {
 
     fetchBackendOrders();
 
-    // Supabase Realtime Channel for automatic order status and history sync
+    // 1. Supabase Realtime Channel for automatic order status and history sync
     const channel = supabase
       .channel(`order-context-${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`)
       .on(
@@ -74,8 +77,14 @@ export const OrderProvider = ({ children }) => {
       )
       .subscribe();
 
+    // 2. High-reliability 5-second polling interval for instant status transitions
+    const pollInterval = setInterval(() => {
+      fetchBackendOrders();
+    }, 5000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(pollInterval);
     };
   }, [userEmail, storageKey]);
 
