@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import rateLimit from 'express-rate-limit';
 import { db } from '../db.js';
 import { requireAdmin, logAudit } from '../middleware/auth.js';
 import { uploadToCloudinary } from '../services/cloudinary.js';
@@ -10,11 +11,23 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50, // Max 50 admin upload requests per IP per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: false,
+  message: {
+    success: false,
+    message: 'Too many upload requests. Please try again later.'
+  }
+});
+
 // Enforce requireAdmin on all administrative routes
 router.use(requireAdmin);
 
 // 0. POST /api/admin/upload-image — Cloudinary Direct CDN Upload
-router.post('/upload-image', upload.single('image'), async (req, res) => {
+router.post('/upload-image', uploadLimiter, upload.single('image'), async (req, res) => {
   try {
     let imageSource;
     if (req.file) {

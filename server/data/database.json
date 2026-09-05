@@ -11,6 +11,18 @@
       "createdAt": "2026-08-30T21:42:22.967+00:00",
       "updatedAt": "2026-09-01T17:29:38.913+00:00",
       "lastLoginAt": "2026-09-01T17:29:38.912+00:00"
+    },
+    {
+      "id": "adm-1788126142966",
+      "name": "Ashutosh yadav",
+      "email": "ashutoshkumaryadav933499@gmail.com",
+      "passwordHash": "$2b$12$Qj5Tp7xdiDWzzd2G2lN7..kLcHO1RLvw5I.I4ufuo2mFUN7uDRBUm",
+      "role": "admin",
+      "isActive": 1,
+      "singleAdminLock": 1,
+      "createdAt": "2026-08-30T21:42:22.967+00:00",
+      "updatedAt": "2026-09-01T17:29:38.913+00:00",
+      "lastLoginAt": "2026-09-01T17:29:38.912+00:00"
     }
   ],
   "users": [
@@ -26,183 +38,229 @@
       "otpExpiresAt": null,
       "addresses": [],
       "wishlist": [],
-      "createdAt": "2026-08-30T20:52:11.288Z",
-      "updatedAt": "2026-08-30T21:14:27.843Z"
+      "createdAt": "2026-08-30T20:52:11.288+00:00",
+      "updatedAt": "2026-08-30T21:14:27.843+00:00"
     },
     {
-      "id": "usr-1788123751266",
-      "name": "Ashutosh Kumar",
+      "id": "usr-1788236841230",
+      "name": "shruti Bharti",
       "email": "shrutiashutosh139@gmail.com",
-      "phone": "+919334993904",
-      "passwordHash": "$2b$10$93b.AeMJ5FITi3e2MqKJHuPz5fYlBBveIionrAoBFgWmFBG9iZIdq",
+      "phone": "+918271936044",
+      "passwordHash": "$2b$10$Zl3YJ4qkYmG.1PaW5EfEXuenQjsSsCnISgrBblKZwxh7icXI8Xap6",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788237741115,
+      "addresses": [
+        {
+          "id": "addr-1788285625848",
+          "city": "Delhi",
+          "name": "shruti Bharti",
+          "phone": "+918271936044",
+          "state": "Delhi",
+          "title": "Home",
+          "street": "Delhi dwarika sector 12",
+          "pincode": "11009",
+          "isDefault": true
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "prod-5",
+          "name": "Crispy Golden Popcorn Chicken (Extra Crunch)",
+          "unit": "400g Pack",
+          "badge": "KIDS FAVORITE",
+          "brand": "A_S FOODY Crunch Lab",
+          "price": 220,
+          "sizes": [
+            "400g Pack",
+            "800g Value Pack"
+          ],
+          "specs": {
+            "Protein": "19g Protein per 100g",
+            "Breading": "Triple Dusted Panko & Herb Seasoning",
+            "Meat Cut": "100% Whole Chicken Breast Bites (Not formed meat)",
+            "Frying Time": "Deep Fry 3-4 Mins / Air Fry 6 Mins at 180°C"
+          },
+          "colors": [
+            "#D97706",
+            "#F59E0B"
+          ],
+          "images": [
+            "https://images.unsplash.com/photo-1562967914-608f82629710?w=800&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1562967915-92ae0c320a01?w=800&auto=format&fit=crop&q=80"
+          ],
+          "rating": 4.9,
+          "weight": "400g Box",
+          "inStock": true,
+          "category": "crispy-snacks",
+          "discount": 21,
+          "colorNames": [
+            "Golden Crispy",
+            "Amber Crunch"
+          ],
+          "isFeatured": true,
+          "isTrending": false,
+          "stockCount": 60,
+          "description": "Bite-sized tender chicken breast pieces coated in a signature spiced herb breading that delivers an irresistible, loud crunch with every single bite.",
+          "categoryName": "Crispy & Fried",
+          "isNewArrival": true,
+          "reviewsCount": 465,
+          "originalPrice": 280,
+          "freshnessBadge": "Ready in 4 Mins",
+          "isSpecialOffer": true
+        }
+      ],
+      "createdAt": "2026-09-01T04:27:21.23+00:00",
+      "updatedAt": "2026-09-01T18:41:51.439+00:00"
+    },
+    {
+      "id": "usr-1788163903351",
+      "name": "Bholu kumar",
+      "email": "bholukumaryadav8226@gmail.com",
+      "phone": "8226812720",
+      "passwordHash": "$2b$10$zFYyYjVNyUoDp6fYdpqQSeocukZ5xWk66IwhXvEFr2UTbnUwzyy2G",
       "role": "customer",
       "isVerified": true,
       "verificationOtp": null,
       "otpExpiresAt": null,
       "addresses": [],
       "wishlist": [],
-      "createdAt": "2026-08-30T21:02:31.266Z",
-      "updatedAt": "2026-08-30T21:04:25.280Z"
+      "createdAt": "2026-08-31T08:11:43.351+00:00",
+      "updatedAt": "2026-08-31T22:04:25.592+00:00"
+    },
+    {
+      "id": "usr-1788189015735",
+      "name": "Kanhaiya",
+      "email": "kanhaiya01st@gmail.com",
+      "phone": "7645992680",
+      "passwordHash": "$2b$10$GL8YECxjvRHXojdlyV1inu49zwifW.YEG1ck/9VvzFnRdrgrF.rgy",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788189915610,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-08-31T15:10:15.735+00:00",
+      "updatedAt": "2026-08-31T15:10:47.719+00:00"
+    },
+    {
+      "id": "usr-1788257900285",
+      "name": "Dheeraj",
+      "email": "dheerajdube63@gmail.com",
+      "phone": "6307838996",
+      "passwordHash": "$2b$10$znQm1MgtXoBhX3ffWAPi3.Rujhc45UaPLAl4VF8UqwCSQxFRm94mO",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788258800173,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-09-01T10:18:20.285+00:00",
+      "updatedAt": "2026-09-01T10:19:03.149+00:00"
+    },
+    {
+      "id": "usr-1788244171116",
+      "name": "Abhishek",
+      "email": "as27sengar@gmail.com",
+      "phone": "9555456169",
+      "passwordHash": "$2b$10$f2vFW8wAhVn0nje3KN0rXuU8kOukQkQNjuS81TwH7LQM./36dsHuy",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788245070980,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-09-01T06:29:31.116+00:00",
+      "updatedAt": "2026-09-01T06:34:13.585+00:00"
+    },
+    {
+      "id": "usr-1788188317564",
+      "name": "Kanhiya gaddar",
+      "email": "kanhaiyashukla0.01@gmail.com",
+      "phone": "1234567891",
+      "passwordHash": "$2b$10$x9CWGpkcuPa3R62cwGqQGeSt/ypaMsqIY3/bD7iXVwvLb2LFp5o0u",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": null,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-08-31T14:58:37.564+00:00",
+      "updatedAt": "2026-08-31T20:11:57.502+00:00"
     }
   ],
   "password_resets": [],
   "audit_logs": [
     {
-      "id": "audit-1788283914868-7icrn",
+      "id": "audit-1788624843374-nxyhv",
+      "action": "Logout",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
+      "resource": null,
+      "details": "Administrator logged out",
+      "createdAt": "2026-09-05T16:14:03.374+00:00",
+      "timestamp": "2026-09-05T16:14:03.374+00:00"
+    },
+    {
+      "id": "audit-1788623823068-pfics",
       "action": "Order status updated",
       "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.10",
-      "resource": "Order #AS-787858",
-      "details": "Status advanced to \"Delivered\" (Carrier: Sub-Zero Cold Chain Logistics, Tracking: SZ-132018538IN)",
-      "createdAt": "2026-09-01T17:31:54.869+00:00",
-      "timestamp": "2026-09-01T17:31:54.869+00:00"
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
+      "resource": "Order #AS-TEST-1788623010689",
+      "details": "Status advanced to \"Out for Delivery\" (Carrier: Sub-Zero Cold Chain Logistics, Tracking: SZ-TEST-999)",
+      "createdAt": "2026-09-05T15:57:03.069+00:00",
+      "timestamp": "2026-09-05T15:57:03.069+00:00"
     },
     {
-      "id": "audit-1788283819083-lfeeg",
+      "id": "audit-1788623822182-16xat",
       "action": "Order status updated",
       "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.10",
-      "resource": "Order #AS-787858",
-      "details": "Status advanced to \"Out for Delivery\" (Carrier: Sub-Zero Cold Chain Logistics, Tracking: SZ-132018538IN)",
-      "createdAt": "2026-09-01T17:30:19.083+00:00",
-      "timestamp": "2026-09-01T17:30:19.083+00:00"
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
+      "resource": "Order #AS-TEST-1788623010689",
+      "details": "Status advanced to \"Out for Delivery\" (Carrier: Sub-Zero Cold Chain Logistics, Tracking: SZ-TEST-999)",
+      "createdAt": "2026-09-05T15:57:02.183+00:00",
+      "timestamp": "2026-09-05T15:57:02.183+00:00"
     },
     {
-      "id": "audit-1788283778916-zkhgs",
+      "id": "audit-1788623809730-2kofi",
       "action": "Admin login",
       "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.10",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
       "resource": null,
       "details": "Administrator logged in successfully",
-      "createdAt": "2026-09-01T17:29:38.917+00:00",
-      "timestamp": "2026-09-01T17:29:38.917+00:00"
-    },
-    {
-      "id": "audit-1788283772308-8kr1k",
-      "action": "Failed login",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.10",
-      "resource": null,
-      "details": "Incorrect password",
-      "createdAt": "2026-09-01T17:29:32.308+00:00",
-      "timestamp": "2026-09-01T17:29:32.308+00:00"
-    },
-    {
-      "id": "audit-1788258823418-ogcbk",
-      "action": "Admin login",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Administrator logged in successfully",
-      "createdAt": "2026-09-01T10:33:43.418+00:00",
-      "timestamp": "2026-09-01T10:33:43.418+00:00"
-    },
-    {
-      "id": "audit-1788258817840-w59hh",
-      "action": "Failed login",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Incorrect password",
-      "createdAt": "2026-09-01T10:33:37.84+00:00",
-      "timestamp": "2026-09-01T10:33:37.84+00:00"
-    },
-    {
-      "id": "audit-1788258801994-iggis",
-      "action": "Logout",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Administrator logged out",
-      "createdAt": "2026-09-01T10:33:21.994+00:00",
-      "timestamp": "2026-09-01T10:33:21.994+00:00"
-    },
-    {
-      "id": "audit-1788254929098-ihepy",
-      "action": "Failed login",
-      "adminId": null,
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Admin account not found",
-      "createdAt": "2026-09-01T09:28:49.099+00:00",
-      "timestamp": "2026-09-01T09:28:49.099+00:00"
-    },
-    {
-      "id": "audit-1788254921227-w5o7e",
-      "action": "Failed login",
-      "adminId": null,
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Admin account not found",
-      "createdAt": "2026-09-01T09:28:41.227+00:00",
-      "timestamp": "2026-09-01T09:28:41.227+00:00"
-    },
-    {
-      "id": "audit-1788254915098-wqkal",
-      "action": "Failed login",
-      "adminId": null,
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Admin account not found",
-      "createdAt": "2026-09-01T09:28:35.099+00:00",
-      "timestamp": "2026-09-01T09:28:35.099+00:00"
-    },
-    {
-      "id": "audit-1788254903948-fvj96",
-      "action": "Logout",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Administrator logged out",
-      "createdAt": "2026-09-01T09:28:23.948+00:00",
-      "timestamp": "2026-09-01T09:28:23.948+00:00"
-    },
-    {
-      "id": "audit-1788246671334-o4qyi",
-      "action": "Admin login",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Administrator logged in successfully",
-      "createdAt": "2026-09-01T07:11:11.335+00:00",
-      "timestamp": "2026-09-01T07:11:11.335+00:00"
-    },
-    {
-      "id": "audit-1788246666742-1g8rm",
-      "action": "Failed login",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Incorrect password",
-      "createdAt": "2026-09-01T07:11:06.743+00:00",
-      "timestamp": "2026-09-01T07:11:06.743+00:00"
-    },
-    {
-      "id": "audit-1788246653369-45up0",
-      "action": "Logout",
-      "adminId": "adm-1788126142966",
-      "adminEmail": "admin.fixture@example.test",
-      "ip": "192.0.2.11",
-      "resource": null,
-      "details": "Administrator logged out",
-      "createdAt": "2026-09-01T07:10:53.37+00:00",
-      "timestamp": "2026-09-01T07:10:53.37+00:00"
+      "createdAt": "2026-09-05T15:56:49.73+00:00",
+      "timestamp": "2026-09-05T15:56:49.73+00:00"
     }
   ],
   "orders": [
+    {
+      "id": "AS-TEST-1788624969574",
+      "customerEmail": "test_customer_1788624967979@example.com",
+      "customerName": "Test Customer",
+      "customerPhone": "+919876543210",
+      "total": 2499,
+      "subtotal": 2499,
+      "status": "Out for Delivery",
+      "carrier": "Sub-Zero Cold Chain Logistics",
+      "trackingNumber": "SZ-TEST-999",
+      "createdAt": "2026-09-05T16:16:09.577Z",
+      "updatedAt": "2026-09-05T16:16:09.794Z"
+    },
+    {
+      "id": "AS-TEST-1788624942066",
+      "customerEmail": "test_customer_1788624940362@example.com",
+      "customerName": "Test Customer",
+      "status": "Out for Delivery",
+      "carrier": "Sub-Zero Cold Chain Logistics",
+      "trackingNumber": "SZ-TEST-999",
+      "total": 2499,
+      "updatedAt": "2026-09-05T16:15:42.408Z"
+    },
     {
       "id": "AS-TEST-1788623010689",
       "customerEmail": "test_customer_1788623008934@example.com",

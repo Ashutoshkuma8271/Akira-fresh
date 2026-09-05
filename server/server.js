@@ -49,6 +49,48 @@ const authLimiter = rateLimit({
   }
 });
 
+// Account-level limiting on auth flows to prevent targeted credential stuffing
+const accountAuthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Max 20 attempts per account email per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: false,
+  keyGenerator: (req) => {
+    return req.body?.email ? `acc_${String(req.body.email).toLowerCase().trim()}` : req.ip;
+  },
+  message: {
+    success: false,
+    message: 'Too many authentication attempts for this account. Please try again after 15 minutes.'
+  }
+});
+
+// Endpoint-specific limiting for Razorpay order creation and payment flows
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60, // Max 60 payment operations per IP per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: false,
+  message: {
+    success: false,
+    message: 'Too many payment requests. Please try again later.'
+  }
+});
+
+// Endpoint-specific limiting for Cloudinary media uploads
+export const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30, // Max 30 upload requests per IP per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: false,
+  message: {
+    success: false,
+    message: 'Too many upload requests. Please try again later.'
+  }
+});
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
@@ -79,28 +121,35 @@ const upload = multer({
 // Performance: Gzip/Brotli Payload Compression
 app.use(compression());
 
-// Security Middlewares
+// Security Middlewares - Enable CSP for production HTML delivery
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
   crossOriginEmbedderPolicy: false,
 }));
 
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (
-      origin.includes('localhost') ||
-      origin.includes('127.0.0.1') ||
-      origin.endsWith('.vercel.app') ||
-      allowedOrigins.includes(origin)
-    ) {
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(null, true);
+    return callback(new Error('Origin is not allowed by CORS'), false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'X-CSRF-Token',
+    'Accept-Version',
+    'Content-Length',
+    'Content-MD5',
+    'Date',
+    'X-Api-Version'
+  ]
 }));
 
 app.use(express.json({ limit: '1mb' }));
@@ -121,17 +170,17 @@ app.get('/api/settings', (req, res) => {
   }
 });
 
-// Payment Gateway Routes (Razorpay)
-app.use('/api/payment', paymentRouter);
+// Payment Gateway Routes with Payment Limiting (Razorpay)
+app.use('/api/payment', paymentLimiter, paymentRouter);
 
-// Admin Auth Routes (with Brute-Force Rate Limiting)
-app.use('/api/admin/auth', authLimiter, adminAuthRouter);
+// Admin Auth Routes (with IP & Account Brute-Force Rate Limiting)
+app.use('/api/admin/auth', authLimiter, accountAuthLimiter, adminAuthRouter);
 
 // Protected Admin Dashboard Routes
 app.use('/api/admin', adminDashboardRouter);
 
 // Customer User Registration with 6-Digit Email OTP
-app.post('/api/auth/register', authLimiter, async (req, res) => {
+app.post('/api/auth/register', authLimiter, accountAuthLimiter, async (req, res) => {
   try {
     const { name, email, password, phone, role } = req.body || {};
     if (role === 'admin') {
@@ -257,7 +306,7 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
 });
 
 // Customer User Resend Signup OTP
-app.post('/api/auth/resend-signup-otp', authLimiter, async (req, res) => {
+app.post('/api/auth/resend-signup-otp', authLimiter, accountAuthLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {
@@ -295,7 +344,7 @@ app.post('/api/auth/resend-signup-otp', authLimiter, async (req, res) => {
 });
 
 // Customer User Login
-app.post('/api/auth/login', authLimiter, async (req, res) => {
+app.post('/api/auth/login', authLimiter, accountAuthLimiter, async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -370,7 +419,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
 });
 
 // Customer Forgot Password (Dispatch Luxury Email Reset Link + 6-Digit OTP)
-app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
+app.post('/api/auth/forgot-password', authLimiter, accountAuthLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {
@@ -566,8 +615,8 @@ app.post('/api/auth/change-password', requireCustomer, async (req, res) => {
   }
 });
 
-// Customer Profile Picture Upload to Cloudinary & Supabase
-app.post('/api/users/upload-avatar', requireCustomer, upload.single('avatar'), async (req, res) => {
+// Customer Profile Picture Upload to Cloudinary & Supabase with Upload Limiting
+app.post('/api/users/upload-avatar', uploadLimiter, requireCustomer, upload.single('avatar'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file uploaded' });

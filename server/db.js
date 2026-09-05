@@ -54,11 +54,16 @@ function loadFromDisk() {
 
 function saveToDisk() {
   try {
-    const tmpFile = `${dbFile}.tmp`;
-    fs.writeFileSync(tmpFile, JSON.stringify(memoryDB, null, 2), 'utf8');
-    fs.renameSync(tmpFile, dbFile);
+    fs.writeFileSync(dbFile, JSON.stringify(memoryDB, null, 2), 'utf8');
   } catch (err) {
-    console.error('Failed to write db file:', err);
+    try {
+      const tmpFile = `${dbFile}.tmp`;
+      fs.writeFileSync(tmpFile, JSON.stringify(memoryDB, null, 2), 'utf8');
+      fs.copyFileSync(tmpFile, dbFile);
+      if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+    } catch (fallbackErr) {
+      // Serverless or locked filesystem fallback
+    }
   }
 }
 
