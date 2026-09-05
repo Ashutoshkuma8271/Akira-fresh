@@ -251,50 +251,102 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 sm:w-60 bg-white dark:bg-forest-900 border border-gray-100 dark:border-leaf-500/30 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-2xl py-2 z-50 animate-scaleUp">
+                  <div className="absolute right-0 top-full mt-2 w-64 sm:w-72 bg-white dark:bg-forest-900 border border-gray-200 dark:border-forest-750 text-charcoal-900 dark:text-ivory-100 rounded-3xl shadow-2xl py-2 z-50 animate-scaleUp overflow-hidden">
                     {isAuthenticated ? (
                       <>
-                        <div className="px-4 py-3 border-b border-gray-100 dark:border-forest-800">
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
-                          <p className="text-sm font-bold text-charcoal-900 dark:text-white truncate">{user.name}</p>
-                          <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-leaf-700 dark:text-lime-300 bg-leaf-500/15 dark:bg-leaf-500/20 px-2 py-0.5 rounded-full border border-leaf-500/30">
-                            <Sparkles className="w-2.5 h-2.5 text-leaf-600 dark:text-lime-400" />
-                            {user.membershipTier || 'Fresh VIP Member'}
-                          </span>
+                        {/* User Header Profile Card */}
+                        <div className="px-4 py-3.5 border-b border-gray-100 dark:border-forest-800 bg-gray-50/60 dark:bg-forest-950/60 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-forest-900 dark:bg-forest-800 border-2 border-[#84CC16] overflow-hidden shadow-xs flex items-center justify-center text-white font-serif font-bold text-sm shrink-0">
+                            {user.avatar ? (
+                              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-charcoal-950 dark:text-white truncate">{user.name}</p>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                            <span className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold text-leaf-700 dark:text-lime-300 bg-leaf-500/15 dark:bg-leaf-500/20 px-2 py-0.5 rounded-full border border-leaf-500/30">
+                              <Sparkles className="w-2.5 h-2.5 text-leaf-600 dark:text-lime-400" />
+                              {user.membershipTier || 'Fresh VIP Patron'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="py-1 text-xs">
+
+                        {/* Navigation Links */}
+                        <div className="py-1.5 text-xs font-semibold">
                           <Link
                             to="/account"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-4 py-2 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
-                            My Dashboard
+                            <div className="flex items-center gap-2.5">
+                              <User className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <span>My Dashboard</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">&rarr;</span>
                           </Link>
+
                           <Link
                             to="/account/orders"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-4 py-2 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
-                            My Orders
+                            <div className="flex items-center gap-2.5">
+                              <ShoppingBag className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <span>My Orders</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">&rarr;</span>
                           </Link>
+
                           <Link
                             to="/track-order"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-4 py-2 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
-                            Track Live Order
+                            <div className="flex items-center gap-2.5">
+                              <Sparkles className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <span>Track Live Order</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">&rarr;</span>
+                          </Link>
+
+                          <Link
+                            to="/account/addresses"
+                            onClick={() => setIsAccountOpen(false)}
+                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <Heart className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <span>Saved Addresses</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">&rarr;</span>
+                          </Link>
+
+                          <Link
+                            to="/account/security"
+                            onClick={() => setIsAccountOpen(false)}
+                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <User className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <span>Security & Password</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">&rarr;</span>
                           </Link>
                         </div>
-                        <div className="border-t border-gray-100 dark:border-forest-800 pt-1">
+
+                        {/* Sign Out Action */}
+                        <div className="border-t border-gray-100 dark:border-forest-800 p-2">
                           <button
                             onClick={() => {
                               logout();
                               setIsAccountOpen(false);
                               navigate('/');
                             }}
-                            className="w-full text-left px-4 py-2 text-xs font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-forest-800 cursor-pointer transition-colors"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-forest-800/80 rounded-xl cursor-pointer transition-colors"
                           >
-                            Log Out
+                            <span>Sign Out of Store</span>
                           </button>
                         </div>
                       </>
@@ -303,7 +355,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-charcoal-900 dark:text-white">Fresh Gourmet Privileges</p>
                           <p className="text-[11px] text-gray-500 dark:text-gray-300 leading-tight">
-                            Sign in to track orders & claim deals.
+                            Sign in to track orders, save addresses & claim deals.
                           </p>
                         </div>
                         <button
@@ -312,7 +364,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                             setIsAuthModalOpen(true);
                             setIsAccountOpen(false);
                           }}
-                          className="w-full py-2 bg-[#1b4332] hover:bg-[#122c21] text-white font-bold rounded-xl text-xs shadow-sm cursor-pointer"
+                          className="w-full py-2.5 bg-[#1b4332] dark:bg-lime-500 hover:bg-[#122c21] dark:hover:bg-lime-400 text-white dark:text-forest-950 font-bold rounded-xl text-xs shadow-sm cursor-pointer transition-all active:scale-98"
                         >
                           Sign In
                         </button>
