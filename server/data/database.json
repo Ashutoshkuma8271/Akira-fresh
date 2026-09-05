@@ -39,34 +39,19 @@
   ],
   "users": [
     {
-      "id": "usr-1788257900285",
-      "name": "Dheeraj",
-      "email": "dheerajdube63@gmail.com",
-      "phone": "6307838996",
-      "passwordHash": "$2b$10$znQm1MgtXoBhX3ffWAPi3.Rujhc45UaPLAl4VF8UqwCSQxFRm94mO",
+      "id": "usr-1788123131288",
+      "name": "Ashutosh Kumar",
+      "email": "ashukumarfbg8271@gmail.com",
+      "phone": "+918271936044",
+      "passwordHash": "$2b$10$TnU4vdhHbx./Y5sYR1gAv.bHOEL0oK7B/ev4CS7OzXnlOcwc59Lvu",
       "role": "customer",
       "isVerified": true,
       "verificationOtp": null,
-      "otpExpiresAt": 1788258800173,
+      "otpExpiresAt": null,
       "addresses": [],
       "wishlist": [],
-      "createdAt": "2026-09-01T10:18:20.285+00:00",
-      "updatedAt": "2026-09-01T10:19:03.149+00:00"
-    },
-    {
-      "id": "usr-1788244171116",
-      "name": "Abhishek",
-      "email": "as27sengar@gmail.com",
-      "phone": "9555456169",
-      "passwordHash": "$2b$10$f2vFW8wAhVn0nje3KN0rXuU8kOukQkQNjuS81TwH7LQM./36dsHuy",
-      "role": "customer",
-      "isVerified": true,
-      "verificationOtp": null,
-      "otpExpiresAt": 1788245070980,
-      "addresses": [],
-      "wishlist": [],
-      "createdAt": "2026-09-01T06:29:31.116+00:00",
-      "updatedAt": "2026-09-01T06:34:13.585+00:00"
+      "createdAt": "2026-08-30T20:52:11.288+00:00",
+      "updatedAt": "2026-08-30T21:14:27.843+00:00"
     },
     {
       "id": "usr-1788236841230",
@@ -142,36 +127,6 @@
       "updatedAt": "2026-09-01T18:41:51.439+00:00"
     },
     {
-      "id": "usr-1788189015735",
-      "name": "Kanhaiya",
-      "email": "kanhaiya01st@gmail.com",
-      "phone": "7645992680",
-      "passwordHash": "$2b$10$GL8YECxjvRHXojdlyV1inu49zwifW.YEG1ck/9VvzFnRdrgrF.rgy",
-      "role": "customer",
-      "isVerified": true,
-      "verificationOtp": null,
-      "otpExpiresAt": 1788189915610,
-      "addresses": [],
-      "wishlist": [],
-      "createdAt": "2026-08-31T15:10:15.735+00:00",
-      "updatedAt": "2026-08-31T15:10:47.719+00:00"
-    },
-    {
-      "id": "usr-1788188317564",
-      "name": "Kanhiya gaddar",
-      "email": "kanhaiyashukla0.01@gmail.com",
-      "phone": "1234567891",
-      "passwordHash": "$2b$10$x9CWGpkcuPa3R62cwGqQGeSt/ypaMsqIY3/bD7iXVwvLb2LFp5o0u",
-      "role": "customer",
-      "isVerified": true,
-      "verificationOtp": null,
-      "otpExpiresAt": null,
-      "addresses": [],
-      "wishlist": [],
-      "createdAt": "2026-08-31T14:58:37.564+00:00",
-      "updatedAt": "2026-08-31T20:11:57.502+00:00"
-    },
-    {
       "id": "usr-1788163903351",
       "name": "Bholu kumar",
       "email": "bholukumaryadav8226@gmail.com",
@@ -187,23 +142,79 @@
       "updatedAt": "2026-08-31T22:04:25.592+00:00"
     },
     {
-      "id": "usr-1788123131288",
-      "name": "Ashutosh Kumar",
-      "email": "ashukumarfbg8271@gmail.com",
-      "phone": "+918271936044",
-      "passwordHash": "$2b$10$TnU4vdhHbx./Y5sYR1gAv.bHOEL0oK7B/ev4CS7OzXnlOcwc59Lvu",
+      "id": "usr-1788189015735",
+      "name": "Kanhaiya",
+      "email": "kanhaiya01st@gmail.com",
+      "phone": "7645992680",
+      "passwordHash": "$2b$10$GL8YECxjvRHXojdlyV1inu49zwifW.YEG1ck/9VvzFnRdrgrF.rgy",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788189915610,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-08-31T15:10:15.735+00:00",
+      "updatedAt": "2026-08-31T15:10:47.719+00:00"
+    },
+    {
+      "id": "usr-1788257900285",
+      "name": "Dheeraj",
+      "email": "dheerajdube63@gmail.com",
+      "phone": "6307838996",
+      "passwordHash": "$2b$10$znQm1MgtXoBhX3ffWAPi3.Rujhc45UaPLAl4VF8UqwCSQxFRm94mO",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788258800173,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-09-01T10:18:20.285+00:00",
+      "updatedAt": "2026-09-01T10:19:03.149+00:00"
+    },
+    {
+      "id": "usr-1788244171116",
+      "name": "Abhishek",
+      "email": "as27sengar@gmail.com",
+      "phone": "9555456169",
+      "passwordHash": "$2b$10$f2vFW8wAhVn0nje3KN0rXuU8kOukQkQNjuS81TwH7LQM./36dsHuy",
+      "role": "customer",
+      "isVerified": true,
+      "verificationOtp": null,
+      "otpExpiresAt": 1788245070980,
+      "addresses": [],
+      "wishlist": [],
+      "createdAt": "2026-09-01T06:29:31.116+00:00",
+      "updatedAt": "2026-09-01T06:34:13.585+00:00"
+    },
+    {
+      "id": "usr-1788188317564",
+      "name": "Kanhiya gaddar",
+      "email": "kanhaiyashukla0.01@gmail.com",
+      "phone": "1234567891",
+      "passwordHash": "$2b$10$x9CWGpkcuPa3R62cwGqQGeSt/ypaMsqIY3/bD7iXVwvLb2LFp5o0u",
       "role": "customer",
       "isVerified": true,
       "verificationOtp": null,
       "otpExpiresAt": null,
       "addresses": [],
       "wishlist": [],
-      "createdAt": "2026-08-30T20:52:11.288+00:00",
-      "updatedAt": "2026-08-30T21:14:27.843+00:00"
+      "createdAt": "2026-08-31T14:58:37.564+00:00",
+      "updatedAt": "2026-08-31T20:11:57.502+00:00"
     }
   ],
   "password_resets": [],
   "audit_logs": [
+    {
+      "id": "audit-1788626648647-bb31t",
+      "action": "Order status updated",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "admin.synthetic@example.test",
+      "ip": "103.69.24.42",
+      "resource": "Order #AS-664988",
+      "details": "Status advanced to \"Out for Delivery\" (Carrier: Bluedart Express Luxury Courier, Tracking: BD-452221982IN)",
+      "createdAt": "2026-09-05T16:44:08.647+00:00",
+      "timestamp": "2026-09-05T16:44:08.647+00:00"
+    },
     {
       "id": "audit-1788625883604-76hh2",
       "action": "Admin login",
@@ -234,8 +245,8 @@
       "customerName": "Ashutosh Kumar",
       "customerPhone": "+918271936044",
       "date": "2026-09-05",
-      "status": "Order Placed",
-      "statusCode": 2,
+      "status": "Out for Delivery",
+      "statusCode": 4,
       "carrier": "Bluedart Express Luxury Courier",
       "trackingNumber": "BD-452221982IN",
       "items": [
@@ -268,7 +279,7 @@
         "pincode": "110009"
       },
       "createdAt": "2026-09-05T16:35:06.882+00:00",
-      "updatedAt": "2026-09-05T16:35:06.882+00:00"
+      "updatedAt": "2026-09-05T16:44:08.35+00:00"
     },
     {
       "id": "AS-324920",

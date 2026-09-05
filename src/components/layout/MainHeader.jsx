@@ -159,72 +159,70 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
               </Link>
             </nav>
 
-            {/* Right: Search Capsule + ThemeToggle + Wishlist + Cart + Profile */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-3 shrink-0">
+            {/* Right Controls: Desktop Search Capsule + 1. Theme, 2. Wishlist, 3. Cart, 4. Profile */}
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-2.5 shrink-0">
               
-              {/* Search Capsule Input (Desktop) */}
+              {/* Search Capsule Input (Desktop & Tablet) */}
               <form
                 onSubmit={handleSearchSubmit}
-                className="hidden md:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3.5 py-1.5 w-48 lg:w-72 border border-gray-200/80 dark:border-forest-700 shadow-2xs"
+                className="hidden lg:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3.5 py-1.5 w-44 xl:w-64 border border-gray-200/80 dark:border-forest-700 shadow-2xs mr-1"
               >
                 <Search className="w-4 h-4 text-gray-500 shrink-0 mr-2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for products..."
+                  placeholder="Search products..."
                   className="bg-transparent border-none text-xs text-charcoal-900 dark:text-white placeholder-gray-500 focus:outline-none w-full font-medium"
                 />
               </form>
 
-              {/* Mobile Search Trigger */}
-              <button
-                onClick={openSearch}
-                className="md:hidden p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer"
-                aria-label="Search"
-              >
-                <Search className="w-5 h-5 stroke-[1.9]" />
-              </button>
-
-              {/* Theme Toggle (Desktop & Tablet) */}
-              <div className="hidden sm:flex items-center">
+              {/* 1. Theme Toggle (Sun/Moon) */}
+              <div className="flex items-center">
                 <ThemeToggle />
               </div>
 
-              {/* Wishlist Link (Desktop & Tablet) */}
+              {/* 2. Wishlist Link (Heart with live badge) */}
               <Link
                 to="/wishlist"
-                className="hidden md:flex p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative items-center justify-center cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-200 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative flex items-center justify-center cursor-pointer shrink-0"
                 aria-label="Wishlist"
               >
-                <Heart className="w-5 h-5 stroke-[1.9]" />
+                <Heart className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#22C55E] text-forest-950 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  <span className="absolute -top-1 -right-1 bg-[#22C55E] text-forest-950 font-black text-[9px] sm:text-[10px] min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
                     {wishlistCount}
                   </span>
                 )}
               </Link>
 
-              {/* Cart Button with Amber/Gold Counter Badge (Universal Mobile & Desktop) */}
+              {/* 3. Cart Button (Bag with counter badge) */}
               <button
                 onClick={() => setIsCartDrawerOpen(true)}
-                className="p-2 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 rounded-full hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer flex items-center justify-center"
-                aria-label="Cart"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-200 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors relative cursor-pointer flex items-center justify-center shrink-0"
+                aria-label="Cart Bag"
               >
-                <ShoppingBag className="w-5 h-5 stroke-[1.9]" />
+                <ShoppingBag className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
                 {totalItemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#F59E0B] text-slate-950 font-black text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
+                  <span className="absolute -top-1 -right-1 bg-[#F59E0B] text-slate-950 font-black text-[9px] sm:text-[10px] min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center shadow-xs border border-white dark:border-forest-900 leading-none">
                     {totalItemsCount}
                   </span>
                 )}
               </button>
 
-              {/* User Account Popover (Desktop & Tablet) */}
-              <div ref={accountRef} className="hidden sm:flex relative items-center">
+              {/* 4. User Profile Account Popover */}
+              <div ref={accountRef} className="relative flex items-center">
                 <button
-                  onClick={() => setIsAccountOpen(!isAccountOpen)}
+                  onClick={() => {
+                    if (window.innerWidth < 640 && !isAuthenticated) {
+                      setAuthMode('login');
+                      setIsAuthModalOpen(true);
+                    } else {
+                      setIsAccountOpen(!isAccountOpen);
+                    }
+                  }}
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center shrink-0 overflow-hidden"
-                  aria-label="Account"
+                  aria-label="Account Profile"
                 >
                   {isAuthenticated && user?.avatar ? (
                     <img

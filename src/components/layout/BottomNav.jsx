@@ -1,20 +1,20 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Compass, Search, Heart, ShoppingBag, User } from 'lucide-react';
+import { Home, LayoutGrid, Search, ShoppingBag, User } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
 
 export const BottomNav = ({ onOpenSearch }) => {
   const location = useLocation();
   const { totalItemsCount, setIsCartDrawerOpen } = useCart();
-  const { wishlistCount } = useWishlist();
   const { isAuthenticated, user, setIsAuthModalOpen, setAuthMode } = useAuth();
 
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const isHomeActive = location.pathname === '/';
+  const isCategoriesActive =
+    location.pathname === '/categories' ||
+    location.pathname.startsWith('/category') ||
+    location.pathname === '/collections' ||
+    location.pathname === '/shop';
 
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#072418]/95 backdrop-blur-xl border-t border-gray-200/80 dark:border-forest-800 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] pb-[env(safe-area-inset-bottom)] transition-all duration-300">
@@ -23,30 +23,30 @@ export const BottomNav = ({ onOpenSearch }) => {
         <Link
           to="/"
           className={`flex flex-col items-center justify-center py-1 transition-all relative ${
-            isActive('/') && !location.pathname.startsWith('/shop') && !location.pathname.startsWith('/categories') && !location.pathname.startsWith('/bestsellers')
+            isHomeActive
               ? 'text-forest-900 dark:text-lime-400 font-bold scale-105'
               : 'text-charcoal-600 dark:text-gray-400 hover:text-charcoal-900 dark:hover:text-gray-200'
           }`}
         >
           <Home className="w-5 h-5 stroke-[1.9]" />
-          <span className="text-[10px] mt-0.5 tracking-tight">Home</span>
-          {isActive('/') && !location.pathname.startsWith('/shop') && !location.pathname.startsWith('/categories') && !location.pathname.startsWith('/bestsellers') && (
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Home</span>
+          {isHomeActive && (
             <span className="w-1 h-1 bg-forest-900 dark:bg-lime-400 rounded-full mt-0.5" />
           )}
         </Link>
 
-        {/* 2. Shop / Catalog */}
+        {/* 2. Categories */}
         <Link
-          to="/shop"
+          to="/categories"
           className={`flex flex-col items-center justify-center py-1 transition-all relative ${
-            isActive('/shop') || isActive('/categories') || isActive('/bestsellers') || isActive('/category')
+            isCategoriesActive
               ? 'text-forest-900 dark:text-lime-400 font-bold scale-105'
               : 'text-charcoal-600 dark:text-gray-400 hover:text-charcoal-900 dark:hover:text-gray-200'
           }`}
         >
-          <Compass className="w-5 h-5 stroke-[1.9]" />
-          <span className="text-[10px] mt-0.5 tracking-tight">Explore</span>
-          {(isActive('/shop') || isActive('/categories') || isActive('/bestsellers') || isActive('/category')) && (
+          <LayoutGrid className="w-5 h-5 stroke-[1.9]" />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Categories</span>
+          {isCategoriesActive && (
             <span className="w-1 h-1 bg-forest-900 dark:bg-lime-400 rounded-full mt-0.5" />
           )}
         </Link>
