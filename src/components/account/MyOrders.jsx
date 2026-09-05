@@ -34,8 +34,18 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const userEmail = (user?.email || '').trim().toLowerCase();
+
+  const [orders, setOrders] = useState(() => {
+    try {
+      if (!userEmail) return [];
+      const cached = localStorage.getItem(`as_commerce_orders_${userEmail}`);
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [loading, setLoading] = useState(() => orders.length === 0);
   const [refreshing, setRefreshing] = useState(false);
   const [lastSynced, setLastSynced] = useState(null);
   const [filterStatus, setFilterStatus] = useState('ALL');
@@ -43,17 +53,18 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
   const [selectedOrderForModal, setSelectedOrderForModal] = useState(null);
   const [copiedOrderId, setCopiedOrderId] = useState(null);
 
-  const userEmail = (user?.email || '').trim().toLowerCase();
-
   // Fetch orders from Supabase 'orders' table with fallback to /api/orders
-  const fetchUserOrders = useCallback(async (isManualRefresh = false) => {
+  const fetchUserOrders = useCallback(async (isManualRefresh = false, isSilent = false) => {
     if (!userEmail) {
       setLoading(false);
       return;
     }
 
-    if (isManualRefresh) setRefreshing(true);
-    else setLoading(true);
+    if (isManualRefresh) {
+      setRefreshing(true);
+    } else if (!isSilent) {
+      setLoading((prevLoading) => orders.length === 0 ? true : prevLoading);
+    }
 
     try {
       let fetchedOrders = [];
@@ -123,7 +134,16 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
         } catch (e) {}
       }
 
-      setOrders(fetchedOrders);
+      setOrders((prev) => {
+        const prevStr = JSON.stringify(prev);
+        const newStr = JSON.stringify(fetchedOrders);
+        if (prevStr === newStr) return prev;
+        try {
+          localStorage.setItem(`as_commerce_orders_${userEmail}`, newStr);
+        } catch (e) {}
+        return fetchedOrders;
+      });
+
       setLastSynced(new Date());
 
       if (isManualRefresh) {
@@ -131,15 +151,17 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
       }
     } catch (err) {
       console.error('Error fetching orders:', err);
-      addToast('Could not load orders from Supabase', 'error');
+      if (isManualRefresh) {
+        addToast('Could not load orders from Supabase', 'error');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [userEmail, user?.name, user?.phone, addToast]);
+  }, [userEmail, user?.name, user?.phone, addToast, orders.length]);
 
   useEffect(() => {
-    fetchUserOrders();
+    fetchUserOrders(false, false);
 
     if (!userEmail) return;
 
@@ -152,15 +174,17 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
         (payload) => {
           const orderEmail = (payload?.new?.user_email || payload?.old?.user_email || '').toLowerCase();
           if (!orderEmail || orderEmail === userEmail) {
-            fetchUserOrders(false);
+            fetchUserOrders(false, true);
           }
         }
       )
       .subscribe();
 
     const interval = setInterval(() => {
-      fetchUserOrders(false);
-    }, 5000);
+      if (document.visibilityState === 'visible') {
+        fetchUserOrders(false, true);
+      }
+    }, 30000);
 
     return () => {
       supabase.removeChannel(channel);

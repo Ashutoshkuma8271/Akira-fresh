@@ -80,13 +80,15 @@ export const TrackOrderPage = () => {
     }
   };
 
+  const firstOrderId = orders[0]?.id || '';
+
   useEffect(() => {
-    const idToUse = urlId || (orders[0] ? orders[0].id : '');
+    const idToUse = urlId || firstOrderId;
     if (idToUse) {
       setSearchQuery(idToUse);
       fetchLiveOrder(idToUse);
     }
-  }, [urlId, orders]);
+  }, [urlId, firstOrderId]);
 
   // Real-time updates subscription for the active order
   useEffect(() => {

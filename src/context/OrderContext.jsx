@@ -35,21 +35,25 @@ export const OrderProvider = ({ children }) => {
       setOrders([]);
     }
 
-    if (!userEmail) return;
-
     const fetchBackendOrders = async () => {
       try {
+        const token = localStorage.getItem('as_commerce_token') || '';
         const res = await fetch('/api/orders', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}` }
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {
             const sorted = data.orders.sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
-            setOrders(sorted);
-            try {
-              localStorage.setItem(storageKey, JSON.stringify(sorted));
-            } catch (e) {}
+            setOrders((prev) => {
+              const prevStr = JSON.stringify(prev);
+              const newStr = JSON.stringify(sorted);
+              if (prevStr === newStr) return prev;
+              try {
+                localStorage.setItem(storageKey, newStr);
+              } catch (e) {}
+              return sorted;
+            });
           }
         }
       } catch (err) {}
@@ -57,7 +61,7 @@ export const OrderProvider = ({ children }) => {
 
     fetchBackendOrders();
 
-    // 1. Supabase Realtime Channel for automatic order status and history sync
+    // 1. Supabase Realtime Channel for instant order status and history sync
     const channel = supabase
       .channel(`order-context-${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`)
       .on(
@@ -72,10 +76,12 @@ export const OrderProvider = ({ children }) => {
       )
       .subscribe();
 
-    // 2. High-reliability 5-second polling interval for instant status transitions
+    // 2. Fallback gentle 30-second background sync
     const pollInterval = setInterval(() => {
-      fetchBackendOrders();
-    }, 5000);
+      if (document.visibilityState === 'visible') {
+        fetchBackendOrders();
+      }
+    }, 30000);
 
     return () => {
       supabase.removeChannel(channel);
