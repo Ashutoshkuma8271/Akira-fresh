@@ -45,16 +45,11 @@ export const OrderProvider = ({ children }) => {
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {
-            setOrders((prev) => {
-              const map = new Map();
-              (prev || []).forEach(o => {
-                if (o && o.id) map.set(o.id, o);
-              });
-              data.orders.forEach(o => {
-                if (o && o.id) map.set(o.id, o);
-              });
-              return Array.from(map.values()).sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
-            });
+            const sorted = data.orders.sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
+            setOrders(sorted);
+            try {
+              localStorage.setItem(storageKey, JSON.stringify(sorted));
+            } catch (e) {}
           }
         }
       } catch (err) {}

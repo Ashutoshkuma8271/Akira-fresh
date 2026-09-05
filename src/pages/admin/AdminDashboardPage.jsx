@@ -323,7 +323,7 @@ export const AdminDashboardPage = () => {
     e.preventDefault();
     if (!editingOrder) return;
     try {
-      const res = await fetch(`/api/admin/orders/${editingOrder.id}/status`, {
+      const res = await fetch(`/api/admin/orders/${encodeURIComponent(editingOrder.id)}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -332,12 +332,16 @@ export const AdminDashboardPage = () => {
         body: JSON.stringify(orderDeliveryForm),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.success) {
         setEditingOrder(null);
-        fetchDashboardData();
+        fetchDashboardData(true);
+      } else {
+        alert(data.message || 'Failed to update order status');
       }
     } catch (err) {
       console.error('Save order delivery error', err);
+      alert('Network error updating order status');
     }
   };
 

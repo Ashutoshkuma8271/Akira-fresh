@@ -226,12 +226,10 @@ router.put('/orders/:id/status', async (req, res) => {
     const { id } = req.params;
     const { status, carrier, trackingNumber, note } = req.body;
 
-    const previous = db.getOrderById(id);
-    if (!previous) {
+    const updated = await db.updateOrderStatusAsync(id, { status, carrier, trackingNumber, note });
+    if (!updated) {
       return res.status(404).json({ success: false, message: 'Order not found.' });
     }
-
-    const updated = await db.updateOrderStatusAsync(id, { status, carrier, trackingNumber, note });
 
     logAudit({
       action: 'Order status updated',
@@ -253,12 +251,7 @@ router.put('/orders/:id/status', async (req, res) => {
 router.delete('/orders/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const existing = db.getOrderById(id);
-    if (!existing) {
-      return res.status(404).json({ success: false, message: 'Order record not found.' });
-    }
-
-    await db.deleteOrderAsync(id);
+    const deleted = await db.deleteOrderAsync(id);
 
     logAudit({
       action: 'Order record deleted',
@@ -266,7 +259,7 @@ router.delete('/orders/:id', async (req, res) => {
       adminEmail: req.admin.email,
       ip: req.ip,
       resource: `Order #${id}`,
-      details: `Permanently removed order #${id} (Customer: ${existing.customerEmail || 'Customer'}) from database & Supabase`
+      details: `Permanently removed order #${id} from database & Supabase`
     });
 
     return res.json({ success: true, message: `Order #${id} permanently deleted.` });
