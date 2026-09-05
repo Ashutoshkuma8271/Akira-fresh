@@ -9,6 +9,8 @@ export const BottomNav = ({ onOpenSearch }) => {
   const { totalItemsCount, setIsCartDrawerOpen } = useCart();
   const { isAuthenticated, user, setIsAuthModalOpen, setAuthMode } = useAuth();
 
+  const isActive = (path) => (path === '/' ? location.pathname === '/' : location.pathname.startsWith(path));
+
   const isHomeActive = location.pathname === '/';
   const isCategoriesActive =
     location.pathname === '/categories' ||

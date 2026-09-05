@@ -38,8 +38,9 @@ export const OrderProvider = ({ children }) => {
     const fetchBackendOrders = async () => {
       try {
         const token = localStorage.getItem('as_commerce_token') || '';
+        if (!user || !token) return;
         const res = await fetch('/api/orders', {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
+          headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
           const data = await res.json();
