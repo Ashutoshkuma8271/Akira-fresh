@@ -117,7 +117,7 @@ export async function requireCustomer(req, res, next) {
       return res.status(403).json({ success: false, message: 'Customer access required.' });
     }
 
-    const user = db.getUserById(decoded.id);
+    const user = await db.getUserByIdAsync(decoded.id);
     if (!user || user.role === 'admin') {
       return res.status(403).json({ success: false, message: 'Customer account not found.' });
     }

@@ -863,6 +863,41 @@ export const db = {
     return (memoryDB.users || []).find(u => u.id === id);
   },
 
+  getUserByIdAsync: async (id) => {
+    loadFromDisk();
+    try {
+      const { data, error } = await supabase.from('users').select('*').eq('id', id).maybeSingle();
+      if (!error && data) {
+        const user = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone || '',
+          passwordHash: data.password_hash || data.passwordHash,
+          role: data.role || 'customer',
+          isVerified: data.is_verified === true || data.isVerified === true,
+          verificationOtp: data.verification_otp || data.verificationOtp || null,
+          otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
+          addresses: data.addresses || [],
+          wishlist: data.wishlist || [],
+          createdAt: data.created_at || new Date().toISOString(),
+          updatedAt: data.updated_at || new Date().toISOString()
+        };
+        const index = (memoryDB.users || []).findIndex(existing => existing.id === id);
+        if (index === -1) memoryDB.users.push(user);
+        else memoryDB.users[index] = user;
+        saveToDisk();
+        return user;
+      }
+
+      memoryDB.users = (memoryDB.users || []).filter(user => user.id !== id);
+      saveToDisk();
+      return null;
+    } catch (error) {
+      return null;
+    }
+  },
+
   getUserByEmail: (email) => {
     loadFromDisk();
     return (memoryDB.users || []).find(u => u.email.toLowerCase() === email.toLowerCase());
