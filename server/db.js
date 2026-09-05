@@ -203,40 +203,69 @@ export async function initDB() {
     // Supabase table sync fallback
   }
 
-  // Try to pull users from Supabase cloud
+  // Try to pull users from Supabase cloud (Supabase is single source of truth)
   try {
     const { data: supaUsers, error: userErr } = await supabase.from('users').select('*');
-    if (!userErr && supaUsers && supaUsers.length > 0) {
-      if (!memoryDB.users) memoryDB.users = [];
-      const userMap = new Map();
-      memoryDB.users.forEach(u => {
-        if (u && u.email) userMap.set(u.email.toLowerCase(), u);
-      });
-      supaUsers.forEach(su => {
-        const email = su.email.toLowerCase();
-        const existing = userMap.get(email);
-        userMap.set(email, {
-          id: su.id || existing?.id || `usr-${Date.now()}`,
-          name: su.name || existing?.name || 'Customer',
-          email: su.email,
-          phone: su.phone || existing?.phone || '',
-          passwordHash: su.password_hash || existing?.passwordHash || '',
-          role: su.role || 'customer',
-          isVerified: su.is_verified === true || existing?.isVerified === true,
-          verificationOtp: su.verification_otp || existing?.verificationOtp || null,
-          otpExpiresAt: su.otp_expires_at || existing?.otpExpiresAt || null,
-          addresses: Array.isArray(su.addresses) ? su.addresses : (existing?.addresses || []),
-          wishlist: Array.isArray(su.wishlist) ? su.wishlist : (existing?.wishlist || []),
-          createdAt: su.created_at || existing?.createdAt || new Date().toISOString(),
-          updatedAt: su.updated_at || new Date().toISOString()
-        });
-      });
-      memoryDB.users = Array.from(userMap.values());
+    if (!userErr && Array.isArray(supaUsers)) {
+      memoryDB.users = supaUsers.map(su => ({
+        id: su.id || `usr-${Date.now()}`,
+        name: su.name || 'Customer',
+        email: su.email,
+        phone: su.phone || '',
+        passwordHash: su.password_hash || '',
+        role: su.role || 'customer',
+        isVerified: su.is_verified === true,
+        verificationOtp: su.verification_otp || null,
+        otpExpiresAt: su.otp_expires_at || null,
+        addresses: Array.isArray(su.addresses) ? su.addresses : [],
+        wishlist: Array.isArray(su.wishlist) ? su.wishlist : [],
+        createdAt: su.created_at || new Date().toISOString(),
+        updatedAt: su.updated_at || new Date().toISOString()
+      }));
       saveToDisk();
-      console.log(`⚡ Synchronized ${memoryDB.users.length} Users between local DB and Supabase Cloud`);
+      console.log(`⚡ Synchronized ${memoryDB.users.length} Users from Supabase Cloud`);
     }
   } catch (e) {
     // Supabase users sync fallback
+  }
+
+  // Try to pull orders from Supabase cloud
+  try {
+    const { data: supaOrders, error: orderErr } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+    if (!orderErr && Array.isArray(supaOrders)) {
+      memoryDB.orders = supaOrders.map(o => ({
+        id: o.id,
+        customerEmail: o.user_email || o.customer_email || (o.shippingAddress?.email) || '',
+        customerName: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Valued Customer',
+        customerPhone: o.customer_phone || (o.shippingAddress?.phone) || '',
+        date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+        status: o.status || 'Order Placed',
+        statusCode: o.status === 'Delivered' ? 5 : (o.status === 'Out for Delivery' ? 4 : (o.status === 'Shipped' ? 3 : 2)),
+        carrier: o.carrier || 'Bluedart Express Luxury Courier',
+        trackingNumber: o.tracking_number || o.trackingNumber || `BD-${(o.id || '').replace(/\D/g, '').slice(-8) || '8839219'}IN`,
+        items: Array.isArray(o.items) ? o.items : [],
+        subtotal: Number(o.subtotal) || Number(o.total_amount) || 0,
+        total: Number(o.total_amount) || Number(o.subtotal) || 0,
+        paymentMethod: o.payment_method || o.paymentMethod || 'Razorpay / Online',
+        paymentStatus: o.payment_status || o.paymentStatus || 'Paid',
+        deliveryMode: o.delivery_mode || o.deliveryMode || 'Standard Delivery',
+        shippingAddress: {
+          fullName: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Customer',
+          name: o.customer_name || (o.shippingAddress?.fullName) || (o.shippingAddress?.name) || 'Customer',
+          email: o.user_email || '',
+          phone: o.customer_phone || '',
+          street: o.shipping_street || '',
+          city: o.shipping_city || '',
+          pincode: o.shipping_pincode || '',
+        },
+        createdAt: o.created_at || new Date().toISOString(),
+        updatedAt: o.updated_at || new Date().toISOString()
+      }));
+      saveToDisk();
+      console.log(`⚡ Synchronized ${memoryDB.orders.length} Orders from Supabase Cloud`);
+    }
+  } catch (e) {
+    // Supabase orders sync fallback
   }
 
   // Product Synchronization & Auto-Seed with Supabase
@@ -361,50 +390,6 @@ export async function initDB() {
   if (!memoryDB.orders) {
     memoryDB.orders = [];
     saveToDisk();
-  }
-
-  // Automatic background synchronization of local users and orders to Supabase
-  try {
-    for (const u of (memoryDB.users || [])) {
-      supabase.from('users').upsert({
-        id: u.id,
-        name: u.name,
-        email: u.email,
-        phone: u.phone || null,
-        password_hash: u.passwordHash || u.password_hash || '',
-        is_verified: !!u.isVerified,
-        verification_otp: u.verificationOtp || null,
-        otp_expires_at: u.otpExpiresAt || null,
-        addresses: u.addresses || [],
-        wishlist: u.wishlist || [],
-        created_at: u.createdAt || new Date().toISOString(),
-        updated_at: u.updatedAt || new Date().toISOString()
-      }).then().catch(() => {});
-    }
-
-    for (const o of (memoryDB.orders || [])) {
-      supabase.from('orders').upsert({
-        id: o.id,
-        user_email: o.customerEmail || o.shippingAddress?.email || null,
-        customer_name: o.customerName || o.shippingAddress?.fullName || 'Customer',
-        customer_phone: o.customerPhone || o.shippingAddress?.phone || null,
-        shipping_street: o.shippingAddress?.street || null,
-        shipping_city: o.shippingAddress?.city || null,
-        shipping_pincode: o.shippingAddress?.pincode || null,
-        items: o.items || [],
-        subtotal: o.subtotal || 0,
-        total_amount: o.total || o.totalAmount || 0,
-        payment_method: o.paymentMethod || 'COD',
-        payment_status: o.paymentStatus || 'Pending',
-        status: o.status || 'Processing',
-        carrier: o.carrier || null,
-        tracking_number: o.trackingNumber || null,
-        created_at: o.createdAt || (o.date ? new Date(o.date).toISOString() : new Date().toISOString()),
-        updated_at: o.updatedAt || new Date().toISOString()
-      }).then().catch(() => {});
-    }
-  } catch (e) {
-    console.warn('Auto background sync note:', e.message);
   }
 }
 
@@ -869,7 +854,7 @@ export const db = {
     loadFromDisk();
     try {
       const { data, error } = await supabase.from('users').select('*').order('created_at', { ascending: false });
-      if (!error && data && data.length > 0) {
+      if (!error && Array.isArray(data)) {
         const mapped = data.map(u => ({
           id: u.id,
           name: u.name,
@@ -886,16 +871,9 @@ export const db = {
           updatedAt: u.updated_at || new Date().toISOString()
         }));
 
-        const userMap = new Map();
-        mapped.forEach(u => userMap.set(u.email.toLowerCase(), u));
-        (memoryDB.users || []).forEach(u => {
-          if (!userMap.has(u.email.toLowerCase())) {
-            userMap.set(u.email.toLowerCase(), u);
-          }
-        });
-        const combined = Array.from(userMap.values());
-        memoryDB.users = combined;
-        return combined;
+        memoryDB.users = mapped;
+        saveToDisk();
+        return mapped;
       }
     } catch (e) {
       console.warn('Supabase getUsersAsync note:', e.message);
@@ -914,38 +892,50 @@ export const db = {
 
   getUserByIdAsync: async (id) => {
     loadFromDisk();
-    let user = (memoryDB.users || []).find(u => u.id === id);
+    const cleanId = (id || '').toString().trim();
+    if (!cleanId) return null;
+
     try {
-      const { data, error } = await supabase.from('users').select('*').eq('id', id).maybeSingle();
-      if (!error && data) {
-        user = {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          phone: data.phone || '',
-          passwordHash: data.password_hash || data.passwordHash || user?.passwordHash,
-          role: data.role || 'customer',
-          isVerified: data.is_verified === true || data.isVerified === true,
-          verificationOtp: data.verification_otp || data.verificationOtp || null,
-          otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
-          addresses: Array.isArray(data.addresses) ? data.addresses : (user?.addresses || []),
-          wishlist: Array.isArray(data.wishlist) ? data.wishlist : (user?.wishlist || []),
-          createdAt: data.created_at || user?.createdAt || new Date().toISOString(),
-          updatedAt: data.updated_at || new Date().toISOString()
-        };
-        const index = (memoryDB.users || []).findIndex(existing => existing.id === id);
-        if (index === -1) {
+      const { data, error } = await supabase.from('users').select('*').eq('id', cleanId).maybeSingle();
+      if (!error) {
+        if (data) {
+          const user = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || '',
+            passwordHash: data.password_hash || data.passwordHash || '',
+            role: data.role || 'customer',
+            isVerified: data.is_verified === true || data.isVerified === true,
+            verificationOtp: data.verification_otp || data.verificationOtp || null,
+            otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
+            addresses: Array.isArray(data.addresses) ? data.addresses : [],
+            wishlist: Array.isArray(data.wishlist) ? data.wishlist : [],
+            createdAt: data.created_at || new Date().toISOString(),
+            updatedAt: data.updated_at || new Date().toISOString()
+          };
           if (!memoryDB.users) memoryDB.users = [];
-          memoryDB.users.push(user);
+          const existingIdx = memoryDB.users.findIndex(u => u.id === cleanId);
+          if (existingIdx === -1) {
+            memoryDB.users.push(user);
+          } else {
+            memoryDB.users[existingIdx] = user;
+          }
+          saveToDisk();
+          return user;
         } else {
-          memoryDB.users[index] = user;
+          // data is null -> User was deleted in Supabase
+          if (memoryDB.users && memoryDB.users.some(u => u.id === cleanId)) {
+            memoryDB.users = memoryDB.users.filter(u => u.id !== cleanId);
+            saveToDisk();
+          }
+          return null;
         }
-        saveToDisk();
       }
     } catch (error) {
       // Supabase lookup note
     }
-    return user || (memoryDB.users || []).find(u => u.id === id) || null;
+    return (memoryDB.users || []).find(u => u.id === cleanId) || null;
   },
 
   getUserByEmail: (email) => {
@@ -958,40 +948,48 @@ export const db = {
     const clean = (email || '').toLowerCase().trim();
     if (!clean) return null;
 
-    let user = (memoryDB.users || []).find(u => u.email?.toLowerCase() === clean);
-
     try {
       const { data, error } = await supabase.from('users').select('*').eq('email', clean).maybeSingle();
-      if (!error && data) {
-        user = {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          phone: data.phone || '',
-          passwordHash: data.password_hash || data.passwordHash || user?.passwordHash,
-          role: data.role || 'customer',
-          isVerified: data.is_verified === true || data.isVerified === true,
-          verificationOtp: data.verification_otp || data.verificationOtp || null,
-          otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
-          addresses: Array.isArray(data.addresses) ? data.addresses : (user?.addresses || []),
-          wishlist: Array.isArray(data.wishlist) ? data.wishlist : (user?.wishlist || []),
-          createdAt: data.created_at || user?.createdAt || new Date().toISOString(),
-          updatedAt: data.updated_at || new Date().toISOString()
-        };
-        if (!memoryDB.users) memoryDB.users = [];
-        const existingIdx = memoryDB.users.findIndex(u => u.id === user.id || u.email?.toLowerCase() === clean);
-        if (existingIdx === -1) {
-          memoryDB.users.push(user);
+      if (!error) {
+        if (data) {
+          const user = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || '',
+            passwordHash: data.password_hash || data.passwordHash || '',
+            role: data.role || 'customer',
+            isVerified: data.is_verified === true || data.isVerified === true,
+            verificationOtp: data.verification_otp || data.verificationOtp || null,
+            otpExpiresAt: data.otp_expires_at || data.otpExpiresAt || null,
+            addresses: Array.isArray(data.addresses) ? data.addresses : [],
+            wishlist: Array.isArray(data.wishlist) ? data.wishlist : [],
+            createdAt: data.created_at || new Date().toISOString(),
+            updatedAt: data.updated_at || new Date().toISOString()
+          };
+          if (!memoryDB.users) memoryDB.users = [];
+          const existingIdx = memoryDB.users.findIndex(u => u.id === user.id || u.email?.toLowerCase() === clean);
+          if (existingIdx === -1) {
+            memoryDB.users.push(user);
+          } else {
+            memoryDB.users[existingIdx] = user;
+          }
+          saveToDisk();
+          return user;
         } else {
-          memoryDB.users[existingIdx] = user;
+          // data is null -> User was deleted in Supabase
+          if (memoryDB.users && memoryDB.users.some(u => u.email?.toLowerCase() === clean)) {
+            memoryDB.users = memoryDB.users.filter(u => u.email?.toLowerCase() !== clean);
+            saveToDisk();
+          }
+          return null;
         }
-        saveToDisk();
       }
     } catch (e) {
       // Supabase lookup note
     }
 
-    return user || (memoryDB.users || []).find(u => u.email?.toLowerCase() === clean) || null;
+    return (memoryDB.users || []).find(u => u.email?.toLowerCase() === clean) || null;
   },
 
   getAdminByEmailAsync: async (email) => {
@@ -1365,21 +1363,19 @@ export const db = {
     if (!cleanId) return false;
 
     const existing = (memoryDB.users || []).find(u => u.id === cleanId || u.email?.toLowerCase() === cleanId.toLowerCase());
-    const userEmail = existing?.email?.toLowerCase();
+    const userEmail = existing?.email?.toLowerCase() || (cleanId.includes('@') ? cleanId.toLowerCase() : null);
 
     memoryDB.users = (memoryDB.users || []).filter(u => u.id !== cleanId && u.email?.toLowerCase() !== userEmail && u.email?.toLowerCase() !== cleanId.toLowerCase());
     saveToDisk();
 
     try {
-      if (cleanId.includes('@')) {
-        await supabase.from('users').delete().eq('email', cleanId.toLowerCase());
-      } else {
-        await supabase.from('users').delete().eq('id', cleanId);
-      }
       if (userEmail) {
         await supabase.from('users').delete().eq('email', userEmail);
       }
-      console.log(`⚡ Deleted User #${cleanId} from Supabase cloud.`);
+      if (!cleanId.includes('@')) {
+        await supabase.from('users').delete().eq('id', cleanId);
+      }
+      console.log(`⚡ Permanently Deleted User #${cleanId} from Supabase cloud & local DB.`);
       return true;
     } catch (e) {
       console.warn('Supabase delete user note:', e.message);
@@ -1548,7 +1544,7 @@ export const db = {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && supaOrders && supaOrders.length > 0) {
+      if (!error && Array.isArray(supaOrders)) {
         const mapped = supaOrders.map(o => ({
           id: o.id,
           customerEmail: o.user_email || o.customer_email || (o.shippingAddress?.email) || '',
@@ -1578,21 +1574,36 @@ export const db = {
           updatedAt: o.updated_at
         }));
 
-        const orderMap = new Map();
-        mapped.forEach(o => orderMap.set(o.id, o));
-        (memoryDB.orders || []).forEach(o => {
-          if (!orderMap.has(o.id)) {
-            orderMap.set(o.id, o);
-          }
-        });
-        const combined = Array.from(orderMap.values());
-        memoryDB.orders = combined;
-        return combined;
+        memoryDB.orders = mapped;
+        saveToDisk();
+        return mapped;
       }
     } catch (e) {
       console.warn('Supabase getOrdersAsync note:', e.message);
     }
     return memoryDB.orders || [];
+  },
+
+  deleteOrder: async (id) => {
+    return await db.deleteOrderAsync(id);
+  },
+
+  deleteOrderAsync: async (id) => {
+    loadFromDisk();
+    const cleanId = id?.toString().trim();
+    if (!cleanId) return false;
+
+    memoryDB.orders = (memoryDB.orders || []).filter(o => o.id !== cleanId && o.id?.toUpperCase() !== cleanId.toUpperCase());
+    saveToDisk();
+
+    try {
+      await supabase.from('orders').delete().eq('id', cleanId);
+      console.log(`⚡ Permanently Deleted Order #${cleanId} from Supabase cloud & local DB.`);
+      return true;
+    } catch (e) {
+      console.warn('Supabase delete order note:', e.message);
+      return true;
+    }
   },
 
   getOrderById: (id) => {

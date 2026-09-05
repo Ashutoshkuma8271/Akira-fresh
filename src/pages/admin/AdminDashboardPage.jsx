@@ -429,6 +429,23 @@ export const AdminDashboardPage = () => {
     }
   };
 
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm(`Are you sure you want to permanently delete Order #${orderId}? This will remove it from the system and Supabase.`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        fetchDashboardData();
+      }
+    } catch (err) {
+      console.error('Delete order error', err);
+    }
+  };
+
   // Change Password
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -846,7 +863,7 @@ export const AdminDashboardPage = () => {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <span className="text-base font-serif font-bold text-white">{formatINR(order.total)}</span>
                         
                         <button
@@ -855,6 +872,14 @@ export const AdminDashboardPage = () => {
                         >
                           <Truck className="w-3.5 h-3.5" />
                           <span>Update Delivery</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteOrder(order.id)}
+                          title="Permanently delete order"
+                          className="p-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition-all cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

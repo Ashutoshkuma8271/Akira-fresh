@@ -249,6 +249,33 @@ router.put('/orders/:id/status', async (req, res) => {
   }
 });
 
+// DELETE /api/admin/orders/:id — Permanent Order Removal
+router.delete('/orders/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existing = db.getOrderById(id);
+    if (!existing) {
+      return res.status(404).json({ success: false, message: 'Order record not found.' });
+    }
+
+    await db.deleteOrderAsync(id);
+
+    logAudit({
+      action: 'Order record deleted',
+      adminId: req.admin.id,
+      adminEmail: req.admin.email,
+      ip: req.ip,
+      resource: `Order #${id}`,
+      details: `Permanently removed order #${id} (Customer: ${existing.customerEmail || 'Customer'}) from database & Supabase`
+    });
+
+    return res.json({ success: true, message: `Order #${id} permanently deleted.` });
+  } catch (err) {
+    console.error('Delete order error:', err);
+    return res.status(500).json({ success: false, message: 'Server error deleting order' });
+  }
+});
+
 // 4. WEBSITE SECTIONS & CONTENT CUSTOMIZER
 // GET /api/admin/settings
 router.get('/settings', (req, res) => {
