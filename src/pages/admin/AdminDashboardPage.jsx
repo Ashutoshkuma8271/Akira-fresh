@@ -624,11 +624,13 @@ export const AdminDashboardPage = () => {
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}
               >
-                {admin?.name || 'Administrator'}
+                {admin?.name && admin.name !== 'Store Administrator' && admin.name !== 'Demo Store Administrator' && admin.name !== 'Administrator'
+                  ? admin.name
+                  : 'Ashutosh Yadav'}
               </p>
               <p
                 className={`text-[10px] font-mono ${
-                  isDark ? 'text-emerald-400' : 'text-emerald-700 font-semibold'
+                  isDark ? 'text-amber-400' : 'text-amber-700 font-semibold'
                 }`}
               >
                 Master Administrator
@@ -2417,7 +2419,9 @@ export const AdminDashboardPage = () => {
                       isDark ? 'text-white' : 'text-slate-950'
                     }`}
                   >
-                    {admin?.name || 'Administrator'}
+                    {admin?.name && admin.name !== 'Store Administrator' && admin.name !== 'Demo Store Administrator' && admin.name !== 'Administrator'
+                      ? admin.name
+                      : 'Ashutosh Yadav'}
                   </h4>
                   <p
                     className={`text-xs font-mono ${

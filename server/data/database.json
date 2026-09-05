@@ -2,7 +2,7 @@
   "admins": [
     {
       "id": "adm-fixture-001",
-      "name": "Demo Store Administrator",
+      "name": "Ashutosh Yadav",
       "email": "admin.fixture@example.test",
       "passwordHash": "$2b$12$0bPHDPrke2Tvm.ojLnGq3e.ykXZ7b11gsOmJdHRI4DIYI4xkCLKtC",
       "role": "admin",
@@ -14,7 +14,7 @@
     },
     {
       "id": "adm-1788126142966",
-      "name": "Store Administrator",
+      "name": "Ashutosh Yadav",
       "email": "admin.synthetic@example.test",
       "passwordHash": "$2b$12$e8xL4Y82Fw2Z/xK.y5L4nO88Q8u0k7jXp00p4g9XhT9a6p1Q0w7m.",
       "role": "admin",
@@ -26,7 +26,7 @@
     },
     {
       "id": "adm-1788126142966",
-      "name": "Ashutosh yadav",
+      "name": "Ashutosh Yadav",
       "email": "ashutoshkumaryadav933499@gmail.com",
       "passwordHash": "$2b$12$Qj5Tp7xdiDWzzd2G2lN7..kLcHO1RLvw5I.I4ufuo2mFUN7uDRBUm",
       "role": "admin",

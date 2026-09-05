@@ -184,7 +184,7 @@ export async function initDB() {
         const existing = adminMap.get(email);
         adminMap.set(email, {
           id: sa.id || existing?.id || `adm-${Date.now()}`,
-          name: sa.name || existing?.name || 'Store Administrator',
+          name: sa.name || existing?.name || 'Ashutosh Yadav',
           email: sa.email,
           passwordHash: sa.password_hash || existing?.passwordHash,
           role: sa.role || 'admin',
