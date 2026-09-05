@@ -65,17 +65,22 @@ export const MobileNav = ({ isOpen, onClose }) => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    {user?.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name || 'User'}
-                        className="w-10 h-10 rounded-full object-cover border-2 border-leaf-500 shadow-xs shrink-0"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-[#1b4332] dark:bg-forest-800 text-lime-400 font-bold flex items-center justify-center border border-leaf-500/40 shrink-0 text-sm">
-                        {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                      </div>
-                    )}
+                    <div className="relative shrink-0">
+                      {user?.avatar ? (
+                        <div className="w-10 h-10 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 overflow-hidden shadow-xs bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center">
+                          <img
+                            src={user.avatar}
+                            alt={user.name || 'User'}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-10 h-10 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 bg-[#EAF5EE] dark:bg-forest-800 text-[#1b4332] dark:text-lime-300 font-serif font-bold text-base flex items-center justify-center shadow-xs">
+                          {user.name ? user.name.trim().charAt(0).toUpperCase() : 'A'}
+                        </div>
+                      )}
+                      <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 dark:bg-lime-400 ring-2 ring-white dark:ring-[#072418]" />
+                    </div>
                     <div className="min-w-0">
                       <p className="text-[11px] text-gray-500 dark:text-gray-400">Signed in as</p>
                       <p className="text-sm font-bold text-charcoal-950 dark:text-white truncate">{user.name}</p>

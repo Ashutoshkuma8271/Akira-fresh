@@ -94,19 +94,24 @@ export const BottomNav = ({ onOpenSearch }) => {
                 : 'text-charcoal-600 dark:text-gray-400 hover:text-charcoal-900 dark:hover:text-gray-200'
             }`}
           >
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name || 'User'}
-                className="w-5 h-5 rounded-full object-cover border border-leaf-500"
-              />
-            ) : (
-              <div className="w-5 h-5 rounded-full bg-forest-900 dark:bg-forest-800 text-lime-400 font-bold text-[9px] flex items-center justify-center border border-leaf-500/40 leading-none">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-              </div>
-            )}
-            <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-[54px]">
-              {user?.name?.split(' ')[0] || 'Profile'}
+            <div className="relative">
+              {user?.avatar ? (
+                <div className="w-5.5 h-5.5 rounded-full border border-[#1b4332] dark:border-lime-400 overflow-hidden bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center">
+                  <img
+                    src={user.avatar}
+                    alt={user.name || 'User'}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-5.5 h-5.5 rounded-full border border-[#1b4332] dark:border-lime-400 bg-[#EAF5EE] dark:bg-forest-800 text-[#1b4332] dark:text-lime-300 font-serif font-bold text-[10px] flex items-center justify-center leading-none">
+                  {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'A'}
+                </div>
+              )}
+              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 dark:bg-lime-400 ring-1.5 ring-white dark:ring-[#072418]" />
+            </div>
+            <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-[56px] font-medium">
+              {user?.name?.split(' ')[0] || 'Account'}
             </span>
             {isActive('/account') && (
               <span className="w-1 h-1 bg-forest-900 dark:bg-lime-400 rounded-full mt-0.5" />

@@ -221,32 +221,34 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                       setIsAccountOpen(!isAccountOpen);
                     }
                   }}
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border transition-all cursor-pointer flex items-center justify-center shrink-0 overflow-hidden relative ${
-                    isAuthenticated
-                      ? 'border-leaf-500 dark:border-lime-400 bg-leaf-500/10 dark:bg-forest-800 text-[#1b4332] dark:text-lime-300 font-bold text-xs shadow-xs'
-                      : 'border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80'
-                  }`}
+                  className="relative cursor-pointer flex items-center justify-center shrink-0 focus:outline-none"
                   aria-label="Account Profile"
                 >
                   {isAuthenticated ? (
-                    user?.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name || 'User'}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="font-serif font-black text-xs uppercase">
-                        {user?.name ? user.name.charAt(0) : 'U'}
-                      </span>
-                    )
-                  ) : (
-                    <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
-                  )}
+                    <div className="relative">
+                      {user?.avatar ? (
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 overflow-hidden shadow-xs bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center">
+                          <img
+                            src={user.avatar}
+                            alt={user.name || 'User'}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center shadow-xs transition-transform hover:scale-105">
+                          <span className="font-serif font-bold text-sm sm:text-base text-[#1b4332] dark:text-lime-300 select-none leading-none">
+                            {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'A'}
+                          </span>
+                        </div>
+                      )}
 
-                  {/* Live Active Signed-In Dot Indicator */}
-                  {isAuthenticated && (
-                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-lime-500 border border-white dark:border-forest-900 ring-1 ring-forest-950/20" />
+                      {/* Live Active Online Dot Indicator overlapping the border */}
+                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-lime-400 ring-2 ring-white dark:ring-[#072418] shadow-xs" />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors flex items-center justify-center">
+                      <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
+                    </div>
                   )}
                 </button>
 
