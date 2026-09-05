@@ -214,7 +214,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
               <div ref={accountRef} className="relative flex items-center">
                 <button
                   onClick={() => {
-                    if (window.innerWidth < 640 && !isAuthenticated) {
+                    if (!isAuthenticated) {
                       setAuthMode('login');
                       setIsAuthModalOpen(true);
                     } else {
@@ -307,7 +307,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                             className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             <div className="flex items-center gap-2.5">
-                              <Sparkles className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <Truck className="w-4 h-4 text-gray-400 dark:text-gray-400" />
                               <span>Track Live Order</span>
                             </div>
                             <span className="text-[10px] text-gray-400">&rarr;</span>
@@ -319,7 +319,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                             className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             <div className="flex items-center gap-2.5">
-                              <Heart className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <MapPin className="w-4 h-4 text-gray-400 dark:text-gray-400" />
                               <span>Saved Addresses</span>
                             </div>
                             <span className="text-[10px] text-gray-400">&rarr;</span>
@@ -331,7 +331,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                             className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             <div className="flex items-center gap-2.5">
-                              <User className="w-4 h-4 text-gray-400 dark:text-gray-400" />
+                              <ShieldCheck className="w-4 h-4 text-gray-400 dark:text-gray-400" />
                               <span>Security & Password</span>
                             </div>
                             <span className="text-[10px] text-gray-400">&rarr;</span>
@@ -348,6 +348,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                             }}
                             className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-forest-800/80 rounded-xl cursor-pointer transition-colors"
                           >
+                            <LogOut className="w-4 h-4" />
                             <span>Sign Out of Store</span>
                           </button>
                         </div>
