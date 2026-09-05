@@ -101,7 +101,9 @@ export const BottomNav = ({ onOpenSearch }) => {
                 className="w-5 h-5 rounded-full object-cover border border-leaf-500"
               />
             ) : (
-              <User className="w-5 h-5 stroke-[1.9]" />
+              <div className="w-5 h-5 rounded-full bg-forest-900 dark:bg-forest-800 text-lime-400 font-bold text-[9px] flex items-center justify-center border border-leaf-500/40 leading-none">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
             )}
             <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-[54px]">
               {user?.name?.split(' ')[0] || 'Profile'}

@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { CartDrawer } from '../common/CartDrawer';
 import { AuthModal } from '../common/AuthModal';
 import { SearchModal } from '../common/SearchModal';
+import { AbandonedCartBanner } from '../common/AbandonedCartBanner';
 import { WifiOff } from 'lucide-react';
 
 export const Layout = ({ children }) => {
@@ -61,6 +62,9 @@ export const Layout = ({ children }) => {
 
       {/* Auth Modal */}
       <AuthModal />
+
+      {/* Abandoned Cart Recovery Banner */}
+      <AbandonedCartBanner />
 
       {/* Page Content with mobile bottom nav safe offset */}
       <main className="flex-1 pb-16 lg:pb-0">

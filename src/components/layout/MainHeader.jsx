@@ -221,17 +221,32 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                       setIsAccountOpen(!isAccountOpen);
                     }
                   }}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors cursor-pointer flex items-center justify-center shrink-0 overflow-hidden"
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border transition-all cursor-pointer flex items-center justify-center shrink-0 overflow-hidden relative ${
+                    isAuthenticated
+                      ? 'border-leaf-500 dark:border-lime-400 bg-leaf-500/10 dark:bg-forest-800 text-[#1b4332] dark:text-lime-300 font-bold text-xs shadow-xs'
+                      : 'border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80'
+                  }`}
                   aria-label="Account Profile"
                 >
-                  {isAuthenticated && user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt={user.name || 'User'}
-                      className="w-full h-full rounded-full object-cover"
-                    />
+                  {isAuthenticated ? (
+                    user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name || 'User'}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-serif font-black text-xs uppercase">
+                        {user?.name ? user.name.charAt(0) : 'U'}
+                      </span>
+                    )
                   ) : (
                     <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
+                  )}
+
+                  {/* Live Active Signed-In Dot Indicator */}
+                  {isAuthenticated && (
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-lime-500 border border-white dark:border-forest-900 ring-1 ring-forest-950/20" />
                   )}
                 </button>
 
