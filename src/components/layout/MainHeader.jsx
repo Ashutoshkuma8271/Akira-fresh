@@ -260,29 +260,31 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-60 sm:w-64 bg-white dark:bg-forest-900 border border-gray-200/90 dark:border-forest-750 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-2xl z-50 animate-scaleUp overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-48 sm:w-52 max-w-[calc(100vw-24px)] bg-white/98 dark:bg-[#072418]/98 backdrop-blur-md border border-gray-200/90 dark:border-forest-750 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-xl z-50 animate-scaleUp p-1.5 select-none">
                     {isAuthenticated ? (
                       <>
-                        {/* User Header Profile Card */}
-                        <div className="px-5 py-4 border-b border-gray-100 dark:border-forest-800 bg-white dark:bg-forest-900">
-                          <p className="text-xs text-slate-500 dark:text-gray-400 font-normal">Signed in as</p>
-                          <p className="text-base font-bold text-slate-900 dark:text-white mt-0.5 truncate">
+                        {/* Compact User Header Profile Card */}
+                        <div className="px-2.5 py-2 border-b border-gray-100 dark:border-forest-800/80">
+                          <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 font-normal leading-tight">
+                            Signed in as
+                          </p>
+                          <p className="text-xs sm:text-sm font-bold text-charcoal-950 dark:text-white truncate mt-0.5 leading-snug">
                             {user?.name || 'Customer'}
                           </p>
-                          <div className="mt-2.5">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF7F0] dark:bg-forest-800/90 border border-[#BCE8CB] dark:border-forest-700 text-[#1E5A38] dark:text-lime-300 text-xs font-semibold">
-                              <Sparkles className="w-3.5 h-3.5 text-[#1E5A38] dark:text-lime-400" />
+                          <div className="mt-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#EBF7F0] dark:bg-forest-800/80 border border-[#BCE8CB] dark:border-forest-700 text-[#1E5A38] dark:text-lime-300 text-[10px] font-semibold">
+                              <Sparkles className="w-2.5 h-2.5 text-[#1E5A38] dark:text-lime-400" />
                               <span>{user?.membershipTier || 'Fresh VIP Member'}</span>
                             </span>
                           </div>
                         </div>
 
-                        {/* Navigation Links */}
-                        <div className="py-2">
+                        {/* Navigation Links with Compact Spacing */}
+                        <div className="py-1 space-y-0.5">
                           <Link
                             to="/account"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
+                            className="block px-2.5 py-1.5 text-xs font-medium text-charcoal-800 dark:text-gray-200 rounded-lg hover:bg-gray-100/80 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             My Dashboard
                           </Link>
@@ -290,7 +292,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                           <Link
                             to="/account/orders"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
+                            className="block px-2.5 py-1.5 text-xs font-medium text-charcoal-800 dark:text-gray-200 rounded-lg hover:bg-gray-100/80 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             My Orders
                           </Link>
@@ -298,21 +300,21 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                           <Link
                             to="/track-order"
                             onClick={() => setIsAccountOpen(false)}
-                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
+                            className="block px-2.5 py-1.5 text-xs font-medium text-charcoal-800 dark:text-gray-200 rounded-lg hover:bg-gray-100/80 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
                           >
                             Track Live Order
                           </Link>
                         </div>
 
-                        {/* Sign Out Action */}
-                        <div className="border-t border-gray-100 dark:border-forest-800 py-2">
+                        {/* Compact Sign Out Action */}
+                        <div className="border-t border-gray-100 dark:border-forest-800/80 pt-1">
                           <button
                             onClick={() => {
                               logout();
                               setIsAccountOpen(false);
                               navigate('/');
                             }}
-                            className="w-full text-left px-5 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+                            className="w-full text-left px-2.5 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer"
                           >
                             Log Out
                           </button>
