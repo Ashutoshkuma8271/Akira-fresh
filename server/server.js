@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 3000;
 // Enable trust proxy for reverse proxies
 app.set('trust proxy', true);
 
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000')
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:5000,https://akira-fresh.vercel.app')
   .split(',')
   .map(origin => origin.trim())
   .filter(Boolean);
@@ -39,7 +39,7 @@ const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http:
 // Security: Rate Limiters against Brute-Force & DoS attacks
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Max 100 auth attempts per IP per 15 minutes
+  max: 200, // Max 200 auth attempts per IP per 15 minutes
   standardHeaders: true,
   legacyHeaders: false,
   validate: false,
@@ -51,7 +51,7 @@ const authLimiter = rateLimit({
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
   validate: false,
@@ -81,17 +81,26 @@ app.use(compression());
 
 // Security Middlewares
 app.use(helmet({
-  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
+
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true);
+    if (
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.endsWith('.vercel.app') ||
+      allowedOrigins.includes(origin)
+    ) {
       return callback(null, true);
     }
-    return callback(new Error('Origin is not allowed by CORS'));
+    return callback(null, true);
   },
-  credentials: false,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 app.use(express.json({ limit: '1mb' }));
