@@ -42,6 +42,10 @@ export const OrderProvider = ({ children }) => {
         const res = await fetch('/api/orders', {
           headers: { Authorization: `Bearer ${token}` }
         });
+        if (res.status === 401) {
+          localStorage.removeItem('as_commerce_token');
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {

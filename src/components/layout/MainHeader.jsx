@@ -43,22 +43,30 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openSearch();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [openSearch]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
-    } else {
-      openSearch();
     }
   };
 
   return (
     <>
-      {/* Master Main Header (Matching Exact Reference Mockup) */}
       <div
         className={`w-full bg-white/95 dark:bg-[#072418]/95 backdrop-blur-md border-b border-gray-200/80 dark:border-forest-800 transition-all duration-300 select-none shadow-xs ${
-          isScrolled ? 'py-2.5 sm:py-3' : 'py-3 sm:py-4'
+          isScrolled ? 'py-2 sm:py-2.5' : 'py-2.5 sm:py-3.5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -76,106 +84,95 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
               <Logo />
             </div>
 
-            {/* Center Navigation Links (Home, Shop, Categories, Best Sellers, About, Contact) */}
-            <nav className="hidden lg:flex items-center flex-nowrap space-x-3.5 xl:space-x-6 text-xs xl:text-sm font-semibold text-charcoal-800 dark:text-gray-200 shrink-0 whitespace-nowrap">
+            {/* Center Navigation Links: Modern, Stylish, High-Performance */}
+            <nav className="hidden lg:flex items-center flex-nowrap space-x-1 xl:space-x-2 text-[13px] xl:text-[14px] font-semibold text-charcoal-800 dark:text-gray-200 shrink-0 whitespace-nowrap">
               <Link
                 to="/"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
-                  isActive('/') ? 'text-[#1b4332] dark:text-lime-400 font-bold' : ''
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
+                  isActive('/')
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap">Home</span>
-                {isActive('/') && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
 
               <Link
                 to="/shop"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
                   isActive('/shop') || isActive('/collections/all')
-                    ? 'text-[#1b4332] dark:text-lime-400 font-bold'
-                    : ''
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap">Shop</span>
-                {(isActive('/shop') || isActive('/collections/all')) && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
 
               <Link
                 to="/categories"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
                   isActive('/categories') || isActive('/collections') || location.pathname.startsWith('/category')
-                    ? 'text-[#1b4332] dark:text-lime-400 font-bold'
-                    : ''
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap">Categories</span>
-                {(isActive('/categories') || isActive('/collections') || location.pathname.startsWith('/category')) && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
 
               <Link
                 to="/bestsellers"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
                   isActive('/bestsellers') || isActive('/collections/bestsellers')
-                    ? 'text-[#1b4332] dark:text-lime-400 font-bold'
-                    : ''
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap inline-block">Best Sellers</span>
-                {(isActive('/bestsellers') || isActive('/collections/bestsellers')) && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
 
               <Link
                 to="/help"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
                   isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')
-                    ? 'text-[#1b4332] dark:text-lime-400 font-bold'
-                    : ''
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap">About</span>
-                {(isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')) && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
 
               <Link
                 to="/contact"
-                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
-                  isActive('/contact') || isActive('/pages/contact') ? 'text-[#1b4332] dark:text-lime-400 font-bold' : ''
+                className={`relative px-3 py-1.5 rounded-full transition-all duration-200 hover:text-[#1b4332] dark:hover:text-lime-300 hover:bg-emerald-50/60 dark:hover:bg-forest-800/60 ${
+                  isActive('/contact') || isActive('/pages/contact')
+                    ? 'text-[#1b4332] dark:text-lime-400 font-bold bg-emerald-50/90 dark:bg-forest-800/80 shadow-2xs'
+                    : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
                 <span className="whitespace-nowrap">Contact</span>
-                {(isActive('/contact') || isActive('/pages/contact')) && (
-                  <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
-                )}
               </Link>
             </nav>
 
-            {/* Right Controls: Desktop Search Capsule + 1. Theme, 2. Wishlist, 3. Cart, 4. Profile */}
+            {/* Right Controls: Interactive Search Capsule + 1. Theme, 2. Wishlist, 3. Cart, 4. Profile */}
             <div className="flex items-center gap-1 sm:gap-2 md:gap-2.5 shrink-0">
               
-              {/* Search Capsule Input (Desktop & Tablet) */}
-              <form
-                onSubmit={handleSearchSubmit}
-                className="hidden lg:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3 py-1.5 w-32 xl:w-48 border border-gray-200/80 dark:border-forest-700 shadow-2xs mr-1 shrink-0"
+              {/* Luxury Search Capsule Trigger (Desktop & Laptop) with Live Suggestions & Keyboard Hint */}
+              <button
+                type="button"
+                onClick={openSearch}
+                className="hidden lg:flex items-center justify-between bg-[#F4F2EC] hover:bg-[#EBE8E0] dark:bg-[#0c2e20] dark:hover:bg-[#133d2b] text-charcoal-700 dark:text-gray-200 rounded-full px-3 py-1.5 w-32 xl:w-48 border border-gray-200/90 dark:border-[#1e583c] shadow-2xs mr-1 transition-all cursor-pointer group select-none shrink-0"
+                aria-label="Open Search Suggestions"
               >
-                <Search className="w-3.5 h-3.5 text-gray-500 shrink-0 mr-1.5" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="bg-transparent border-none text-xs text-charcoal-900 dark:text-white placeholder-gray-500 focus:outline-none w-full font-medium"
-                />
-              </form>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Search className="w-3.5 h-3.5 text-gray-500 dark:text-emerald-400 group-hover:text-[#1b4332] dark:group-hover:text-lime-300 transition-colors shrink-0" />
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Search dishes...
+                  </span>
+                </div>
+                <kbd className="hidden xl:inline-flex items-center text-[10px] font-mono px-1.5 py-0.2 rounded bg-white dark:bg-[#072016] border border-gray-200 dark:border-[#164430] text-gray-400 dark:text-emerald-400/80 shadow-2xs font-semibold leading-normal">
+                  ⌘K
+                </kbd>
+              </button>
 
               {/* 1. Theme Toggle (Sun/Moon) */}
               <div className="flex items-center">
