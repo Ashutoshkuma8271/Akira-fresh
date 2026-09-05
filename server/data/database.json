@@ -21,8 +21,8 @@
       "isActive": 1,
       "singleAdminLock": 1,
       "createdAt": "2026-08-30T21:42:22.967+00:00",
-      "updatedAt": "2026-09-05T18:34:22.167Z",
-      "lastLoginAt": "2026-09-05T18:34:22.159Z"
+      "updatedAt": "2026-09-05T19:19:32.162Z",
+      "lastLoginAt": "2026-09-05T19:19:32.158Z"
     },
     {
       "id": "adm-1788126142966",
@@ -205,6 +205,72 @@
   "password_resets": [],
   "audit_logs": [
     {
+      "id": "audit-1788635998374-n2wsv",
+      "action": "Order status updated",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "admin.synthetic@example.test",
+      "ip": "127.0.0.1",
+      "resource": "Order #AS-324920",
+      "details": "Status advanced to \"Processing\" (Carrier: Bluedart Express Luxury Courier, Tracking: BD-741398316IN)",
+      "createdAt": "2026-09-05T19:19:58.376+00:00",
+      "timestamp": "2026-09-05T19:19:58.376+00:00"
+    },
+    {
+      "id": "audit-1788635985636-irjun",
+      "action": "Order status updated",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "admin.synthetic@example.test",
+      "ip": "127.0.0.1",
+      "resource": "Order #AS-664988",
+      "details": "Status advanced to \"Delivered\" (Carrier: Bluedart Express Luxury Courier, Tracking: BD-452221982IN)",
+      "createdAt": "2026-09-05T19:19:45.637+00:00",
+      "timestamp": "2026-09-05T19:19:45.637+00:00"
+    },
+    {
+      "id": "audit-1788635972173-n7i1k",
+      "action": "Admin login",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "127.0.0.1",
+      "resource": null,
+      "details": "Administrator logged in successfully",
+      "createdAt": "2026-09-05T19:19:32.176+00:00",
+      "timestamp": "2026-09-05T19:19:32.176+00:00"
+    },
+    {
+      "id": "audit-1788635951186-risrb",
+      "action": "Logout",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "admin.synthetic@example.test",
+      "ip": "127.0.0.1",
+      "resource": null,
+      "details": "Administrator logged out",
+      "createdAt": "2026-09-05T19:19:11.188+00:00",
+      "timestamp": "2026-09-05T19:19:11.188+00:00"
+    },
+    {
+      "id": "audit-1788634604928-fiqo0",
+      "action": "Admin login",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
+      "resource": null,
+      "details": "Administrator logged in successfully",
+      "createdAt": "2026-09-05T18:56:44.928+00:00",
+      "timestamp": "2026-09-05T18:56:44.928+00:00"
+    },
+    {
+      "id": "audit-1788634598006-mp40e",
+      "action": "Failed login",
+      "adminId": "adm-1788126142966",
+      "adminEmail": "ashutoshkumaryadav933499@gmail.com",
+      "ip": "103.69.24.42",
+      "resource": null,
+      "details": "Incorrect password",
+      "createdAt": "2026-09-05T18:56:38.006+00:00",
+      "timestamp": "2026-09-05T18:56:38.006+00:00"
+    },
+    {
       "id": "audit-1788633262178-a5z6b",
       "action": "Admin login",
       "adminId": "adm-1788126142966",
@@ -267,8 +333,8 @@
       "customerName": "Ashutosh Kumar",
       "customerPhone": "+918271936044",
       "date": "2026-09-05",
-      "status": "Out for Delivery",
-      "statusCode": 4,
+      "status": "Delivered",
+      "statusCode": 5,
       "carrier": "Bluedart Express Luxury Courier",
       "trackingNumber": "BD-452221982IN",
       "items": [
@@ -301,7 +367,7 @@
         "pincode": "110009"
       },
       "createdAt": "2026-09-05T16:35:06.882+00:00",
-      "updatedAt": "2026-09-05T16:44:08.35+00:00"
+      "updatedAt": "2026-09-05T19:19:45.001+00:00"
     },
     {
       "id": "AS-324920",
@@ -309,7 +375,7 @@
       "customerName": "Ashutosh Kumar",
       "customerPhone": "+919334993904",
       "date": "2026-08-30",
-      "status": "Order Placed",
+      "status": "Processing",
       "statusCode": 2,
       "carrier": "Bluedart Express Luxury Courier",
       "trackingNumber": "BD-741398316IN",
@@ -343,7 +409,7 @@
         "pincode": "110009"
       },
       "createdAt": "2026-08-30T21:03:23.011+00:00",
-      "updatedAt": "2026-08-30T21:03:23.011+00:00"
+      "updatedAt": "2026-09-05T19:19:58.127+00:00"
     }
   ],
   "coupons": [

@@ -33,16 +33,88 @@ import {
   UploadCloud,
   Eye,
   EyeOff,
+  Sun,
+  Moon,
+  ChevronRight,
 } from 'lucide-react';
 import { Logo } from '../../components/common/Logo';
 import { supabase } from '../../lib/supabase';
+
+// Skeleton Components for Smooth Loading States
+const StatCardSkeleton = ({ isDark }) => (
+  <div
+    className={`p-6 rounded-3xl border shadow-sm space-y-3 animate-pulse ${
+      isDark ? 'bg-[#0c2e20] border-[#164430]' : 'bg-white border-slate-200/90'
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <div className={`h-3 w-24 rounded-full ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+      <div className={`w-10 h-10 rounded-2xl ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+    </div>
+    <div className={`h-8 w-36 rounded-xl ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+    <div className={`h-3 w-28 rounded-full ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+  </div>
+);
+
+const TableRowSkeleton = ({ isDark }) => (
+  <div
+    className={`p-4 rounded-2xl border flex items-center justify-between gap-4 animate-pulse ${
+      isDark ? 'bg-[#092217] border-[#164430]' : 'bg-slate-50 border-slate-200/80'
+    }`}
+  >
+    <div className="space-y-2">
+      <div className={`h-3.5 w-28 rounded-md ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+      <div className={`h-3 w-40 rounded-md ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+    </div>
+    <div className={`h-6 w-20 rounded-full ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+  </div>
+);
+
+const ProductRowSkeleton = ({ isDark }) => (
+  <div
+    className={`p-3.5 border-b flex items-center justify-between gap-4 animate-pulse ${
+      isDark ? 'border-[#164430]' : 'border-slate-200'
+    }`}
+  >
+    <div className="flex items-center gap-3">
+      <div className={`w-10 h-10 rounded-xl shrink-0 ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+      <div className="space-y-1.5">
+        <div className={`h-3.5 w-36 rounded-md ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+        <div className={`h-2.5 w-20 rounded-md ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+      </div>
+    </div>
+    <div className={`h-4 w-16 rounded-md ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+    <div className={`h-5 w-20 rounded-full ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+    <div className={`h-6 w-14 rounded-lg ${isDark ? 'bg-[#153e2d]' : 'bg-slate-200'}`} />
+  </div>
+);
 
 export const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const { admin, token, logout, changePassword } = useAdminAuth();
   const { refreshSettings } = useSettings();
 
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'products' | 'orders' | 'settings' | 'coupons' | 'audit' | 'profile'
+  // Admin Theme Toggle: Default to 'light' (Bright Mode) as requested
+  const [adminTheme, setAdminTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('as_admin_theme_preference');
+      return saved === 'dark' ? 'dark' : 'light';
+    } catch (e) {
+      return 'light';
+    }
+  });
+
+  const isDark = adminTheme === 'dark';
+
+  const toggleAdminTheme = () => {
+    const next = adminTheme === 'dark' ? 'light' : 'dark';
+    setAdminTheme(next);
+    try {
+      localStorage.setItem('as_admin_theme_preference', next);
+    } catch (e) {}
+  };
+
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'products' | 'orders' | 'customers' | 'settings' | 'coupons' | 'audit' | 'profile'
   const [stats, setStats] = useState(null);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -58,7 +130,7 @@ export const AdminDashboardPage = () => {
     heroSubheadline: 'Discover premium ready-to-cook kebabs, marinated cuts, and sub-zero cold-chain delicacies delivered to your doorstep.',
     heroDiscount: '15% OFF',
     supportPhone: '+91 63862 56770',
-    supportEmail: 'ashutoshgifthamper9334@gmail.com'
+    supportEmail: 'ashutoshgifthamper9334@gmail.com',
   });
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +138,6 @@ export const AdminDashboardPage = () => {
   const [productSearch, setProductSearch] = useState('');
   const [productCategoryFilter, setProductCategoryFilter] = useState('all');
   const [customerSearch, setCustomerSearch] = useState('');
-
 
   // Product Modal State (Add / Edit)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -263,7 +334,7 @@ export const AdminDashboardPage = () => {
       inStock: product.inStock !== false,
       badge: product.badge || '',
       description: product.description || '',
-      image: product.images ? product.images[0] : (product.image || ''),
+      image: product.images ? product.images[0] : product.image || '',
     });
     setIsProductModalOpen(true);
   };
@@ -417,7 +488,11 @@ export const AdminDashboardPage = () => {
   };
 
   const handleDeleteCustomer = async (id, email) => {
-    if (!window.confirm(`Are you sure you want to permanently delete customer account "${email}"? This will allow them to recreate their account or clear stale data.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to permanently delete customer account "${email}"? This will allow them to recreate their account or clear stale data.`
+      )
+    ) {
       return;
     }
     try {
@@ -434,7 +509,11 @@ export const AdminDashboardPage = () => {
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm(`Are you sure you want to permanently delete Order #${orderId}? This will remove it from the system and Supabase.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to permanently delete Order #${orderId}? This will remove it from the system and Supabase.`
+      )
+    ) {
       return;
     }
     try {
@@ -480,40 +559,89 @@ export const AdminDashboardPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-navy-950 text-white selection:bg-emerald-500/30 flex flex-col font-sans">
-      
+    <div
+      className={`min-h-screen flex flex-col font-sans transition-colors duration-200 ${
+        isDark ? 'bg-[#061810] text-gray-100' : 'bg-slate-50 text-slate-900'
+      }`}
+    >
       {/* Top Admin Header */}
-      <header className="bg-navy-900 border-b border-emerald-500/20 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xl backdrop-blur-md">
+      <header
+        className={`px-4 sm:px-8 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md backdrop-blur-md transition-colors ${
+          isDark
+            ? 'bg-[#0a2318]/95 border-b border-[#143d2b] text-white'
+            : 'bg-white/95 border-b border-slate-200/90 text-slate-900'
+        }`}
+      >
         <div className="flex items-center gap-4">
-          <Logo size="small" variant="white" />
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-mono">
+          <Logo size="small" variant={isDark ? 'white' : 'dark'} />
+          <div
+            className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border ${
+              isDark
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-emerald-50 border-emerald-300 text-[#1b4332]'
+            }`}
+          >
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Master Control & Logistics Suite</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Admin Theme Toggle (Sun / Moon) */}
+          <button
+            onClick={toggleAdminTheme}
+            className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center ${
+              isDark
+                ? 'bg-[#0d2a1f] text-amber-300 border-[#164430] hover:bg-[#153e2d]'
+                : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+            }`}
+            title={`Switch to ${isDark ? 'Bright Mode' : 'Dark Mode'}`}
+            aria-label="Toggle Admin Theme"
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+
           <Link
             to="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-navy-950 font-bold px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 shadow-md hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-xl bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 shadow-sm transition-all cursor-pointer"
           >
             <span>Live Storefront</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
 
-          <div className="h-4 w-px bg-navy-750 hidden sm:block" />
+          <div
+            className={`h-4 w-px hidden sm:block ${
+              isDark ? 'bg-[#164430]' : 'bg-slate-200'
+            }`}
+          />
 
           <div className="flex items-center gap-3">
             <div className="text-right hidden md:block">
-              <p className="text-xs font-bold text-white leading-tight">{admin?.name || 'Administrator'}</p>
-              <p className="text-[10px] font-mono text-emerald-400">Master Administrator</p>
+              <p
+                className={`text-xs font-bold leading-tight ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                {admin?.name || 'Administrator'}
+              </p>
+              <p
+                className={`text-[10px] font-mono ${
+                  isDark ? 'text-emerald-400' : 'text-emerald-700 font-semibold'
+                }`}
+              >
+                Master Administrator
+              </p>
             </div>
 
             <button
               onClick={handleLogout}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-navy-800 hover:bg-red-900/40 text-gray-300 hover:text-red-300 border border-navy-700 hover:border-red-500/40 transition-all flex items-center gap-1.5 text-xs cursor-pointer"
+              className={`p-2 sm:px-3 sm:py-1.5 rounded-xl border transition-all flex items-center gap-1.5 text-xs cursor-pointer ${
+                isDark
+                  ? 'bg-[#0d2a1f] hover:bg-red-900/40 text-gray-300 hover:text-red-300 border-[#164430] hover:border-red-500/40'
+                  : 'bg-white hover:bg-red-50 text-slate-700 hover:text-red-600 border-slate-200 hover:border-red-300'
+              }`}
               title="Logout from Admin Portal"
             >
               <LogOut className="w-4 h-4" />
@@ -525,9 +653,12 @@ export const AdminDashboardPage = () => {
 
       {/* Main Container */}
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-navy-800">
+        <div
+          className={`flex items-center gap-2 overflow-x-auto pb-2 border-b ${
+            isDark ? 'border-[#143d2b]' : 'border-slate-200'
+          }`}
+        >
           {[
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'products', label: `Catalog & Products (${products.length})`, icon: Package },
@@ -546,8 +677,12 @@ export const AdminDashboardPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-500 text-navy-950 shadow-md'
-                    : 'bg-navy-900 text-gray-300 hover:bg-navy-850 hover:text-white border border-navy-800'
+                    ? isDark
+                      ? 'bg-emerald-500 text-navy-950 shadow-md'
+                      : 'bg-[#1b4332] text-white shadow-md'
+                    : isDark
+                    ? 'bg-[#0d2a1f] text-gray-300 hover:bg-[#153e2d] hover:text-white border border-[#164430]'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200 shadow-2xs'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -557,8 +692,12 @@ export const AdminDashboardPage = () => {
           })}
 
           <button
-            onClick={fetchDashboardData}
-            className="ml-auto p-2.5 rounded-xl bg-navy-900 text-gray-400 hover:text-emerald-400 border border-navy-800 transition-colors"
+            onClick={() => fetchDashboardData(false)}
+            className={`ml-auto p-2.5 rounded-xl border transition-colors cursor-pointer ${
+              isDark
+                ? 'bg-[#0d2a1f] text-gray-400 hover:text-emerald-400 border-[#164430]'
+                : 'bg-white text-slate-600 hover:text-[#1b4332] border-slate-200 shadow-2xs'
+            }`}
             title="Refresh Real-Time Telemetry"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -568,116 +707,367 @@ export const AdminDashboardPage = () => {
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="space-y-8 animate-fadeIn">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Gross Sales</span>
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <TrendingUp className="w-5 h-5" />
-                  </div>
-                </div>
-                <h3 className="font-serif text-3xl font-bold text-white">
-                  {formatINR(stats?.totalRevenue ?? orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0))}
-                </h3>
-                <span className="text-[11px] text-emerald-400 font-medium">✓ Razorpay Verified Revenue</span>
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {[1, 2, 3, 4].map((i) => (
+                  <StatCardSkeleton key={i} isDark={isDark} />
+                ))}
               </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div
+                  className={`p-6 rounded-3xl border shadow-sm space-y-2 ${
+                    isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        isDark ? 'text-gray-400' : 'text-slate-600'
+                      }`}
+                    >
+                      Gross Sales
+                    </span>
+                    <div
+                      className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${
+                        isDark
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                          : 'bg-emerald-50 border-emerald-200 text-[#1b4332]'
+                      }`}
+                    >
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <h3
+                    className={`font-serif text-3xl font-bold ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    {formatINR(
+                      stats?.totalRevenue ?? orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
+                    )}
+                  </h3>
+                  <span
+                    className={`text-[11px] font-medium ${
+                      isDark ? 'text-emerald-400' : 'text-emerald-700'
+                    }`}
+                  >
+                    ✓ Razorpay Verified Revenue
+                  </span>
+                </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Total Consignments</span>
-                  <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                    <ShoppingBag className="w-5 h-5" />
+                <div
+                  className={`p-6 rounded-3xl border shadow-sm space-y-2 ${
+                    isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        isDark ? 'text-gray-400' : 'text-slate-600'
+                      }`}
+                    >
+                      Total Consignments
+                    </span>
+                    <div
+                      className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${
+                        isDark
+                          ? 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                          : 'bg-sky-50 border-sky-200 text-sky-700'
+                      }`}
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                    </div>
                   </div>
+                  <h3
+                    className={`font-serif text-3xl font-bold ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    {orders.length} Orders
+                  </h3>
+                  <span
+                    className={`text-[11px] font-medium ${
+                      isDark ? 'text-emerald-400' : 'text-emerald-700'
+                    }`}
+                  >
+                    ● Live Carrier Integration
+                  </span>
                 </div>
-                <h3 className="font-serif text-3xl font-bold text-white">
-                  {orders.length} Orders
-                </h3>
-                <span className="text-[11px] text-emerald-400 font-medium">● Live Carrier Integration</span>
-              </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Catalog Inventory</span>
-                  <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                    <Package className="w-5 h-5" />
+                <div
+                  className={`p-6 rounded-3xl border shadow-sm space-y-2 ${
+                    isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        isDark ? 'text-gray-400' : 'text-slate-600'
+                      }`}
+                    >
+                      Catalog Inventory
+                    </span>
+                    <div
+                      className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${
+                        isDark
+                          ? 'bg-purple-500/10 border-purple-500/30 text-purple-400'
+                          : 'bg-purple-50 border-purple-200 text-purple-700'
+                      }`}
+                    >
+                      <Package className="w-5 h-5" />
+                    </div>
                   </div>
+                  <h3
+                    className={`font-serif text-3xl font-bold ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    {products.length} Products
+                  </h3>
+                  <span
+                    className={`text-[11px] font-medium ${
+                      isDark ? 'text-gray-400' : 'text-slate-600'
+                    }`}
+                  >
+                    Across Main Departments
+                  </span>
                 </div>
-                <h3 className="font-serif text-3xl font-bold text-white">
-                  {products.length} Products
-                </h3>
-                <span className="text-[11px] text-gray-400 font-medium">Across Main Departments</span>
-              </div>
 
-              <div className="p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Security State</span>
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <ShieldCheck className="w-5 h-5" />
+                <div
+                  className={`p-6 rounded-3xl border shadow-sm space-y-2 ${
+                    isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        isDark ? 'text-gray-400' : 'text-slate-600'
+                      }`}
+                    >
+                      Security State
+                    </span>
+                    <div
+                      className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${
+                        isDark
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                          : 'bg-emerald-50 border-emerald-200 text-[#1b4332]'
+                      }`}
+                    >
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
                   </div>
+                  <h3
+                    className={`font-serif text-xl font-bold ${
+                      isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                    }`}
+                  >
+                    Protected (1/1 Lock)
+                  </h3>
+                  <span
+                    className={`text-[11px] font-medium ${
+                      isDark ? 'text-gray-400' : 'text-slate-600'
+                    }`}
+                  >
+                    Single-Admin Enforced
+                  </span>
                 </div>
-                <h3 className="font-serif text-xl font-bold text-emerald-400">
-                  Protected (1/1 Lock)
-                </h3>
-                <span className="text-[11px] text-gray-400 font-medium">Single-Admin Enforced</span>
               </div>
-            </div>
+            )}
 
             {/* Quick Actions & Recent Orders */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
-                <div className="flex items-center justify-between border-b border-navy-800 pb-3">
-                  <h4 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                    <ShoppingBag className="w-5 h-5 text-emerald-400" />
+              <div
+                className={`lg:col-span-7 p-6 rounded-3xl border shadow-sm space-y-4 ${
+                  isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                }`}
+              >
+                <div
+                  className={`flex items-center justify-between border-b pb-3 ${
+                    isDark ? 'border-[#143d2b]' : 'border-slate-100'
+                  }`}
+                >
+                  <h4
+                    className={`font-serif text-lg font-bold flex items-center gap-2 ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    <ShoppingBag
+                      className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                    />
                     <span>Recent Customer Consignments</span>
                   </h4>
-                  <button onClick={() => setActiveTab('orders')} className="text-xs text-emerald-400 hover:underline font-semibold">
+                  <button
+                    onClick={() => setActiveTab('orders')}
+                    className={`text-xs font-semibold hover:underline cursor-pointer ${
+                      isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                    }`}
+                  >
                     Manage Orders →
                   </button>
                 </div>
 
-                <div className="space-y-3">
-                  {orders.slice(0, 4).map((order) => (
-                    <div key={order.id} className="p-4 rounded-2xl bg-navy-850 border border-navy-800 flex items-center justify-between gap-4">
-                      <div>
-                        <span className="text-xs font-mono font-bold text-emerald-400">#{order.id}</span>
-                        <p className="text-xs text-white font-medium mt-0.5">{order.shippingAddress?.name || order.shippingAddress?.fullName || 'Customer'}</p>
-                        <span className="text-[10px] text-gray-400">{order.date} • {order.carrier}</span>
+                {loading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((i) => (
+                      <TableRowSkeleton key={i} isDark={isDark} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {orders.slice(0, 4).map((order) => (
+                      <div
+                        key={order.id}
+                        className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+                          isDark
+                            ? 'bg-[#092217] border-[#164430]'
+                            : 'bg-slate-50 border-slate-200/80 hover:bg-slate-100/70'
+                        } transition-colors`}
+                      >
+                        <div>
+                          <span
+                            className={`text-xs font-mono font-bold ${
+                              isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                            }`}
+                          >
+                            #{order.id}
+                          </span>
+                          <p
+                            className={`text-xs font-medium mt-0.5 ${
+                              isDark ? 'text-white' : 'text-slate-900'
+                            }`}
+                          >
+                            {order.shippingAddress?.name ||
+                              order.shippingAddress?.fullName ||
+                              'Customer'}
+                          </p>
+                          <span
+                            className={`text-[10px] ${
+                              isDark ? 'text-gray-400' : 'text-slate-500'
+                            }`}
+                          >
+                            {order.date} • {order.carrier}
+                          </span>
+                        </div>
+                        <div className="text-right space-y-1">
+                          <span
+                            className={`text-xs font-bold block ${
+                              isDark ? 'text-white' : 'text-slate-950'
+                            }`}
+                          >
+                            {formatINR(order.total)}
+                          </span>
+                          <span
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                              isDark
+                                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                            }`}
+                          >
+                            {order.status}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-right space-y-1">
-                        <span className="text-xs font-bold text-white block">{formatINR(order.total)}</span>
-                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                          {order.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                    {orders.length === 0 && (
+                      <p
+                        className={`text-xs text-center py-4 ${
+                          isDark ? 'text-gray-400' : 'text-slate-500'
+                        }`}
+                      >
+                        No recent consignments.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
-                <div className="flex items-center justify-between border-b border-navy-800 pb-3">
-                  <h4 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                    <History className="w-5 h-5 text-emerald-400" />
+              <div
+                className={`lg:col-span-5 p-6 rounded-3xl border shadow-sm space-y-4 ${
+                  isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+                }`}
+              >
+                <div
+                  className={`flex items-center justify-between border-b pb-3 ${
+                    isDark ? 'border-[#143d2b]' : 'border-slate-100'
+                  }`}
+                >
+                  <h4
+                    className={`font-serif text-lg font-bold flex items-center gap-2 ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    <History
+                      className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                    />
                     <span>Security Audit Feed</span>
                   </h4>
-                  <button onClick={() => setActiveTab('audit')} className="text-xs text-emerald-400 hover:underline font-semibold">
+                  <button
+                    onClick={() => setActiveTab('audit')}
+                    className={`text-xs font-semibold hover:underline cursor-pointer ${
+                      isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                    }`}
+                  >
                     Full Log →
                   </button>
                 </div>
 
-                <div className="space-y-2.5">
-                  {auditLogs.slice(0, 5).map((log) => (
-                    <div key={log.id} className="p-3 rounded-xl bg-navy-850 border border-navy-800 text-xs space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-emerald-400">{log.action}</span>
-                        <span className="text-[10px] text-gray-400 font-mono">
-                          {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                {loading ? (
+                  <div className="space-y-2.5">
+                    {[1, 2, 3, 4].map((i) => (
+                      <TableRowSkeleton key={i} isDark={isDark} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {auditLogs.slice(0, 5).map((log) => (
+                      <div
+                        key={log.id}
+                        className={`p-3 rounded-xl border text-xs space-y-1 ${
+                          isDark
+                            ? 'bg-[#092217] border-[#164430]'
+                            : 'bg-slate-50 border-slate-200/80'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`font-semibold ${
+                              isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                            }`}
+                          >
+                            {log.action}
+                          </span>
+                          <span
+                            className={`text-[10px] font-mono ${
+                              isDark ? 'text-gray-400' : 'text-slate-500'
+                            }`}
+                          >
+                            {new Date(log.timestamp).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-[11px] ${
+                            isDark ? 'text-gray-300' : 'text-slate-600'
+                          }`}
+                        >
+                          {log.details || log.resource}
+                        </p>
                       </div>
-                      <p className="text-[11px] text-gray-300">{log.details || log.resource}</p>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                    {auditLogs.length === 0 && (
+                      <p
+                        className={`text-xs text-center py-4 ${
+                          isDark ? 'text-gray-400' : 'text-slate-500'
+                        }`}
+                      >
+                        No audit events recorded yet.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -685,20 +1075,36 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 2: PRODUCTS CATALOG MANAGEMENT */}
         {activeTab === 'products' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-navy-800 pb-4">
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-6 animate-fadeIn ${
+              isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+            }`}
+          >
+            <div
+              className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
+                <h3
+                  className={`font-serif text-xl sm:text-2xl font-bold ${
+                    isDark ? 'text-white' : 'text-slate-950'
+                  }`}
+                >
                   Catalog & Product Management
                 </h3>
-                <p className="text-xs text-gray-400">
-                  Add new luxury pieces, adjust pricing, manage live inventory, and modify badges.
+                <p
+                  className={`text-xs mt-0.5 ${
+                    isDark ? 'text-gray-400' : 'text-slate-600'
+                  }`}
+                >
+                  Add new delicacies, adjust prices, manage live inventory, and modify tags.
                 </p>
               </div>
 
               <button
                 onClick={handleOpenAddProduct}
-                className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs rounded-xl shadow-md hover:brightness-105 transition-all w-max cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2.5 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold text-xs rounded-xl shadow-md transition-all w-max cursor-pointer"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Add New Product</span>
@@ -708,20 +1114,32 @@ export const AdminDashboardPage = () => {
             {/* Filter Controls */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                <Search
+                  className={`w-4 h-4 absolute left-3.5 top-3 ${
+                    isDark ? 'text-emerald-400' : 'text-slate-400'
+                  }`}
+                />
                 <input
                   type="text"
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
                   placeholder="Search products by title or brand..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:border-emerald-500"
+                  className={`w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border focus:outline-none transition-colors ${
+                    isDark
+                      ? 'bg-[#092217] text-white placeholder-gray-500 border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-slate-900 placeholder-slate-400 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                  }`}
                 />
               </div>
 
               <select
                 value={productCategoryFilter}
                 onChange={(e) => setProductCategoryFilter(e.target.value)}
-                className="px-4 py-2.5 bg-navy-850 text-emerald-400 rounded-xl border border-navy-700 text-xs font-semibold focus:border-emerald-500 cursor-pointer"
+                className={`px-4 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none cursor-pointer transition-colors ${
+                  isDark
+                    ? 'bg-[#092217] text-emerald-400 border-[#164430] focus:border-emerald-500'
+                    : 'bg-slate-50 text-[#1b4332] border-slate-300 focus:border-[#1b4332]'
+                }`}
               >
                 <option value="all">All Departments</option>
                 <option value="men">Men Fashion</option>
@@ -735,144 +1153,326 @@ export const AdminDashboardPage = () => {
             </div>
 
             {/* Products Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-gray-300">
-                <thead className="bg-navy-950 text-gray-400 font-mono text-[11px] uppercase border-b border-navy-800">
-                  <tr>
-                    <th className="p-3.5">Item</th>
-                    <th className="p-3.5">Department</th>
-                    <th className="p-3.5">Price</th>
-                    <th className="p-3.5">Stock</th>
-                    <th className="p-3.5">Badge</th>
-                    <th className="p-3.5 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-navy-800">
-                  {filteredProducts.map((prod) => (
-                    <tr key={prod.id} className="hover:bg-navy-850/50 transition-colors">
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={prod.images ? prod.images[0] : prod.image}
-                            alt={prod.name}
-                            className="w-10 h-10 rounded-xl object-cover border border-navy-700 shrink-0"
-                          />
-                          <div>
-                            <span className="font-bold text-white block">{prod.name}</span>
-                            <span className="text-[10px] text-gray-400">{prod.brand}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-3.5 font-medium text-gray-300">{prod.categoryName}</td>
-                      <td className="p-3.5 font-bold text-emerald-400 font-mono">{formatINR(prod.price)}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${prod.stockCount <= 5 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'}`}>
-                          {prod.stockCount} in Stock
-                        </span>
-                      </td>
-                      <td className="p-3.5">
-                        {prod.badge && (
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                            {prod.badge}
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
-                        <button
-                          onClick={() => handleOpenEditProduct(prod)}
-                          className="p-1.5 text-gray-300 hover:text-emerald-400 hover:bg-navy-800 rounded-lg transition-colors cursor-pointer"
-                          title="Edit Product"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProduct(prod.id)}
-                          className="p-1.5 text-gray-300 hover:text-red-400 hover:bg-navy-800 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Product"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
+            {loading ? (
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <ProductRowSkeleton key={i} isDark={isDark} />
+                ))}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead
+                    className={`font-mono text-[11px] uppercase border-b ${
+                      isDark
+                        ? 'bg-[#082016] text-gray-400 border-[#164430]'
+                        : 'bg-slate-100/90 text-slate-600 border-slate-200'
+                    }`}
+                  >
+                    <tr>
+                      <th className="p-3.5">Item</th>
+                      <th className="p-3.5">Department</th>
+                      <th className="p-3.5">Price</th>
+                      <th className="p-3.5">Stock</th>
+                      <th className="p-3.5">Badge</th>
+                      <th className="p-3.5 text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody
+                    className={`divide-y ${
+                      isDark
+                        ? 'divide-[#164430] text-gray-300'
+                        : 'divide-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {filteredProducts.map((prod) => (
+                      <tr
+                        key={prod.id}
+                        className={`transition-colors ${
+                          isDark ? 'hover:bg-[#092217]/70' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={prod.images ? prod.images[0] : prod.image}
+                              alt={prod.name}
+                              className={`w-10 h-10 rounded-xl object-cover border shrink-0 ${
+                                isDark ? 'border-[#164430]' : 'border-slate-200'
+                              }`}
+                            />
+                            <div>
+                              <span
+                                className={`font-bold block ${
+                                  isDark ? 'text-white' : 'text-slate-950'
+                                }`}
+                              >
+                                {prod.name}
+                              </span>
+                              <span
+                                className={`text-[10px] ${
+                                  isDark ? 'text-gray-400' : 'text-slate-500'
+                                }`}
+                              >
+                                {prod.brand}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-3.5 font-medium">{prod.categoryName}</td>
+                        <td
+                          className={`p-3.5 font-bold font-mono ${
+                            isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                          }`}
+                        >
+                          {formatINR(prod.price)}
+                        </td>
+                        <td className="p-3.5">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                              prod.stockCount <= 5
+                                ? isDark
+                                  ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                                  : 'bg-red-100 text-red-800 border-red-200'
+                                : isDark
+                                ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                                : 'bg-green-100 text-green-800 border-green-200'
+                            }`}
+                          >
+                            {prod.stockCount} in Stock
+                          </span>
+                        </td>
+                        <td className="p-3.5">
+                          {prod.badge && (
+                            <span
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                                isDark
+                                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                  : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                              }`}
+                            >
+                              {prod.badge}
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
+                          <button
+                            onClick={() => handleOpenEditProduct(prod)}
+                            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                              isDark
+                                ? 'text-gray-300 hover:text-emerald-400 hover:bg-[#092217]'
+                                : 'text-slate-600 hover:text-[#1b4332] hover:bg-slate-100'
+                            }`}
+                            title="Edit Product"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(prod.id)}
+                            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                              isDark
+                                ? 'text-gray-300 hover:text-red-400 hover:bg-[#092217]'
+                                : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
+                            }`}
+                            title="Delete Product"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
         {/* TAB 3: ORDERS & DELIVERY LOGISTICS */}
         {activeTab === 'orders' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-6 animate-fadeIn ${
+              isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+            }`}
+          >
+            <div
+              className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                  <Truck className="w-6 h-6 text-emerald-400" />
+                <h3
+                  className={`font-serif text-xl sm:text-2xl font-bold flex items-center gap-2 ${
+                    isDark ? 'text-white' : 'text-slate-950'
+                  }`}
+                >
+                  <Truck className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`} />
                   <span>Order Fulfillment & Delivery Logistics</span>
                 </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p
+                  className={`text-xs mt-0.5 ${
+                    isDark ? 'text-gray-400' : 'text-slate-600'
+                  }`}
+                >
                   Real-time live customer orders synchronized with Supabase database.
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-400">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono border ${
+                    isDark
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                      : 'bg-emerald-50 border-emerald-200 text-[#1b4332]'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span>Supabase Live Sync</span>
                 </div>
                 <button
                   onClick={() => fetchDashboardData(false)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy-800 hover:bg-navy-750 text-gray-300 hover:text-white border border-navy-700 text-xs cursor-pointer transition-all"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs cursor-pointer transition-all ${
+                    isDark
+                      ? 'bg-[#0d2a1f] hover:bg-[#153e2d] text-gray-300 hover:text-white border-[#164430]'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                  }`}
                   title="Manual Refresh"
                 >
-                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
+                  <RefreshCw
+                    className={`w-3.5 h-3.5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                  />
                   <span>Refresh</span>
                 </button>
-                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max font-bold">
+                <span
+                  className={`text-xs font-mono px-3 py-1 rounded-full border w-max font-bold ${
+                    isDark
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                      : 'text-[#1b4332] bg-emerald-50 border-emerald-200'
+                  }`}
+                >
                   {orders.length} Shipments
                 </span>
               </div>
             </div>
 
-            {orders.length === 0 ? (
-              <div className="p-8 text-center bg-navy-850 rounded-2xl border border-navy-800 space-y-2">
-                <ShoppingBag className="w-8 h-8 text-gray-500 mx-auto" />
-                <p className="text-sm font-semibold text-gray-300">No Orders in Database Yet</p>
-                <p className="text-xs text-gray-500">Newly placed storefront orders will appear here automatically via Supabase Realtime.</p>
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <TableRowSkeleton key={i} isDark={isDark} />
+                ))}
+              </div>
+            ) : orders.length === 0 ? (
+              <div
+                className={`p-8 text-center rounded-2xl border space-y-2 ${
+                  isDark ? 'bg-[#092217] border-[#164430]' : 'bg-slate-50 border-slate-200'
+                }`}
+              >
+                <ShoppingBag className="w-8 h-8 text-gray-400 mx-auto" />
+                <p
+                  className={`text-sm font-semibold ${
+                    isDark ? 'text-gray-300' : 'text-slate-800'
+                  }`}
+                >
+                  No Orders in Database Yet
+                </p>
+                <p
+                  className={`text-xs ${
+                    isDark ? 'text-gray-500' : 'text-slate-500'
+                  }`}
+                >
+                  Newly placed storefront orders will appear here automatically via Supabase Realtime.
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="p-5 rounded-2xl bg-navy-850 border border-navy-800 space-y-4 hover:border-navy-700 transition-all">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-navy-800 pb-3">
+                  <div
+                    key={order.id}
+                    className={`p-5 rounded-2xl border space-y-4 transition-all ${
+                      isDark
+                        ? 'bg-[#092217] border-[#164430] hover:border-[#215a40]'
+                        : 'bg-white border-slate-200 shadow-2xs hover:border-slate-300'
+                    }`}
+                  >
+                    <div
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3 ${
+                        isDark ? 'border-[#164430]' : 'border-slate-100'
+                      }`}
+                    >
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-bold font-mono text-emerald-400">Order #{order.id}</span>
-                          <span className="text-xs text-gray-400">• {order.date || (order.createdAt ? order.createdAt.split('T')[0] : 'Today')}</span>
-                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                            order.status === 'Delivered'
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                              : order.status === 'Shipped' || order.status === 'Out for Delivery'
-                              ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
-                              : order.status === 'Cancelled'
-                              ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                          }`}>
+                          <span
+                            className={`text-sm font-bold font-mono ${
+                              isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                            }`}
+                          >
+                            Order #{order.id}
+                          </span>
+                          <span
+                            className={`text-xs ${
+                              isDark ? 'text-gray-400' : 'text-slate-500'
+                            }`}
+                          >
+                            •{' '}
+                            {order.date ||
+                              (order.createdAt ? order.createdAt.split('T')[0] : 'Today')}
+                          </span>
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                              order.status === 'Delivered'
+                                ? isDark
+                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                  : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                : order.status === 'Shipped' || order.status === 'Out for Delivery'
+                                ? isDark
+                                  ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                                  : 'bg-sky-100 text-sky-800 border-sky-200'
+                                : order.status === 'Cancelled'
+                                ? isDark
+                                  ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                                  : 'bg-red-100 text-red-800 border-red-200'
+                                : isDark
+                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                                : 'bg-amber-100 text-amber-800 border-amber-200'
+                            }`}
+                          >
                             {order.status}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-300 mt-1">
-                          Client: <strong className="text-white">{order.shippingAddress?.name || order.shippingAddress?.fullName || order.customerName || 'Customer'}</strong> 
-                          {order.customerEmail ? ` • ${order.customerEmail}` : (order.shippingAddress?.email ? ` • ${order.shippingAddress.email}` : '')}
-                          {(order.shippingAddress?.phone || order.customerPhone) ? ` • 📞 ${order.shippingAddress?.phone || order.customerPhone}` : ''}
+                        <p
+                          className={`text-xs mt-1 ${
+                            isDark ? 'text-gray-300' : 'text-slate-700'
+                          }`}
+                        >
+                          Client:{' '}
+                          <strong className={isDark ? 'text-white' : 'text-slate-950'}>
+                            {order.shippingAddress?.name ||
+                              order.shippingAddress?.fullName ||
+                              order.customerName ||
+                              'Customer'}
+                          </strong>
+                          {order.customerEmail
+                            ? ` • ${order.customerEmail}`
+                            : order.shippingAddress?.email
+                            ? ` • ${order.shippingAddress.email}`
+                            : ''}
+                          {order.shippingAddress?.phone || order.customerPhone
+                            ? ` • 📞 ${order.shippingAddress?.phone || order.customerPhone}`
+                            : ''}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2.5">
-                        <span className="text-base font-serif font-bold text-white">{formatINR(order.total)}</span>
-                        
+                        <span
+                          className={`text-base font-serif font-bold ${
+                            isDark ? 'text-white' : 'text-slate-950'
+                          }`}
+                        >
+                          {formatINR(order.total)}
+                        </span>
+
                         <button
                           onClick={() => handleOpenDeliveryModal(order)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs shadow-md hover:brightness-105 cursor-pointer transition-all"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold text-xs shadow-sm cursor-pointer transition-all"
                         >
                           <Truck className="w-3.5 h-3.5" />
                           <span>Update Delivery</span>
@@ -881,7 +1481,7 @@ export const AdminDashboardPage = () => {
                         <button
                           onClick={() => handleDeleteOrder(order.id)}
                           title="Permanently delete order"
-                          className="p-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition-all cursor-pointer"
+                          className="p-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 transition-all cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -890,17 +1490,60 @@ export const AdminDashboardPage = () => {
 
                     {/* Ordered Items Preview */}
                     {Array.isArray(order.items) && order.items.length > 0 && (
-                      <div className="p-3 bg-navy-900/70 rounded-xl border border-navy-800 space-y-2">
-                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Ordered Delicacies ({order.items.length} items)</span>
+                      <div
+                        className={`p-3 rounded-xl border space-y-2 ${
+                          isDark
+                            ? 'bg-[#082016]/80 border-[#164430]'
+                            : 'bg-slate-50 border-slate-200'
+                        }`}
+                      >
+                        <span
+                          className={`text-[10px] font-bold uppercase block ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}
+                        >
+                          Ordered Delicacies ({order.items.length} items)
+                        </span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                           {order.items.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-2.5 bg-navy-850/80 p-2 rounded-lg border border-navy-750">
+                            <div
+                              key={idx}
+                              className={`flex items-center gap-2.5 p-2 rounded-lg border ${
+                                isDark
+                                  ? 'bg-[#0a261a] border-[#164430]'
+                                  : 'bg-white border-slate-200/80 shadow-2xs'
+                              }`}
+                            >
                               {item.image && (
-                                <img src={item.image} alt={item.name} className="w-9 h-9 rounded-md object-cover border border-navy-700 flex-shrink-0" />
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className={`w-9 h-9 rounded-md object-cover border shrink-0 ${
+                                    isDark ? 'border-[#164430]' : 'border-slate-200'
+                                  }`}
+                                />
                               )}
                               <div className="min-w-0 text-xs">
-                                <p className="text-white font-medium truncate">{item.name}</p>
-                                <p className="text-gray-400 text-[11px]">Qty: <strong className="text-emerald-400">{item.quantity || 1}</strong> &bull; {formatINR(item.price)}</p>
+                                <p
+                                  className={`font-medium truncate ${
+                                    isDark ? 'text-white' : 'text-slate-900'
+                                  }`}
+                                >
+                                  {item.name}
+                                </p>
+                                <p
+                                  className={`text-[11px] ${
+                                    isDark ? 'text-gray-400' : 'text-slate-500'
+                                  }`}
+                                >
+                                  Qty:{' '}
+                                  <strong
+                                    className={isDark ? 'text-emerald-400' : 'text-[#1b4332]'}
+                                  >
+                                    {item.quantity || 1}
+                                  </strong>{' '}
+                                  &bull; {formatINR(item.price)}
+                                </p>
                               </div>
                             </div>
                           ))}
@@ -908,20 +1551,51 @@ export const AdminDashboardPage = () => {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-300">
+                    <div
+                      className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-xs ${
+                        isDark ? 'text-gray-300' : 'text-slate-700'
+                      }`}
+                    >
                       <div>
-                        <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Destination Address</span>
+                        <span
+                          className={`text-[10px] font-bold uppercase block mb-1 ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}
+                        >
+                          Destination Address
+                        </span>
                         <p className="leading-relaxed">
-                          {order.shippingAddress?.street ? `${order.shippingAddress.street}, ` : ''}
+                          {order.shippingAddress?.street
+                            ? `${order.shippingAddress.street}, `
+                            : ''}
                           {order.shippingAddress?.city ? `${order.shippingAddress.city}, ` : ''}
-                          {order.shippingAddress?.pincode ? `PIN: ${order.shippingAddress.pincode}` : 'Standard Shipping'}
+                          {order.shippingAddress?.pincode
+                            ? `PIN: ${order.shippingAddress.pincode}`
+                            : 'Standard Shipping'}
                         </p>
                       </div>
 
                       <div>
-                        <span className="text-[10px] font-bold uppercase text-gray-400 block mb-1">Carrier Details</span>
+                        <span
+                          className={`text-[10px] font-bold uppercase block mb-1 ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}
+                        >
+                          Carrier Details
+                        </span>
                         <p className="leading-relaxed">
-                          Carrier: <strong className="text-white">{order.carrier || 'Bluedart Express Luxury Courier'}</strong> | Waybill Tracking: <span className="font-mono text-emerald-400">{order.trackingNumber || `BD-${order.id}IN`}</span>
+                          Carrier:{' '}
+                          <strong className={isDark ? 'text-white' : 'text-slate-900'}>
+                            {order.carrier || 'Bluedart Express Luxury Courier'}
+                          </strong>{' '}
+                          | Waybill Tracking:{' '}
+                          <span
+                            className={`font-mono ${
+                              isDark ? 'text-emerald-400' : 'text-[#1b4332] font-semibold'
+                            }`}
+                          >
+                            {order.trackingNumber || `BD-${order.id}IN`}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -934,45 +1608,103 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 4: CUSTOMERS DIRECTORY */}
         {activeTab === 'customers' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-6 animate-fadeIn ${
+              isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+            }`}
+          >
+            <div
+              className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                  <User className="w-6 h-6 text-emerald-400" />
+                <h3
+                  className={`font-serif text-xl sm:text-2xl font-bold flex items-center gap-2 ${
+                    isDark ? 'text-white' : 'text-slate-950'
+                  }`}
+                >
+                  <User className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`} />
                   <span>Customer Directory</span>
                 </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p
+                  className={`text-xs mt-0.5 ${
+                    isDark ? 'text-gray-400' : 'text-slate-600'
+                  }`}
+                >
                   Real-time database records of verified customer accounts, contact details, and registered store profiles.
                 </p>
               </div>
-              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/30 w-max font-bold">
+              <span
+                className={`text-xs font-mono px-3.5 py-1.5 rounded-full border w-max font-bold ${
+                  isDark
+                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                    : 'text-[#1b4332] bg-emerald-50 border-emerald-200'
+                }`}
+              >
                 {customers.length} Registered Accounts
               </span>
             </div>
 
             {/* Search Customers Bar */}
             <div className="relative max-w-md">
-              <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
+              <Search
+                className={`w-4 h-4 absolute left-3.5 top-3 ${
+                  isDark ? 'text-emerald-400' : 'text-slate-400'
+                }`}
+              />
               <input
                 type="text"
                 value={customerSearch}
                 onChange={(e) => setCustomerSearch(e.target.value)}
                 placeholder="Search customers by name, email, or phone..."
-                className="w-full pl-10 pr-4 py-2.5 bg-navy-850 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-700 focus:outline-none focus:border-emerald-500"
+                className={`w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border focus:outline-none transition-colors ${
+                  isDark
+                    ? 'bg-[#092217] text-white placeholder-gray-500 border-[#164430] focus:border-emerald-500'
+                    : 'bg-slate-50 text-slate-900 placeholder-slate-400 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                }`}
               />
             </div>
 
             {/* Customers Table */}
-            {customers.length === 0 ? (
-              <div className="p-8 text-center bg-navy-850 rounded-2xl border border-navy-800 space-y-2">
-                <User className="w-8 h-8 text-gray-500 mx-auto" />
-                <p className="text-sm font-semibold text-gray-300">No Customers Registered Yet</p>
-                <p className="text-xs text-gray-500">Customer profiles created on the storefront will appear here instantly.</p>
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <TableRowSkeleton key={i} isDark={isDark} />
+                ))}
+              </div>
+            ) : customers.length === 0 ? (
+              <div
+                className={`p-8 text-center rounded-2xl border space-y-2 ${
+                  isDark ? 'bg-[#092217] border-[#164430]' : 'bg-slate-50 border-slate-200'
+                }`}
+              >
+                <User className="w-8 h-8 text-gray-400 mx-auto" />
+                <p
+                  className={`text-sm font-semibold ${
+                    isDark ? 'text-gray-300' : 'text-slate-800'
+                  }`}
+                >
+                  No Customers Registered Yet
+                </p>
+                <p
+                  className={`text-xs ${
+                    isDark ? 'text-gray-500' : 'text-slate-500'
+                  }`}
+                >
+                  Customer profiles created on the storefront will appear here instantly.
+                </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-gray-300">
-                  <thead className="bg-navy-950 text-gray-400 font-mono text-[11px] uppercase border-b border-navy-800">
+                <table className="w-full text-left text-xs">
+                  <thead
+                    className={`font-mono text-[11px] uppercase border-b ${
+                      isDark
+                        ? 'bg-[#082016] text-gray-400 border-[#164430]'
+                        : 'bg-slate-100/90 text-slate-600 border-slate-200'
+                    }`}
+                  >
                     <tr>
                       <th className="p-3.5">Customer</th>
                       <th className="p-3.5">Contact Details</th>
@@ -982,7 +1714,13 @@ export const AdminDashboardPage = () => {
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-navy-800">
+                  <tbody
+                    className={`divide-y ${
+                      isDark
+                        ? 'divide-[#164430] text-gray-300'
+                        : 'divide-slate-200 text-slate-700'
+                    }`}
+                  >
                     {customers
                       .filter((c) => {
                         if (!customerSearch) return true;
@@ -994,46 +1732,101 @@ export const AdminDashboardPage = () => {
                         );
                       })
                       .map((c) => (
-                        <tr key={c.id} className="hover:bg-navy-850/60 transition-colors">
+                        <tr
+                          key={c.id}
+                          className={`transition-colors ${
+                            isDark ? 'hover:bg-[#092217]/60' : 'hover:bg-slate-50'
+                          }`}
+                        >
                           <td className="p-3.5">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                              <div
+                                className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs ${
+                                  isDark
+                                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                                    : 'bg-emerald-100 border-emerald-300 text-[#1b4332]'
+                                }`}
+                              >
                                 {c.name ? c.name.charAt(0).toUpperCase() : 'U'}
                               </div>
                               <div>
-                                <p className="font-bold text-white text-sm">{c.name || 'Anonymous'}</p>
-                                <p className="text-[11px] text-gray-400 font-mono">ID: {c.id}</p>
+                                <p
+                                  className={`font-bold text-sm ${
+                                    isDark ? 'text-white' : 'text-slate-950'
+                                  }`}
+                                >
+                                  {c.name || 'Anonymous'}
+                                </p>
+                                <p
+                                  className={`text-[11px] font-mono ${
+                                    isDark ? 'text-gray-400' : 'text-slate-500'
+                                  }`}
+                                >
+                                  ID: {c.id}
+                                </p>
                               </div>
                             </div>
                           </td>
                           <td className="p-3.5">
-                            <p className="font-mono text-gray-200">{c.email}</p>
-                            <p className="text-[11px] text-gray-400">{c.phone || 'No phone provided'}</p>
+                            <p
+                              className={`font-mono ${
+                                isDark ? 'text-gray-200' : 'text-slate-800'
+                              }`}
+                            >
+                              {c.email}
+                            </p>
+                            <p
+                              className={`text-[11px] ${
+                                isDark ? 'text-gray-400' : 'text-slate-500'
+                              }`}
+                            >
+                              {c.phone || 'No phone provided'}
+                            </p>
                           </td>
                           <td className="p-3.5">
                             {c.isVerified ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                              <span
+                                className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                                  isDark
+                                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                                    : 'text-emerald-800 bg-emerald-100 border-emerald-200'
+                                }`}
+                              >
                                 <CheckCircle2 className="w-3 h-3" />
                                 <span>Verified</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                              <span
+                                className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                                  isDark
+                                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+                                    : 'text-amber-800 bg-amber-100 border-amber-200'
+                                }`}
+                              >
                                 <Clock className="w-3 h-3" />
                                 <span>Pending OTP</span>
                               </span>
                             )}
                           </td>
-                          <td className="p-3.5 font-mono uppercase text-[11px] text-gray-400">
+                          <td
+                            className={`p-3.5 font-mono uppercase text-[11px] ${
+                              isDark ? 'text-gray-400' : 'text-slate-600'
+                            }`}
+                          >
                             {c.role || 'customer'}
                           </td>
-                          <td className="p-3.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                          <td
+                            className={`p-3.5 font-mono text-[11px] whitespace-nowrap ${
+                              isDark ? 'text-gray-400' : 'text-slate-600'
+                            }`}
+                          >
                             {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'N/A'}
                           </td>
                           <td className="p-3.5 text-right">
                             <button
                               onClick={() => handleDeleteCustomer(c.id, c.email)}
                               title="Delete customer record"
-                              className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1049,105 +1842,234 @@ export const AdminDashboardPage = () => {
 
         {/* TAB 5: WEBSITE SECTIONS & CONTENT CUSTOMIZER */}
         {activeTab === 'settings' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
-            <div className="border-b border-navy-800 pb-4">
-
-              <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                <Sliders className="w-6 h-6 text-emerald-400" />
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-6 animate-fadeIn ${
+              isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+            }`}
+          >
+            <div
+              className={`border-b pb-4 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
+              <h3
+                className={`font-serif text-xl sm:text-2xl font-bold flex items-center gap-2 ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`}
+              >
+                <Sliders className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`} />
                 <span>Website Sections & Content Customizer</span>
               </h3>
-              <p className="text-xs text-gray-400">
+              <p
+                className={`text-xs mt-0.5 ${
+                  isDark ? 'text-gray-400' : 'text-slate-600'
+                }`}
+              >
                 Change announcement promo bar, hero headlines, discount badges, and store contact info.
               </p>
             </div>
 
             <form onSubmit={handleSaveSettings} className="space-y-6 text-xs max-w-2xl">
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4
+                  className={`text-xs font-bold uppercase tracking-widest border-b pb-2 ${
+                    isDark
+                      ? 'text-emerald-400 border-[#143d2b]'
+                      : 'text-[#1b4332] border-slate-200'
+                  }`}
+                >
                   1. Announcement Bar
                 </h4>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Top Promo Announcement Text</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Top Promo Announcement Text
+                  </label>
                   <input
                     type="text"
                     value={siteSettings.announcementText}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, announcementText: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, announcementText: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Free Shipping Order Threshold (₹)</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Free Shipping Order Threshold (₹)
+                  </label>
                   <input
                     type="number"
                     value={siteSettings.freeShippingThreshold}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, freeShippingThreshold: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, freeShippingThreshold: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4
+                  className={`text-xs font-bold uppercase tracking-widest border-b pb-2 ${
+                    isDark
+                      ? 'text-emerald-400 border-[#143d2b]'
+                      : 'text-[#1b4332] border-slate-200'
+                  }`}
+                >
                   2. Hero Banner Section
                 </h4>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Hero Pill Badge</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Hero Pill Badge
+                  </label>
                   <input
                     type="text"
                     value={siteSettings.heroBadge}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, heroBadge: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, heroBadge: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Main Hero Headline</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Main Hero Headline
+                  </label>
                   <input
                     type="text"
                     value={siteSettings.heroHeadline}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, heroHeadline: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500 font-serif text-sm"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, heroHeadline: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none font-serif text-sm ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Hero Subheadline</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Hero Subheadline
+                  </label>
                   <textarea
                     rows={2}
                     value={siteSettings.heroSubheadline}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, heroSubheadline: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, heroSubheadline: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Circular Badge Discount Text</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Circular Badge Discount Text
+                  </label>
                   <input
                     type="text"
                     value={siteSettings.heroDiscount}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, heroDiscount: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, heroDiscount: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest border-b border-navy-800 pb-2">
+                <h4
+                  className={`text-xs font-bold uppercase tracking-widest border-b pb-2 ${
+                    isDark
+                      ? 'text-emerald-400 border-[#143d2b]'
+                      : 'text-[#1b4332] border-slate-200'
+                  }`}
+                >
                   3. Store Contact Information
                 </h4>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Customer Support Phone</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Customer Support Phone
+                  </label>
                   <input
                     type="text"
                     value={siteSettings.supportPhone || ''}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, supportPhone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, supportPhone: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Customer Support Email</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Customer Support Email
+                  </label>
                   <input
                     type="email"
                     value={siteSettings.supportEmail || ''}
-                    onChange={(e) => setSiteSettings({ ...siteSettings, supportEmail: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, supportEmail: e.target.value })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
               </div>
@@ -1155,206 +2077,425 @@ export const AdminDashboardPage = () => {
               <button
                 type="submit"
                 disabled={settingsSubmitting}
-                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                className="w-full py-3.5 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-50"
               >
-                <span>{settingsSubmitting ? 'Saving Website Changes...' : 'Save & Publish Live Changes'}</span>
+                <span>
+                  {settingsSubmitting ? 'Saving Website Changes...' : 'Save & Publish Live Changes'}
+                </span>
               </button>
             </form>
           </div>
         )}
 
-        {/* TAB 5: COUPONS & PROMOTIONS */}
+        {/* TAB 6: COUPONS & PROMOTIONS */}
         {activeTab === 'coupons' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
-            <div className="lg:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-5">
-              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-                <Plus className="w-5 h-5 text-emerald-400" />
+            <div
+              className={`lg:col-span-5 p-6 rounded-3xl border shadow-sm space-y-5 ${
+                isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+              }`}
+            >
+              <h3
+                className={`font-serif text-lg font-bold flex items-center gap-2 ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`}
+              >
+                <Plus className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`} />
                 <span>Create New Promo Voucher</span>
               </h3>
 
               <form onSubmit={handleCreateCoupon} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Voucher Code</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Voucher Code
+                  </label>
                   <input
                     type="text"
                     required
                     value={newCouponCode}
                     onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
                     placeholder="e.g. LUXURY25"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-emerald-500 uppercase"
+                    className={`w-full px-3.5 py-2.5 font-mono rounded-xl border focus:outline-none uppercase ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-gray-300 mb-1">Discount (%)</label>
+                    <label
+                      className={`block font-semibold mb-1 ${
+                        isDark ? 'text-gray-300' : 'text-slate-700'
+                      }`}
+                    >
+                      Discount (%)
+                    </label>
                     <input
                       type="number"
                       value={newCouponDiscount}
                       onChange={(e) => setNewCouponDiscount(e.target.value)}
                       placeholder="e.g. 25"
-                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                        isDark
+                          ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                          : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                      }`}
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-300 mb-1">Min Order (₹)</label>
+                    <label
+                      className={`block font-semibold mb-1 ${
+                        isDark ? 'text-gray-300' : 'text-slate-700'
+                      }`}
+                    >
+                      Min Order (₹)
+                    </label>
                     <input
                       type="number"
                       value={newCouponMinOrder}
                       onChange={(e) => setNewCouponMinOrder(e.target.value)}
                       placeholder="e.g. 2999"
-                      className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                        isDark
+                          ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                          : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                      }`}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Promotion Description</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Promotion Description
+                  </label>
                   <input
                     type="text"
                     required
                     value={newCouponDesc}
                     onChange={(e) => setNewCouponDesc(e.target.value)}
                     placeholder="e.g. 25% Off on Summer Luxury Collection"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={couponSubmitting}
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-50"
                 >
                   <span>{couponSubmitting ? 'Issuing Voucher...' : 'Publish Voucher Code'}</span>
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-4">
-              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2 border-b border-navy-800 pb-3">
-                <Tag className="w-5 h-5 text-emerald-400" />
+            <div
+              className={`lg:col-span-7 p-6 rounded-3xl border shadow-sm space-y-4 ${
+                isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+              }`}
+            >
+              <h3
+                className={`font-serif text-lg font-bold flex items-center gap-2 border-b pb-3 ${
+                  isDark
+                    ? 'text-white border-[#143d2b]'
+                    : 'text-slate-950 border-slate-100'
+                }`}
+              >
+                <Tag className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`} />
                 <span>Active Store Coupons</span>
               </h3>
 
               <div className="space-y-3">
                 {coupons.map((coupon) => (
-                  <div key={coupon.code} className="p-4 rounded-2xl bg-navy-850 border border-navy-800 flex items-center justify-between gap-4">
+                  <div
+                    key={coupon.code}
+                    className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+                      isDark
+                        ? 'bg-[#092217] border-[#164430]'
+                        : 'bg-slate-50 border-slate-200/80 hover:bg-slate-100/70'
+                    }`}
+                  >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-bold text-emerald-400 bg-navy-950 px-2.5 py-0.5 rounded-lg border border-emerald-500/30">
+                        <span
+                          className={`font-mono text-sm font-bold px-2.5 py-0.5 rounded-lg border ${
+                            isDark
+                              ? 'text-emerald-400 bg-[#061810] border-emerald-500/30'
+                              : 'text-[#1b4332] bg-white border-emerald-300'
+                          }`}
+                        >
                           {coupon.code}
                         </span>
-                        <span className="text-xs font-bold text-green-400">
-                          {coupon.discountPercent ? `${coupon.discountPercent}% OFF` : `₹${coupon.discountAmount} OFF`}
+                        <span className="text-xs font-bold text-green-500">
+                          {coupon.discountPercent
+                            ? `${coupon.discountPercent}% OFF`
+                            : `₹${coupon.discountAmount} OFF`}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-300 mt-1">{coupon.description}</p>
+                      <p
+                        className={`text-xs mt-1 ${
+                          isDark ? 'text-gray-300' : 'text-slate-600'
+                        }`}
+                      >
+                        {coupon.description}
+                      </p>
                     </div>
 
                     <button
                       onClick={() => handleDeleteCoupon(coupon.code)}
-                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-navy-800 rounded-xl transition-colors cursor-pointer"
+                      className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                        isDark
+                          ? 'text-gray-400 hover:text-red-400 hover:bg-[#061810]'
+                          : 'text-slate-400 hover:text-red-600 hover:bg-red-50'
+                      }`}
                       title="Delete Coupon"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
+                {coupons.length === 0 && (
+                  <p
+                    className={`text-xs text-center py-4 ${
+                      isDark ? 'text-gray-400' : 'text-slate-500'
+                    }`}
+                  >
+                    No active discount coupons found.
+                  </p>
+                )}
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 6: SECURITY AUDIT LOG */}
+        {/* TAB 7: SECURITY AUDIT LOG */}
         {activeTab === 'audit' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-navy-800 pb-4">
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border shadow-sm space-y-6 animate-fadeIn ${
+              isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+            }`}
+          >
+            <div
+              className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                <h3
+                  className={`font-serif text-xl sm:text-2xl font-bold flex items-center gap-2 ${
+                    isDark ? 'text-white' : 'text-slate-950'
+                  }`}
+                >
+                  <ShieldCheck
+                    className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                  />
                   <span>Immutable Security Audit Trail</span>
                 </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p
+                  className={`text-xs mt-0.5 ${
+                    isDark ? 'text-gray-400' : 'text-slate-600'
+                  }`}
+                >
                   Chronological record of all administrative logins, product edits, delivery status changes, and site updates.
                 </p>
               </div>
-              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 w-max">
+              <span
+                className={`text-xs font-mono px-3 py-1 rounded-full border w-max ${
+                  isDark
+                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                    : 'text-[#1b4332] bg-emerald-50 border-emerald-200 font-bold'
+                }`}
+              >
                 {auditLogs.length} Logged Events
               </span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-gray-300">
-                <thead className="bg-navy-950 text-gray-400 font-mono text-[11px] uppercase border-b border-navy-800">
-                  <tr>
-                    <th className="p-3.5">Timestamp</th>
-                    <th className="p-3.5">Security Action</th>
-                    <th className="p-3.5">Actor / ID</th>
-                    <th className="p-3.5">Event Details</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-navy-800">
-                  {auditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-navy-850/60 transition-colors">
-                      <td className="p-3.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
-                        {new Date(log.timestamp).toLocaleString()}
-                      </td>
-                      <td className="p-3.5 font-bold text-emerald-400 whitespace-nowrap">
-                        {log.action}
-                      </td>
-                      <td className="p-3.5 font-mono text-gray-300 whitespace-nowrap">
-                        {log.adminEmail || log.adminId || 'System Auth'}
-                      </td>
-                      <td className="p-3.5 text-gray-300">
-                        {log.details || log.resource || '-'}
-                      </td>
+            {loading ? (
+              <div className="space-y-2.5">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <TableRowSkeleton key={i} isDark={isDark} />
+                ))}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead
+                    className={`font-mono text-[11px] uppercase border-b ${
+                      isDark
+                        ? 'bg-[#082016] text-gray-400 border-[#164430]'
+                        : 'bg-slate-100/90 text-slate-600 border-slate-200'
+                    }`}
+                  >
+                    <tr>
+                      <th className="p-3.5">Timestamp</th>
+                      <th className="p-3.5">Security Action</th>
+                      <th className="p-3.5">Actor / ID</th>
+                      <th className="p-3.5">Event Details</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody
+                    className={`divide-y ${
+                      isDark
+                        ? 'divide-[#164430] text-gray-300'
+                        : 'divide-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {auditLogs.map((log) => (
+                      <tr
+                        key={log.id}
+                        className={`transition-colors ${
+                          isDark ? 'hover:bg-[#092217]/60' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <td
+                          className={`p-3.5 font-mono text-[11px] whitespace-nowrap ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}
+                        >
+                          {new Date(log.timestamp).toLocaleString()}
+                        </td>
+                        <td
+                          className={`p-3.5 font-bold whitespace-nowrap ${
+                            isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                          }`}
+                        >
+                          {log.action}
+                        </td>
+                        <td
+                          className={`p-3.5 font-mono whitespace-nowrap ${
+                            isDark ? 'text-gray-300' : 'text-slate-800'
+                          }`}
+                        >
+                          {log.adminEmail || log.adminId || 'System Auth'}
+                        </td>
+                        <td className="p-3.5">{log.details || log.resource || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
-        {/* TAB 7: ADMIN PROFILE & MASTER PASSWORD */}
+        {/* TAB 8: ADMIN PROFILE & MASTER PASSWORD */}
         {activeTab === 'profile' && (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 animate-fadeIn">
-            <div className="md:col-span-5 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-6">
+            <div
+              className={`md:col-span-5 p-6 rounded-3xl border shadow-sm space-y-6 ${
+                isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+              }`}
+            >
               <div className="text-center space-y-3">
-                <div className="w-20 h-20 rounded-full bg-navy-800 border-2 border-emerald-500/40 mx-auto flex items-center justify-center shadow-sm">
-                  <ShieldCheck className="w-10 h-10 text-emerald-400" />
+                <div
+                  className={`w-20 h-20 rounded-full border-2 mx-auto flex items-center justify-center shadow-sm ${
+                    isDark
+                      ? 'bg-[#092217] border-emerald-500/40'
+                      : 'bg-emerald-50 border-emerald-300'
+                  }`}
+                >
+                  <ShieldCheck
+                    className={`w-10 h-10 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                  />
                 </div>
                 <div>
-                  <h4 className="font-serif text-xl font-bold text-white">{admin?.name || 'Administrator'}</h4>
-                  <p className="text-xs font-mono text-emerald-400">{admin?.email}</p>
+                  <h4
+                    className={`font-serif text-xl font-bold ${
+                      isDark ? 'text-white' : 'text-slate-950'
+                    }`}
+                  >
+                    {admin?.name || 'Administrator'}
+                  </h4>
+                  <p
+                    className={`text-xs font-mono ${
+                      isDark ? 'text-emerald-400' : 'text-[#1b4332] font-semibold'
+                    }`}
+                  >
+                    {admin?.email}
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-2.5 pt-2 border-t border-navy-800 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-navy-800/60">
-                  <span className="text-gray-400">Assigned Role:</span>
-                  <span className="font-bold text-emerald-400 uppercase">Master Administrator</span>
+              <div
+                className={`space-y-2.5 pt-2 border-t text-xs ${
+                  isDark ? 'border-[#143d2b]' : 'border-slate-100'
+                }`}
+              >
+                <div
+                  className={`flex justify-between py-1.5 border-b ${
+                    isDark ? 'border-[#143d2b]/60' : 'border-slate-100'
+                  }`}
+                >
+                  <span className={isDark ? 'text-gray-400' : 'text-slate-500'}>
+                    Assigned Role:
+                  </span>
+                  <span
+                    className={`font-bold uppercase ${
+                      isDark ? 'text-emerald-400' : 'text-[#1b4332]'
+                    }`}
+                  >
+                    Master Administrator
+                  </span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-navy-800/60">
-                  <span className="text-gray-400">Account Status:</span>
-                  <span className="font-bold text-green-400">Active (1/1 Single-Admin Lock)</span>
+                <div
+                  className={`flex justify-between py-1.5 border-b ${
+                    isDark ? 'border-[#143d2b]/60' : 'border-slate-100'
+                  }`}
+                >
+                  <span className={isDark ? 'text-gray-400' : 'text-slate-500'}>
+                    Account Status:
+                  </span>
+                  <span className="font-bold text-green-500">Active (1/1 Single-Admin Lock)</span>
                 </div>
                 <div className="flex justify-between py-1.5">
-                  <span className="text-gray-400">Authorization Level:</span>
-                  <span className="font-mono text-gray-300">Root / Full Store Control</span>
+                  <span className={isDark ? 'text-gray-400' : 'text-slate-500'}>
+                    Authorization Level:
+                  </span>
+                  <span className="font-mono font-semibold">Root / Full Store Control</span>
                 </div>
               </div>
             </div>
 
-            <div className="md:col-span-7 p-6 rounded-3xl bg-navy-900 border border-emerald-500/20 shadow-xl space-y-5">
-              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2 border-b border-navy-800 pb-3">
-                <KeyRound className="w-5 h-5 text-emerald-400" />
+            <div
+              className={`md:col-span-7 p-6 rounded-3xl border shadow-sm space-y-5 ${
+                isDark ? 'bg-[#0c2e20] border-emerald-500/20' : 'bg-white border-slate-200/90'
+              }`}
+            >
+              <h3
+                className={`font-serif text-lg font-bold flex items-center gap-2 border-b pb-3 ${
+                  isDark
+                    ? 'text-white border-[#143d2b]'
+                    : 'text-slate-950 border-slate-100'
+                }`}
+              >
+                <KeyRound
+                  className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-[#1b4332]'}`}
+                />
                 <span>Update Master Admin Password</span>
               </h3>
 
               <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Current Password</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Current Password
+                  </label>
                   <div className="relative">
                     <input
                       type={showCurrentPass ? 'text' : 'password'}
@@ -1362,12 +2503,16 @@ export const AdminDashboardPage = () => {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                      className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border focus:outline-none ${
+                        isDark
+                          ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                          : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowCurrentPass(!showCurrentPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-500 transition-colors cursor-pointer p-0.5"
                       title={showCurrentPass ? 'Hide password' : 'Show password'}
                     >
                       {showCurrentPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1376,7 +2521,13 @@ export const AdminDashboardPage = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">New Master Password (min 8 chars)</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    New Master Password (min 8 chars)
+                  </label>
                   <div className="relative">
                     <input
                       type={showNewPass ? 'text' : 'password'}
@@ -1384,12 +2535,16 @@ export const AdminDashboardPage = () => {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                      className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border focus:outline-none ${
+                        isDark
+                          ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                          : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPass(!showNewPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-500 transition-colors cursor-pointer p-0.5"
                       title={showNewPass ? 'Hide password' : 'Show password'}
                     >
                       {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1398,7 +2553,13 @@ export const AdminDashboardPage = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Confirm New Password</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Confirm New Password
+                  </label>
                   <div className="relative">
                     <input
                       type={showConfirmPass ? 'text' : 'password'}
@@ -1406,12 +2567,16 @@ export const AdminDashboardPage = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-3.5 pr-10 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                      className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border focus:outline-none ${
+                        isDark
+                          ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                          : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPass(!showConfirmPass)}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer p-0.5"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-emerald-500 transition-colors cursor-pointer p-0.5"
                       title={showConfirmPass ? 'Hide password' : 'Show password'}
                     >
                       {showConfirmPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1422,163 +2587,134 @@ export const AdminDashboardPage = () => {
                 <button
                   type="submit"
                   disabled={passSubmitting}
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <span>{passSubmitting ? 'Updating Master Password...' : 'Save New Password'}</span>
+                  <span>
+                    {passSubmitting ? 'Updating Master Password...' : 'Save New Password'}
+                  </span>
                 </button>
               </form>
             </div>
           </div>
         )}
-
-        {/* TAB 8: CUSTOMERS MANAGEMENT */}
-        {activeTab === 'customers' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h2 className="font-serif text-2xl font-bold text-white">Registered Customers Directory</h2>
-                <p className="text-xs text-gray-400">Total Patrons: {customers.length} verified & registered accounts</p>
-              </div>
-
-              <div className="w-full sm:w-72 relative">
-                <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
-                <input
-                  type="text"
-                  value={customerSearch}
-                  onChange={(e) => setCustomerSearch(e.target.value)}
-                  placeholder="Search by name, email or phone..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-navy-900 text-white placeholder-gray-500 text-xs rounded-xl border border-navy-800 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-            </div>
-
-            <div className="bg-navy-900 border border-emerald-500/20 rounded-3xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-gray-300">
-                  <thead className="bg-navy-850 text-gray-400 font-mono uppercase text-[10px] tracking-wider border-b border-navy-800">
-                    <tr>
-                      <th className="px-6 py-4">Customer Name</th>
-                      <th className="px-6 py-4">Contact Details</th>
-                      <th className="px-6 py-4">Verification</th>
-                      <th className="px-6 py-4">Role</th>
-                      <th className="px-6 py-4">Joined Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-navy-800">
-                    {customers
-                      .filter((c) => {
-                        const q = customerSearch.toLowerCase();
-                        return (
-                          c.name?.toLowerCase().includes(q) ||
-                          c.email?.toLowerCase().includes(q) ||
-                          c.phone?.includes(q)
-                        );
-                      })
-                      .map((cust) => (
-                        <tr key={cust.id} className="hover:bg-navy-850/50 transition-colors">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-navy-800 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
-                                {cust.name ? cust.name.charAt(0).toUpperCase() : 'U'}
-                              </div>
-                              <div>
-                                <p className="font-bold text-white text-xs">{cust.name || 'Anonymous Patron'}</p>
-                                <p className="text-[10px] text-gray-400 font-mono">ID: {cust.id}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <p className="text-gray-200 font-mono text-xs">{cust.email}</p>
-                            <p className="text-[11px] text-gray-400">{cust.phone || 'No phone registered'}</p>
-                          </td>
-                          <td className="px-6 py-4">
-                            {cust.isVerified ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                                <CheckCircle2 className="w-3 h-3" />
-                                <span>Verified</span>
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400">
-                                <span>Pending OTP</span>
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="text-[11px] uppercase font-mono text-gray-400 bg-navy-800 px-2 py-0.5 rounded">
-                              {cust.role || 'customer'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-gray-400 text-[11px] font-mono">
-                            {cust.createdAt ? new Date(cust.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'}
-                          </td>
-                        </tr>
-                      ))}
-                    {customers.length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-gray-400 text-xs">
-                          No registered customers found yet. New customer signups will populate here automatically.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
 
       {/* PRODUCT ADD / EDIT MODAL */}
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none animate-fadeIn">
-          <div onClick={() => setIsProductModalOpen(false)} className="fixed inset-0 bg-navy-950/80 backdrop-blur-md" />
-          <div className="relative w-full max-w-2xl bg-navy-900 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto space-y-5">
-            <div className="flex items-center justify-between border-b border-navy-800 pb-3">
-              <h3 className="font-serif text-lg font-bold text-white">
-                {editingProduct ? 'Edit Catalog Product' : 'Add New Luxury Product'}
+          <div
+            onClick={() => setIsProductModalOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+          <div
+            className={`relative w-full max-w-2xl border rounded-3xl p-6 sm:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto space-y-5 ${
+              isDark
+                ? 'bg-[#0c2e20] border-emerald-500/30 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between border-b pb-3 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
+              <h3
+                className={`font-serif text-lg font-bold ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`}
+              >
+                {editingProduct ? 'Edit Catalog Product' : 'Add New Gourmet Product'}
               </h3>
-              <button onClick={() => setIsProductModalOpen(false)} className="p-1.5 text-gray-400 hover:text-white rounded-lg cursor-pointer">
+              <button
+                onClick={() => setIsProductModalOpen(false)}
+                className={`p-1.5 rounded-lg cursor-pointer ${
+                  isDark
+                    ? 'text-gray-400 hover:text-white'
+                    : 'text-slate-400 hover:text-slate-900'
+                }`}
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Product Title</label>
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
+                  Product Title
+                </label>
                 <input
                   type="text"
                   required
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                  placeholder="e.g. Royal Chronograph Gold Wristwatch"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                  placeholder="e.g. Awadhi Galouti Kebab (Box of 8)"
+                  className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                    isDark
+                      ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                  }`}
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Brand Name</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Brand Name
+                  </label>
                   <input
                     type="text"
                     required
                     value={productForm.brand}
                     onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
                     placeholder="e.g. A_S FOODY"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Department / Category</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Department / Category
+                  </label>
                   <select
                     value={productForm.category}
                     onChange={(e) => {
                       const cat = e.target.value;
-                      const catNames = { men: 'Men Fashion', women: 'Women Fashion', electronics: 'Electronics', 'home-living': 'Home & Living', beauty: 'Beauty & Fragrance', accessories: 'Accessories', footwear: 'Footwear' };
-                      setProductForm({ ...productForm, category: cat, categoryName: catNames[cat] || cat });
+                      const catNames = {
+                        men: 'Men Fashion',
+                        women: 'Women Fashion',
+                        electronics: 'Electronics',
+                        'home-living': 'Home & Living',
+                        beauty: 'Beauty & Fragrance',
+                        accessories: 'Accessories',
+                        footwear: 'Footwear',
+                      };
+                      setProductForm({
+                        ...productForm,
+                        category: cat,
+                        categoryName: catNames[cat] || cat,
+                      });
                     }}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none cursor-pointer ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332]'
+                    }`}
                   >
                     <option value="men">Men Fashion</option>
                     <option value="women">Women Fashion</option>
@@ -1593,70 +2729,136 @@ export const AdminDashboardPage = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Selling Price (₹)</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Selling Price (₹)
+                  </label>
                   <input
                     type="number"
                     required
                     value={productForm.price}
                     onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                     placeholder="2499"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-emerald-400 rounded-xl border border-navy-700 focus:border-emerald-500 font-mono font-bold"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none font-mono font-bold ${
+                      isDark
+                        ? 'bg-[#092217] text-emerald-400 border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-[#1b4332] border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Original Price (₹)</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Original Price (₹)
+                  </label>
                   <input
                     type="number"
                     value={productForm.originalPrice}
-                    onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, originalPrice: e.target.value })
+                    }
                     placeholder="4999"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-gray-400 rounded-xl border border-navy-700 focus:border-emerald-500 font-mono"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none font-mono ${
+                      isDark
+                        ? 'bg-[#092217] text-gray-400 border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-500 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Discount (%)</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Discount (%)
+                  </label>
                   <input
                     type="number"
                     value={productForm.discount}
                     onChange={(e) => setProductForm({ ...productForm, discount: e.target.value })}
                     placeholder="50"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Inventory Quantity</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Inventory Quantity
+                  </label>
                   <input
                     type="number"
                     value={productForm.stockCount}
                     onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-300 mb-1">Badge Tag</label>
+                  <label
+                    className={`block font-semibold mb-1 ${
+                      isDark ? 'text-gray-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Badge Tag
+                  </label>
                   <input
                     type="text"
                     value={productForm.badge}
                     onChange={(e) => setProductForm({ ...productForm, badge: e.target.value })}
                     placeholder="e.g. BESTSELLER / 50% OFF"
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
                   Product Image (Cloudinary CDN Upload or URL)
                 </label>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-navy-750 text-emerald-400 border border-emerald-500/30 text-xs font-semibold cursor-pointer transition-colors shrink-0">
-                      <UploadCloud className={`w-4 h-4 ${uploadingImage ? 'animate-bounce' : ''}`} />
-                      <span>{uploadingImage ? 'Uploading to Cloudinary...' : 'Upload File to Cloudinary'}</span>
+                    <label
+                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-semibold cursor-pointer transition-colors shrink-0 ${
+                        isDark
+                          ? 'bg-[#092217] hover:bg-[#153e2d] text-emerald-400 border-emerald-500/30'
+                          : 'bg-slate-100 hover:bg-slate-200 text-[#1b4332] border-slate-300'
+                      }`}
+                    >
+                      <UploadCloud
+                        className={`w-4 h-4 ${uploadingImage ? 'animate-bounce' : ''}`}
+                      />
+                      <span>
+                        {uploadingImage ? 'Uploading to Cloudinary...' : 'Upload File to Cloudinary'}
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
@@ -1665,8 +2867,10 @@ export const AdminDashboardPage = () => {
                         className="hidden"
                       />
                     </label>
-                    
-                    <span className="text-[11px] text-gray-400">or paste URL:</span>
+
+                    <span className={isDark ? 'text-gray-400 text-[11px]' : 'text-slate-500 text-[11px]'}>
+                      or paste URL:
+                    </span>
                   </div>
 
                   <input
@@ -1674,19 +2878,35 @@ export const AdminDashboardPage = () => {
                     value={productForm.image}
                     onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                     placeholder="https://res.cloudinary.com/... or https://images.unsplash.com/..."
-                    className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500 text-xs"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none text-xs ${
+                      isDark
+                        ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                        : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                    }`}
                   />
 
                   {productForm.image && (
-                    <div className="flex items-center gap-3 p-2 rounded-xl bg-navy-950/60 border border-navy-800">
+                    <div
+                      className={`flex items-center gap-3 p-2 rounded-xl border ${
+                        isDark
+                          ? 'bg-[#082016]/80 border-[#164430]'
+                          : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
                       <img
                         src={productForm.image}
                         alt="Preview"
                         className="w-12 h-12 rounded-lg object-cover border border-emerald-500/30"
                       />
-                      <div className="text-[11px] text-gray-300 truncate">
-                        <span className="text-emerald-400 font-semibold block">✓ Image Ready</span>
-                        <span className="text-gray-400 truncate block max-w-xs">{productForm.image}</span>
+                      <div className="text-[11px] truncate">
+                        <span className="text-emerald-500 font-semibold block">✓ Image Ready</span>
+                        <span
+                          className={`truncate block max-w-xs ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}
+                        >
+                          {productForm.image}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -1694,19 +2914,29 @@ export const AdminDashboardPage = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Bespoke Product Description</label>
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
+                  Bespoke Product Description
+                </label>
                 <textarea
                   rows={3}
                   value={productForm.description}
                   onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                  placeholder="Write description with luxury materials, craftsmanship..."
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                  placeholder="Write description with gourmet taste, ingredients, craftsmanship..."
+                  className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                    isDark
+                      ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                  }`}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer"
+                className="w-full py-3.5 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold rounded-xl shadow-md transition-all cursor-pointer"
               >
                 <span>{editingProduct ? 'Save Product Changes' : 'Create & Add to Catalog'}</span>
               </button>
@@ -1718,27 +2948,72 @@ export const AdminDashboardPage = () => {
       {/* ORDER DELIVERY EDIT MODAL */}
       {editingOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none animate-fadeIn">
-          <div onClick={() => setEditingOrder(null)} className="fixed inset-0 bg-navy-950/80 backdrop-blur-md" />
-          <div className="relative w-full max-w-md bg-navy-900 border border-emerald-500/30 rounded-3xl p-6 shadow-2xl z-10 space-y-5">
-            <div className="flex items-center justify-between border-b border-navy-800 pb-3">
+          <div
+            onClick={() => setEditingOrder(null)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+          <div
+            className={`relative w-full max-w-md border rounded-3xl p-6 shadow-2xl z-10 space-y-5 ${
+              isDark
+                ? 'bg-[#0c2e20] border-emerald-500/30 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between border-b pb-3 ${
+                isDark ? 'border-[#143d2b]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="font-serif text-base font-bold text-white">
+                <h3
+                  className={`font-serif text-base font-bold ${
+                    isDark ? 'text-white' : 'text-slate-950'
+                  }`}
+                >
                   Update Logistics for Order #{editingOrder.id}
                 </h3>
-                <p className="text-xs text-gray-400">Recipient: {editingOrder.shippingAddress?.name || editingOrder.shippingAddress?.fullName || 'Customer'}</p>
+                <p
+                  className={`text-xs ${
+                    isDark ? 'text-gray-400' : 'text-slate-500'
+                  }`}
+                >
+                  Recipient:{' '}
+                  {editingOrder.shippingAddress?.name ||
+                    editingOrder.shippingAddress?.fullName ||
+                    'Customer'}
+                </p>
               </div>
-              <button onClick={() => setEditingOrder(null)} className="p-1 text-gray-400 hover:text-white cursor-pointer">
+              <button
+                onClick={() => setEditingOrder(null)}
+                className={`p-1 cursor-pointer ${
+                  isDark
+                    ? 'text-gray-400 hover:text-white'
+                    : 'text-slate-400 hover:text-slate-900'
+                }`}
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSaveOrderDelivery} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Delivery Stage Status</label>
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
+                  Delivery Stage Status
+                </label>
                 <select
                   value={orderDeliveryForm.status}
-                  onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, status: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-emerald-400 font-bold rounded-xl border border-navy-700 focus:border-emerald-500 cursor-pointer"
+                  onChange={(e) =>
+                    setOrderDeliveryForm({ ...orderDeliveryForm, status: e.target.value })
+                  }
+                  className={`w-full px-3.5 py-2.5 rounded-xl border font-bold focus:outline-none cursor-pointer ${
+                    isDark
+                      ? 'bg-[#092217] text-emerald-400 border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-[#1b4332] border-slate-300 focus:border-[#1b4332]'
+                  }`}
                 >
                   <option value="Order Placed">1. Order Placed</option>
                   <option value="Payment Confirmed">2. Payment Confirmed</option>
@@ -1751,32 +3026,56 @@ export const AdminDashboardPage = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Carrier Partner</label>
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
+                  Carrier Partner
+                </label>
                 <input
                   type="text"
                   required
                   value={orderDeliveryForm.carrier}
-                  onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, carrier: e.target.value })}
+                  onChange={(e) =>
+                    setOrderDeliveryForm({ ...orderDeliveryForm, carrier: e.target.value })
+                  }
                   placeholder="e.g. Bluedart Express / Delhivery"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white rounded-xl border border-navy-700 focus:border-emerald-500"
+                  className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
+                    isDark
+                      ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Carrier Tracking / AWB Number</label>
+                <label
+                  className={`block font-semibold mb-1 ${
+                    isDark ? 'text-gray-300' : 'text-slate-700'
+                  }`}
+                >
+                  Carrier Tracking / AWB Number
+                </label>
                 <input
                   type="text"
                   required
                   value={orderDeliveryForm.trackingNumber}
-                  onChange={(e) => setOrderDeliveryForm({ ...orderDeliveryForm, trackingNumber: e.target.value })}
+                  onChange={(e) =>
+                    setOrderDeliveryForm({ ...orderDeliveryForm, trackingNumber: e.target.value })
+                  }
                   placeholder="e.g. BD-889021482IN"
-                  className="w-full px-3.5 py-2.5 bg-navy-850 text-white font-mono rounded-xl border border-navy-700 focus:border-emerald-500"
+                  className={`w-full px-3.5 py-2.5 font-mono rounded-xl border focus:outline-none ${
+                    isDark
+                      ? 'bg-[#092217] text-white border-[#164430] focus:border-emerald-500'
+                      : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-[#1b4332] focus:bg-white'
+                  }`}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold rounded-xl shadow-md hover:brightness-105 transition-all cursor-pointer"
+                className="w-full py-3 bg-[#1b4332] text-white hover:bg-[#143427] dark:bg-emerald-500 dark:text-navy-950 dark:hover:bg-emerald-400 font-bold rounded-xl shadow-md transition-all cursor-pointer"
               >
                 <span>Save & Update Logistics Milestone</span>
               </button>
@@ -1784,7 +3083,6 @@ export const AdminDashboardPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
