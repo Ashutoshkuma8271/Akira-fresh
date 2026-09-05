@@ -406,10 +406,7 @@ router.post('/forgot-password', loginRateLimiter, async (req, res) => {
 
     return res.json({
       success: true,
-      message: 'Reset link and 6-digit OTP sent to your email.',
-      resetToken: token,
-      otp: otp,
-      expiresInMinutes: 15
+      message: 'If the provided email belongs to the administrator, reset instructions have been sent.'
     });
 
   } catch (err) {

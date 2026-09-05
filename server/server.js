@@ -386,7 +386,7 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
     // Generate cryptographic stateless JWT recovery token & 6-digit OTP
     const token = jwt.sign(
       { email: cleanEmail, role: 'customer', type: 'password_reset' },
-      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
+      JWT_SECRET,
       { expiresIn: '15m' }
     );
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
