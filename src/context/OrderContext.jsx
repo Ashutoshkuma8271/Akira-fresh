@@ -9,7 +9,7 @@ const OrderContext = createContext(null);
 export const OrderProvider = ({ children }) => {
   const { addToast } = useToast();
   const { clearCart } = useCart();
-  const { user, requireAuth } = useAuth();
+  const { user, requireAuth, logout } = useAuth();
 
   const userEmail = (user?.email || '').trim().toLowerCase();
   const storageKey = userEmail ? `as_commerce_orders_${userEmail}` : 'as_commerce_orders_guest';
@@ -147,6 +147,7 @@ export const OrderProvider = ({ children }) => {
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
+          logout();
           requireAuth(null, 'Please sign in again before placing your order.');
         } else {
           addToast('Order could not be placed. Please try again.', 'error');

@@ -118,7 +118,10 @@ export async function requireCustomer(req, res, next) {
     }
 
     const user = await db.getUserByIdAsync(decoded.id);
-    if (!user || user.role === 'admin') {
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Customer account no longer exists.' });
+    }
+    if (user.role === 'admin') {
       return res.status(403).json({ success: false, message: 'Customer account not found.' });
     }
 

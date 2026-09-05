@@ -212,6 +212,8 @@ export const AuthProvider = ({ children }) => {
       if (!response?.ok) {
         setUser(previousUser);
         if (response?.status === 401) {
+          setUser(null);
+          localStorage.removeItem('as_commerce_token');
           setAuthNotice('Please sign in again to update your profile.');
           setAuthMode('login');
           setIsAuthModalOpen(true);
