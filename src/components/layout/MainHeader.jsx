@@ -221,30 +221,37 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                       setIsAccountOpen(!isAccountOpen);
                     }
                   }}
-                  className="relative cursor-pointer flex items-center justify-center shrink-0 focus:outline-none"
+                  className="relative cursor-pointer flex items-center gap-2 shrink-0 focus:outline-none py-1 px-1 rounded-full hover:bg-gray-100/70 dark:hover:bg-forest-800/50 transition-colors"
                   aria-label="Account Profile"
                 >
                   {isAuthenticated ? (
-                    <div className="relative">
-                      {user?.avatar ? (
-                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 overflow-hidden shadow-xs bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center">
-                          <img
-                            src={user.avatar}
-                            alt={user.name || 'User'}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center shadow-xs transition-transform hover:scale-105">
-                          <span className="font-serif font-bold text-sm sm:text-base text-[#1b4332] dark:text-lime-300 select-none leading-none">
-                            {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'A'}
-                          </span>
-                        </div>
-                      )}
+                    <>
+                      <div className="relative shrink-0">
+                        {user?.avatar ? (
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 overflow-hidden shadow-xs bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center">
+                            <img
+                              src={user.avatar}
+                              alt={user.name || 'User'}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[1.5px] border-[#1b4332] dark:border-lime-400 bg-[#EAF5EE] dark:bg-forest-800 flex items-center justify-center shadow-xs transition-transform hover:scale-105">
+                            <span className="font-serif font-bold text-sm sm:text-base text-[#1b4332] dark:text-lime-300 select-none leading-none">
+                              {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'A'}
+                            </span>
+                          </div>
+                        )}
 
-                      {/* Live Active Online Dot Indicator overlapping the border */}
-                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-lime-400 ring-2 ring-white dark:ring-[#072418] shadow-xs" />
-                    </div>
+                        {/* Live Active Online Dot Indicator overlapping the border */}
+                        <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-lime-400 ring-2 ring-white dark:ring-[#072418] shadow-xs" />
+                      </div>
+
+                      {/* Clean First Name Display without trailing dots */}
+                      <span className="hidden md:inline-block font-semibold text-xs text-charcoal-900 dark:text-gray-200 max-w-[85px] truncate">
+                        {user?.name ? user.name.trim().split(' ')[0] : 'Account'}
+                      </span>
+                    </>
                   ) : (
                     <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-300 dark:border-forest-700/80 text-charcoal-800 dark:text-gray-200 hover:text-[#1b4332] dark:hover:text-lime-400 hover:bg-gray-100 dark:hover:bg-forest-800/80 transition-colors flex items-center justify-center">
                       <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.9]" />
@@ -253,103 +260,61 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 sm:w-72 bg-white dark:bg-forest-900 border border-gray-200 dark:border-forest-750 text-charcoal-900 dark:text-ivory-100 rounded-3xl shadow-2xl py-2 z-50 animate-scaleUp overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-60 sm:w-64 bg-white dark:bg-forest-900 border border-gray-200/90 dark:border-forest-750 text-charcoal-900 dark:text-ivory-100 rounded-2xl shadow-2xl z-50 animate-scaleUp overflow-hidden">
                     {isAuthenticated ? (
                       <>
                         {/* User Header Profile Card */}
-                        <div className="px-4 py-3.5 border-b border-gray-100 dark:border-forest-800 bg-gray-50/60 dark:bg-forest-950/60 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-forest-900 dark:bg-forest-800 border-2 border-[#84CC16] overflow-hidden shadow-xs flex items-center justify-center text-white font-serif font-bold text-sm shrink-0">
-                            {user.avatar ? (
-                              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <span>{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
-                            )}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-xs font-bold text-charcoal-950 dark:text-white truncate">{user.name}</p>
-                            <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
-                            <span className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold text-leaf-700 dark:text-lime-300 bg-leaf-500/15 dark:bg-leaf-500/20 px-2 py-0.5 rounded-full border border-leaf-500/30">
-                              <Sparkles className="w-2.5 h-2.5 text-leaf-600 dark:text-lime-400" />
-                              {user.membershipTier || 'Fresh VIP Patron'}
+                        <div className="px-5 py-4 border-b border-gray-100 dark:border-forest-800 bg-white dark:bg-forest-900">
+                          <p className="text-xs text-slate-500 dark:text-gray-400 font-normal">Signed in as</p>
+                          <p className="text-base font-bold text-slate-900 dark:text-white mt-0.5 truncate">
+                            {user?.name || 'Customer'}
+                          </p>
+                          <div className="mt-2.5">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF7F0] dark:bg-forest-800/90 border border-[#BCE8CB] dark:border-forest-700 text-[#1E5A38] dark:text-lime-300 text-xs font-semibold">
+                              <Sparkles className="w-3.5 h-3.5 text-[#1E5A38] dark:text-lime-400" />
+                              <span>{user?.membershipTier || 'Fresh VIP Member'}</span>
                             </span>
                           </div>
                         </div>
 
                         {/* Navigation Links */}
-                        <div className="py-1.5 text-xs font-semibold">
+                        <div className="py-2">
                           <Link
                             to="/account"
                             onClick={() => setIsAccountOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <User className="w-4 h-4 text-gray-400 dark:text-gray-400" />
-                              <span>My Dashboard</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400">&rarr;</span>
+                            My Dashboard
                           </Link>
 
                           <Link
                             to="/account/orders"
                             onClick={() => setIsAccountOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <ShoppingBag className="w-4 h-4 text-gray-400 dark:text-gray-400" />
-                              <span>My Orders</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400">&rarr;</span>
+                            My Orders
                           </Link>
 
                           <Link
                             to="/track-order"
                             onClick={() => setIsAccountOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
+                            className="block px-5 py-2.5 text-sm font-medium text-slate-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 transition-colors"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <Truck className="w-4 h-4 text-gray-400 dark:text-gray-400" />
-                              <span>Track Live Order</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400">&rarr;</span>
-                          </Link>
-
-                          <Link
-                            to="/account/addresses"
-                            onClick={() => setIsAccountOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <MapPin className="w-4 h-4 text-gray-400 dark:text-gray-400" />
-                              <span>Saved Addresses</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400">&rarr;</span>
-                          </Link>
-
-                          <Link
-                            to="/account/security"
-                            onClick={() => setIsAccountOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-charcoal-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-forest-800 hover:text-[#1b4332] dark:hover:text-lime-400 transition-colors"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <ShieldCheck className="w-4 h-4 text-gray-400 dark:text-gray-400" />
-                              <span>Security & Password</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400">&rarr;</span>
+                            Track Live Order
                           </Link>
                         </div>
 
                         {/* Sign Out Action */}
-                        <div className="border-t border-gray-100 dark:border-forest-800 p-2">
+                        <div className="border-t border-gray-100 dark:border-forest-800 py-2">
                           <button
                             onClick={() => {
                               logout();
                               setIsAccountOpen(false);
                               navigate('/');
                             }}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-forest-800/80 rounded-xl cursor-pointer transition-colors"
+                            className="w-full text-left px-5 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
                           >
-                            <LogOut className="w-4 h-4" />
-                            <span>Sign Out of Store</span>
+                            Log Out
                           </button>
                         </div>
                       </>
