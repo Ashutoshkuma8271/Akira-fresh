@@ -49,21 +49,28 @@ const authLimiter = rateLimit({
   }
 });
 
-// Account-level limiting on auth flows to prevent targeted credential stuffing
-const accountAuthLimiter = rateLimit({
+// Account-level limiting on auth flows with fixed endpoint scopes to prevent cross-endpoint quota exhaustion
+const createAccountLimiter = (scope, max = 20, message = 'Too many attempts for this account. Please try again after 15 minutes.') => rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20, // Max 20 attempts per account email per 15 minutes
+  max,
   standardHeaders: true,
   legacyHeaders: false,
   validate: false,
   keyGenerator: (req) => {
-    return req.body?.email ? `acc_${String(req.body.email).toLowerCase().trim()}` : req.ip;
+    const email = req.body?.email ? String(req.body.email).toLowerCase().trim() : req.ip;
+    return `acc_${scope}_${email}`;
   },
   message: {
     success: false,
-    message: 'Too many authentication attempts for this account. Please try again after 15 minutes.'
+    message
   }
 });
+
+const accountLoginLimiter = createAccountLimiter('login', 25, 'Too many login attempts for this account. Please try again after 15 minutes.');
+const accountRegisterLimiter = createAccountLimiter('register', 15, 'Too many registration attempts for this account. Please try again after 15 minutes.');
+const accountForgotLimiter = createAccountLimiter('forgot', 10, 'Too many password reset attempts for this email. Please try again after 15 minutes.');
+const accountResendOtpLimiter = createAccountLimiter('resend_otp', 10, 'Too many OTP requests for this email. Please try again after 15 minutes.');
+const accountAdminAuthLimiter = createAccountLimiter('admin_auth', 20, 'Too many admin authentication attempts. Please try again after 15 minutes.');
 
 // Endpoint-specific limiting for Razorpay order creation and payment flows
 const paymentLimiter = rateLimit({
@@ -174,13 +181,13 @@ app.get('/api/settings', (req, res) => {
 app.use('/api/payment', paymentLimiter, paymentRouter);
 
 // Admin Auth Routes (with IP & Account Brute-Force Rate Limiting)
-app.use('/api/admin/auth', authLimiter, accountAuthLimiter, adminAuthRouter);
+app.use('/api/admin/auth', authLimiter, accountAdminAuthLimiter, adminAuthRouter);
 
 // Protected Admin Dashboard Routes
 app.use('/api/admin', adminDashboardRouter);
 
 // Customer User Registration with 6-Digit Email OTP
-app.post('/api/auth/register', authLimiter, accountAuthLimiter, async (req, res) => {
+app.post('/api/auth/register', authLimiter, accountRegisterLimiter, async (req, res) => {
   try {
     const { name, email, password, phone, role } = req.body || {};
     if (role === 'admin') {
@@ -306,7 +313,7 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
 });
 
 // Customer User Resend Signup OTP
-app.post('/api/auth/resend-signup-otp', authLimiter, accountAuthLimiter, async (req, res) => {
+app.post('/api/auth/resend-signup-otp', authLimiter, accountResendOtpLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {
@@ -344,7 +351,7 @@ app.post('/api/auth/resend-signup-otp', authLimiter, accountAuthLimiter, async (
 });
 
 // Customer User Login
-app.post('/api/auth/login', authLimiter, accountAuthLimiter, async (req, res) => {
+app.post('/api/auth/login', authLimiter, accountLoginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -419,7 +426,7 @@ app.post('/api/auth/login', authLimiter, accountAuthLimiter, async (req, res) =>
 });
 
 // Customer Forgot Password (Dispatch Luxury Email Reset Link + 6-Digit OTP)
-app.post('/api/auth/forgot-password', authLimiter, accountAuthLimiter, async (req, res) => {
+app.post('/api/auth/forgot-password', authLimiter, accountForgotLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {

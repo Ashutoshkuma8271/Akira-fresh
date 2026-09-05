@@ -23,7 +23,7 @@ async function cleanAllDemoData() {
         id: `audit-${Date.now()}`,
         action: 'System Initialized',
         adminId: db.admins[0]?.id || 'adm-master',
-        adminEmail: db.admins[0]?.email || 'ashutoshkumaryadav933499@gmail.com',
+        adminEmail: db.admins[0]?.email || 'admin.synthetic@example.test',
         ip: '127.0.0.1',
         details: 'Store database cleaned and initialized for live production',
         timestamp: new Date().toISOString(),
