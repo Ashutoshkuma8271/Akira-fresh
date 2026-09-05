@@ -1568,7 +1568,7 @@ export const db = {
         subtotal: Number(newOrder.subtotal) || Number(newOrder.total) || 0,
         total_amount: Number(newOrder.total) || 0,
         payment_method: newOrder.paymentMethod || 'Razorpay / Online',
-        payment_status: newOrder.paymentStatus || 'Paid',
+        payment_status: newOrder.paymentStatus || 'Pending',
         status: newOrder.status || 'Order Placed',
         carrier: newOrder.carrier || 'Bluedart Express Luxury Courier',
         tracking_number: newOrder.trackingNumber || `BD-${(newOrder.id || '').replace(/\D/g, '').slice(-8) || '8839219'}IN`,

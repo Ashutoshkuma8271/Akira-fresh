@@ -8,25 +8,26 @@ dotenv.config();
 
 const router = express.Router();
 
-const key_id = process.env.RAZORPAY_KEY_ID || 'rzp_test_wkow4HMM1HSMUN';
-const key_secret = process.env.RAZORPAY_KEY_SECRET || 'B4LKgmVsriY0RDVU25QhwHlR';
+const key_id = process.env.RAZORPAY_KEY_ID;
+const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
-const razorpay = new Razorpay({
-  key_id,
-  key_secret,
-});
+const razorpay = key_id && key_secret ? new Razorpay({ key_id, key_secret }) : null;
 
 // 1. POST /api/payment/create-order — Initialize Razorpay Order
 router.post('/create-order', async (req, res) => {
   try {
+    if (!razorpay) {
+      return res.status(503).json({ success: false, message: 'Payment gateway is not configured.' });
+    }
     const { amount, currency = 'INR', receipt, notes } = req.body;
+    const numericAmount = Number(amount);
 
-    if (!amount || amount <= 0) {
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0 || numericAmount > 10000000 || currency !== 'INR') {
       return res.status(400).json({ success: false, message: 'Invalid order amount' });
     }
 
     const options = {
-      amount: Math.round(Number(amount) * 100), // Amount in paise
+      amount: Math.round(numericAmount * 100), // Amount in paise
       currency,
       receipt: receipt || `rcpt_${Date.now()}`,
       notes: notes || { brand: 'A_S Commerce' },
@@ -50,6 +51,9 @@ router.post('/create-order', async (req, res) => {
 // 2. POST /api/payment/verify-payment — Verify HMAC Signature
 router.post('/verify-payment', (req, res) => {
   try {
+    if (!key_secret) {
+      return res.status(503).json({ success: false, message: 'Payment gateway is not configured.' });
+    }
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {

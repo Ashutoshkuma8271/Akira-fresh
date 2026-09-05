@@ -22,12 +22,19 @@ export const processRazorpayPayment = async ({
   onSuccess,
   onFailure,
 }) => {
-  const rzpKey = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_wkow4HMM1HSMUN';
-  await loadRazorpayScript();
+  const rzpKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+  const testModeEnabled = import.meta.env.VITE_ENABLE_TEST_PAYMENTS === 'true';
 
+  if (!rzpKey) {
+    const error = new Error('Razorpay is not configured.');
+    if (testModeEnabled) return { isSimulated: true };
+    onFailure?.({ reason: error.message });
+    return { isRealGateway: false, error };
+  }
 
-  // Check if real Razorpay key is configured and script is available
-  if (rzpKey && typeof window !== 'undefined' && window.Razorpay) {
+  const scriptLoaded = await loadRazorpayScript();
+
+  if (scriptLoaded && typeof window !== 'undefined' && window.Razorpay) {
     const options = {
       key: rzpKey,
       amount: Math.round(amount * 100), // amount in paisa
@@ -38,7 +45,7 @@ export const processRazorpayPayment = async ({
       handler: async function (response) {
         // Verify payment signature on backend if endpoint is reachable
         try {
-          await fetch('/api/payment/verify-payment', {
+          const verificationResponse = await fetch('/api/payment/verify-payment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -47,11 +54,14 @@ export const processRazorpayPayment = async ({
               razorpay_signature: response.razorpay_signature,
             }),
           });
+          if (!verificationResponse.ok) {
+            throw new Error('Payment verification failed.');
+          }
         } catch (e) {
           console.warn('Backend payment verification note:', e);
         }
 
-        onSuccess({
+        onSuccess?.({
           paymentId: response.razorpay_payment_id,
           orderId: response.razorpay_order_id || orderId,
           signature: response.razorpay_signature,
@@ -89,10 +99,14 @@ export const processRazorpayPayment = async ({
       rzp.open();
       return { isRealGateway: true };
     } catch (err) {
-      console.warn('Direct Razorpay checkout error, falling back to simulated payment flow', err);
+      console.warn('Razorpay checkout error:', err);
+      onFailure?.({ reason: err.message || 'Payment could not be started.' });
+      return { isRealGateway: false, error: err };
     }
   }
 
-  // Seamless Mock/Test Payment Flow when no live API key is set
-  return { isSimulated: true };
+  const error = new Error('Razorpay checkout is unavailable.');
+  if (testModeEnabled) return { isSimulated: true };
+  onFailure?.({ reason: error.message });
+  return { isRealGateway: false, error };
 };

@@ -277,7 +277,7 @@ export const CheckoutPage = () => {
         ? 'Cash on Delivery (Pay upon Receipt at Doorstep)'
         : 'No-Cost EMI (Pay in 3/6 Installments)';
 
-    const paymentStatus = paymentMethod === 'cod' ? 'Pending (Cash on Delivery)' : 'Paid (Verified by Razorpay)';
+    const paymentStatus = 'Pending';
 
     const orderPayload = {
       items: cartItems,
@@ -299,7 +299,7 @@ export const CheckoutPage = () => {
         completeOrderProcess(orderPayload);
       }, 1000);
     } else {
-      const res = processRazorpayPayment({
+      const res = await processRazorpayPayment({
         orderId: `AS-${Date.now().toString().slice(-6)}`,
         amount: finalTotal,
         userName: formData.fullName,
@@ -314,16 +314,16 @@ export const CheckoutPage = () => {
         }
       });
 
-      if (res?.isSimulated) {
-        setTimeout(() => {
-          completeOrderProcess(orderPayload);
-        }, 1200);
-      }
+      if (!res?.isRealGateway) setIsProcessing(false);
     }
   };
 
-  const completeOrderProcess = (orderPayload) => {
-    createOrder(orderPayload);
+  const completeOrderProcess = async (orderPayload) => {
+    const order = await createOrder(orderPayload);
+    if (!order) {
+      setIsProcessing(false);
+      return;
+    }
     setIsProcessing(false);
 
     try {

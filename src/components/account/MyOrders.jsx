@@ -99,7 +99,9 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
       // 2. Fallback to /api/orders endpoint if Supabase client returned 0 or errored
       if (fetchedOrders.length === 0) {
         try {
-          const res = await fetch(`/api/orders?email=${encodeURIComponent(userEmail)}`);
+          const res = await fetch('/api/orders', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}` }
+          });
           if (res.ok) {
             const data = await res.json();
             if (data.success && Array.isArray(data.orders)) {

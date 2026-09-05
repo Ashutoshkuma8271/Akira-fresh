@@ -17,6 +17,7 @@ import { testSupabaseConnection } from './services/supabase.js';
 import { uploadToCloudinary } from './services/cloudinary.js';
 import crypto from 'crypto';
 import { sendSignupOtpEmail, sendPasswordResetEmail } from './utils/emailService.js';
+import { JWT_SECRET, requireCustomer } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -29,6 +30,11 @@ const PORT = process.env.PORT || 3000;
 
 // Enable trust proxy for reverse proxies
 app.set('trust proxy', true);
+
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
 // Security: Rate Limiters against Brute-Force & DoS attacks
 const authLimiter = rateLimit({
@@ -75,12 +81,20 @@ app.use(compression());
 
 // Security Middlewares
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
   crossOriginEmbedderPolicy: false,
 }));
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin is not allowed by CORS'));
+  },
+  credentials: false,
+}));
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '1mb' }));
 app.use('/api', apiLimiter);
 
 // Health check
@@ -209,7 +223,7 @@ app.post('/api/auth/verify-signup-otp', authLimiter, async (req, res) => {
     const user = result.user;
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'customer' },
-      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -323,7 +337,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'customer' },
-      process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026',
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -393,10 +407,7 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
 
     return res.json({
       success: true,
-      message: 'Password reset instructions and 6-digit OTP sent to your email.',
-      resetToken: token,
-      otp: otp,
-      expiresInMinutes: 15
+      message: 'If an account exists for this email, password reset instructions have been sent.'
     });
   } catch (err) {
     console.error('Forgot password error:', err);
@@ -418,7 +429,7 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-
 
     if (token) {
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026');
+        const decoded = jwt.verify(token, JWT_SECRET);
         if (decoded && decoded.email) {
           cleanEmail = decoded.email.trim().toLowerCase();
           validatedBy = 'Magic Link Token (Signed JWT)';
@@ -504,7 +515,7 @@ app.post(['/api/auth/reset-password-with-token', '/api/auth/reset-password-with-
 });
 
 // Customer Profile Picture Upload to Cloudinary & Supabase
-app.post('/api/users/upload-avatar', upload.single('avatar'), async (req, res) => {
+app.post('/api/users/upload-avatar', requireCustomer, upload.single('avatar'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file uploaded' });
@@ -522,9 +533,9 @@ app.post('/api/users/upload-avatar', upload.single('avatar'), async (req, res) =
 });
 
 // Customer User Profile, Addresses & Wishlist Database Synchronization
-app.put(['/api/users/me', '/api/users/profile'], async (req, res) => {
+app.put(['/api/users/me', '/api/users/profile'], requireCustomer, async (req, res) => {
   try {
-    const { id, email, name, phone, addresses, wishlist, avatar, role } = req.body || {};
+    const { name, phone, addresses, wishlist, avatar, role } = req.body || {};
     if (role === 'admin') {
       return res.status(403).json({
         success: false,
@@ -532,15 +543,7 @@ app.put(['/api/users/me', '/api/users/profile'], async (req, res) => {
       });
     }
 
-    let user = null;
-    if (id) user = db.getUserById(id);
-    if (!user && email) {
-      user = await db.getUserByEmailAsync(email.trim().toLowerCase());
-    }
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found in database' });
-    }
+    const user = req.user;
 
     const updates = {};
     if (name !== undefined) updates.name = name;
@@ -550,7 +553,19 @@ app.put(['/api/users/me', '/api/users/profile'], async (req, res) => {
     if (avatar !== undefined) updates.avatar = avatar;
 
     const updated = db.updateUser(user.id, updates);
-    return res.json({ success: true, message: 'Profile updated successfully', user: updated });
+    return res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: {
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        phone: updated.phone || '',
+        addresses: updated.addresses || [],
+        wishlist: updated.wishlist || [],
+        avatar: updated.avatar || ''
+      }
+    });
   } catch (err) {
     console.error('Update profile error:', err);
     return res.status(500).json({ success: false, message: 'Failed to update profile' });
@@ -558,23 +573,11 @@ app.put(['/api/users/me', '/api/users/profile'], async (req, res) => {
 });
 
 // Customer & Scoped Orders API
-app.get('/api/orders', async (req, res) => {
+app.get('/api/orders', requireCustomer, async (req, res) => {
   try {
-    const { email, userId } = req.query || {};
     let orders = await db.getOrdersAsync();
-
-    if (email) {
-      const cleanEmail = email.trim().toLowerCase();
-      orders = orders.filter(o => {
-        const orderEmail = (o.customerEmail || o.email || o.shippingAddress?.email || '').trim().toLowerCase();
-        return orderEmail === cleanEmail;
-      });
-    } else if (userId) {
-      orders = orders.filter(o => o.userId === userId);
-    } else {
-      // If no customer filter, return empty array for public security (admin uses /api/admin/orders)
-      orders = [];
-    }
+    const cleanEmail = req.user.email.trim().toLowerCase();
+    orders = orders.filter(o => (o.customerEmail || o.email || o.shippingAddress?.email || '').trim().toLowerCase() === cleanEmail);
 
     return res.json({ success: true, orders });
   } catch (err) {
@@ -583,9 +586,17 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', requireCustomer, async (req, res) => {
   try {
-    const orderData = req.body || {};
+    const orderData = {
+      ...(req.body || {}),
+      userId: req.user.id,
+      customerId: req.user.id,
+      customerEmail: req.user.email,
+      customerName: req.user.name,
+      customerPhone: req.user.phone || '',
+      paymentStatus: 'Pending'
+    };
     const newOrder = await db.createOrder(orderData);
     console.log(`⚡ Order Placed: #${newOrder.id} (Total: ₹${newOrder.total}) and saved to database & Supabase`);
     return res.json({
@@ -606,7 +617,18 @@ app.get('/api/orders/:id', (req, res) => {
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
-    return res.json({ success: true, order });
+    return res.json({
+      success: true,
+      order: {
+        id: order.id,
+        status: order.status,
+        carrier: order.carrier,
+        trackingNumber: order.trackingNumber,
+        date: order.date,
+        estimatedDelivery: order.estimatedDelivery,
+        timeline: order.timeline
+      }
+    });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Failed to find order' });
   }

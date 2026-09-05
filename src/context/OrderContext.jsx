@@ -9,7 +9,7 @@ const OrderContext = createContext(null);
 export const OrderProvider = ({ children }) => {
   const { addToast } = useToast();
   const { clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, requireAuth } = useAuth();
 
   const userEmail = (user?.email || '').trim().toLowerCase();
   const storageKey = userEmail ? `as_commerce_orders_${userEmail}` : 'as_commerce_orders_guest';
@@ -39,7 +39,9 @@ export const OrderProvider = ({ children }) => {
 
     const fetchBackendOrders = async () => {
       try {
-        const res = await fetch(`/api/orders?email=${encodeURIComponent(userEmail)}`);
+          const res = await fetch('/api/orders', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}` }
+          });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {
@@ -85,7 +87,7 @@ export const OrderProvider = ({ children }) => {
     }
   }, [orders, storageKey]);
 
-  const createOrder = ({
+  const createOrder = async ({
     items,
     subtotal,
     discount,
@@ -93,7 +95,7 @@ export const OrderProvider = ({ children }) => {
     total,
     shippingAddress,
     paymentMethod = 'Razorpay / Online',
-    paymentStatus = 'Paid',
+    paymentStatus: _paymentStatus = 'Pending',
     deliveryMode = 'Standard Delivery',
   }) => {
     const orderId = `AS-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -119,12 +121,12 @@ export const OrderProvider = ({ children }) => {
       shipping,
       total,
       paymentMethod,
-      paymentStatus,
+      paymentStatus: 'Pending',
       deliveryMode,
       shippingAddress,
       timeline: [
         { step: 'Order Placed', time: 'Just now', done: true, desc: 'Order confirmed in A_S FOODY system' },
-        { step: 'Payment Confirmed', time: 'Just now', done: true, desc: `Payment of ₹${total.toLocaleString('en-IN')} confirmed` },
+        { step: 'Payment Pending', time: 'Just now', done: false, desc: `Payment of ₹${total.toLocaleString('en-IN')} is pending confirmation` },
         { step: 'Processing', time: 'Scheduled today', done: false, desc: 'Insulated sub-zero packaging & quality check' },
         { step: 'Shipped', time: 'Pending dispatch', done: false, desc: 'Handed over to carrier' },
         { step: 'Out for Delivery', time: 'Pending', done: false, desc: 'On final delivery vehicle' },
@@ -132,21 +134,37 @@ export const OrderProvider = ({ children }) => {
       ]
     };
 
-    setOrders((prev) => [newOrder, ...prev]);
-    setLatestOrder(newOrder);
-    clearCart();
-
     // Persist order to Backend server & Supabase database
     try {
-      fetch('/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}`
+        },
         body: JSON.stringify(newOrder)
-      }).catch((err) => console.warn('Order database sync note:', err));
-    } catch (e) {}
+      });
 
-    addToast(`Order #${orderId.slice(-6)} placed!`, 'success');
-    return newOrder;
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          requireAuth(null, 'Please sign in again before placing your order.');
+        } else {
+          addToast('Order could not be placed. Please try again.', 'error');
+        }
+        return null;
+      }
+
+      const data = await response.json();
+      const savedOrder = data.order || newOrder;
+      setOrders((prev) => [savedOrder, ...prev]);
+      setLatestOrder(savedOrder);
+      clearCart();
+      addToast(`Order #${savedOrder.id.slice(-6)} placed!`, 'success');
+      return savedOrder;
+    } catch (error) {
+      addToast('Order could not be placed. Please try again.', 'error');
+      return null;
+    }
   };
 
   const getOrderById = (id) => {

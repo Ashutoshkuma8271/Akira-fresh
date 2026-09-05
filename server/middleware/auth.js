@@ -1,8 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { db } from '../db.js';
 import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'as_foody_production_secure_jwt_token_2026';
+dotenv.config();
+
+export const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  throw new Error('JWT_SECRET must be configured with at least 32 characters.');
+}
 
 // Audit Logger Helper
 export function logAudit({ action, adminId = null, adminEmail = null, ip = null, resource = null, details = null }) {
@@ -95,6 +102,30 @@ export async function requireAdmin(req, res, next) {
       success: false,
       message: 'Invalid authorization token.'
     });
+  }
+}
+
+export async function requireCustomer(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ success: false, message: 'Authentication required.' });
+    }
+
+    const decoded = jwt.verify(authHeader.slice(7), JWT_SECRET);
+    if (decoded.role !== 'customer' || !decoded.id) {
+      return res.status(403).json({ success: false, message: 'Customer access required.' });
+    }
+
+    const user = db.getUserById(decoded.id);
+    if (!user || user.role === 'admin') {
+      return res.status(403).json({ success: false, message: 'Customer account not found.' });
+    }
+
+    req.user = user;
+    return next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: 'Invalid authorization token.' });
   }
 }
 

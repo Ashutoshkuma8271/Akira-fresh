@@ -188,26 +188,45 @@ export const AuthProvider = ({ children }) => {
   };
 
   const syncUserToBackend = async (payload) => {
+    if (!user?.email) return null;
     try {
-      if (!user?.email) return;
-      await fetch('/api/users/profile', {
+      return await fetch('/api/users/profile', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}`
+        },
         body: JSON.stringify({ email: user.email, ...payload }),
       });
-    } catch (e) {
-      console.warn('Backend user sync note:', e.message);
+    } catch (error) {
+      return null;
     }
   };
 
-  const updateProfile = (data, options = { notify: true }) => {
-    setUser((prev) => {
-      const updated = { ...prev, ...data };
-      syncUserToBackend(data);
-      return updated;
-    });
-    if (options?.notify !== false) {
-      addToast('Profile updated successfully', 'success');
+  const updateProfile = async (data, options = { notify: true }) => {
+    const previousUser = user;
+    setUser((prev) => ({ ...prev, ...data }));
+
+    try {
+      const response = await syncUserToBackend(data);
+      if (!response?.ok) {
+        setUser(previousUser);
+        if (response?.status === 401) {
+          setAuthNotice('Please sign in again to update your profile.');
+          setAuthMode('login');
+          setIsAuthModalOpen(true);
+        }
+        addToast(response?.status === 401 ? 'Your session expired. Please sign in again.' : 'Profile update failed.', 'error');
+        return false;
+      }
+      if (options?.notify !== false) {
+        addToast('Profile updated successfully', 'success');
+      }
+      return true;
+    } catch (error) {
+      setUser(previousUser);
+      addToast('Could not save your profile changes. Please try again.', 'error');
+      return false;
     }
   };
 

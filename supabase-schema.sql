@@ -126,23 +126,24 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON public.audit_logs(create
 -- ENABLE ROW LEVEL SECURITY (RLS) POLICIES FOR SECURE & SEAMLESS SYNC
 -- ==============================================================================
 
--- Disable RLS on these tables or allow full access for authenticated and anon clients:
-ALTER TABLE public.users DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.admins DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.orders DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.site_settings DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.audit_logs DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.coupons DISABLE ROW LEVEL SECURITY;
+-- Keep all data behind RLS. The Express server uses the service role key and bypasses
+-- these policies; browser clients only receive public catalog and settings data.
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
 
--- Grant permissions to public roles
-GRANT ALL ON TABLE public.users TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.admins TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.products TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.orders TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.site_settings TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.audit_logs TO anon, authenticated, service_role;
-GRANT ALL ON TABLE public.coupons TO anon, authenticated, service_role;
+REVOKE ALL ON TABLE public.users, public.admins, public.orders, public.audit_logs, public.coupons FROM anon, authenticated;
+GRANT SELECT ON TABLE public.products, public.site_settings TO anon, authenticated;
+GRANT ALL ON TABLE public.users, public.admins, public.products, public.orders, public.site_settings, public.audit_logs, public.coupons TO service_role;
+
+DROP POLICY IF EXISTS "Public can read products" ON public.products;
+CREATE POLICY "Public can read products" ON public.products FOR SELECT TO anon, authenticated USING (true);
+DROP POLICY IF EXISTS "Public can read site settings" ON public.site_settings;
+CREATE POLICY "Public can read site settings" ON public.site_settings FOR SELECT TO anon, authenticated USING (true);
 
 -- Enable Realtime publication for all tables
 ALTER PUBLICATION supabase_realtime ADD TABLE public.users;
