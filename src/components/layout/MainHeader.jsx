@@ -62,7 +62,7 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 lg:gap-5 xl:gap-8">
             
             {/* Left: Mobile Menu Button + Brand Logo */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -77,14 +77,14 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
             </div>
 
             {/* Center Navigation Links (Home, Shop, Categories, Best Sellers, About, Contact) */}
-            <nav className="hidden lg:flex items-center space-x-7 text-sm font-semibold text-charcoal-800 dark:text-gray-200">
+            <nav className="hidden lg:flex items-center flex-nowrap space-x-3.5 xl:space-x-6 text-xs xl:text-sm font-semibold text-charcoal-800 dark:text-gray-200 shrink-0 whitespace-nowrap">
               <Link
                 to="/"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/') ? 'text-[#1b4332] dark:text-lime-400 font-bold' : ''
                 }`}
               >
-                <span>Home</span>
+                <span className="whitespace-nowrap">Home</span>
                 {isActive('/') && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -92,13 +92,13 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
 
               <Link
                 to="/shop"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/shop') || isActive('/collections/all')
                     ? 'text-[#1b4332] dark:text-lime-400 font-bold'
                     : ''
                 }`}
               >
-                <span>Shop</span>
+                <span className="whitespace-nowrap">Shop</span>
                 {(isActive('/shop') || isActive('/collections/all')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -106,13 +106,13 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
 
               <Link
                 to="/categories"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/categories') || isActive('/collections') || location.pathname.startsWith('/category')
                     ? 'text-[#1b4332] dark:text-lime-400 font-bold'
                     : ''
                 }`}
               >
-                <span>Categories</span>
+                <span className="whitespace-nowrap">Categories</span>
                 {(isActive('/categories') || isActive('/collections') || location.pathname.startsWith('/category')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -120,13 +120,13 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
 
               <Link
                 to="/bestsellers"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/bestsellers') || isActive('/collections/bestsellers')
                     ? 'text-[#1b4332] dark:text-lime-400 font-bold'
                     : ''
                 }`}
               >
-                <span>Best Sellers</span>
+                <span className="whitespace-nowrap inline-block">Best Sellers</span>
                 {(isActive('/bestsellers') || isActive('/collections/bestsellers')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -134,13 +134,13 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
 
               <Link
                 to="/help"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')
                     ? 'text-[#1b4332] dark:text-lime-400 font-bold'
                     : ''
                 }`}
               >
-                <span>About</span>
+                <span className="whitespace-nowrap">About</span>
                 {(isActive('/help') || isActive('/about') || isActive('/pages/about-as-foody')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -148,11 +148,11 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
 
               <Link
                 to="/contact"
-                className={`relative py-1 transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
+                className={`relative py-1 whitespace-nowrap transition-colors hover:text-[#1b4332] dark:hover:text-lime-400 ${
                   isActive('/contact') || isActive('/pages/contact') ? 'text-[#1b4332] dark:text-lime-400 font-bold' : ''
                 }`}
               >
-                <span>Contact</span>
+                <span className="whitespace-nowrap">Contact</span>
                 {(isActive('/contact') || isActive('/pages/contact')) && (
                   <span className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#1b4332] dark:bg-lime-400 rounded-full" />
                 )}
@@ -165,9 +165,9 @@ export const MainHeader = ({ onOpenMobileMenu, onOpenSearch }) => {
               {/* Search Capsule Input (Desktop & Tablet) */}
               <form
                 onSubmit={handleSearchSubmit}
-                className="hidden lg:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3.5 py-1.5 w-44 xl:w-64 border border-gray-200/80 dark:border-forest-700 shadow-2xs mr-1"
+                className="hidden lg:flex items-center bg-[#F3F1EC] dark:bg-forest-900 text-charcoal-900 dark:text-white rounded-full px-3 py-1.5 w-32 xl:w-48 border border-gray-200/80 dark:border-forest-700 shadow-2xs mr-1 shrink-0"
               >
-                <Search className="w-4 h-4 text-gray-500 shrink-0 mr-2" />
+                <Search className="w-3.5 h-3.5 text-gray-500 shrink-0 mr-1.5" />
                 <input
                   type="text"
                   value={searchQuery}
