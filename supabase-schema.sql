@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
   subtotal NUMERIC,
   total_amount NUMERIC,
   payment_method TEXT DEFAULT 'Razorpay',
-  payment_status TEXT DEFAULT 'Paid',
+  payment_status TEXT DEFAULT 'Pending',
   status TEXT DEFAULT 'Processing',
   carrier TEXT,
   tracking_number TEXT,
@@ -145,10 +145,29 @@ CREATE POLICY "Public can read products" ON public.products FOR SELECT TO anon, 
 DROP POLICY IF EXISTS "Public can read site settings" ON public.site_settings;
 CREATE POLICY "Public can read site settings" ON public.site_settings FOR SELECT TO anon, authenticated USING (true);
 
+-- Existing installations may already have some or all tables in Realtime.
+ALTER TABLE public.orders ALTER COLUMN payment_status SET DEFAULT 'Pending';
+
 -- Enable Realtime publication for all tables
-ALTER PUBLICATION supabase_realtime ADD TABLE public.users;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.audit_logs;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.coupons;
+DO $$
+DECLARE
+  table_name TEXT;
+BEGIN
+  FOREACH table_name IN ARRAY ARRAY[
+    'users', 'products', 'orders', 'site_settings', 'audit_logs', 'coupons'
+  ] LOOP
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_publication_rel publication_relation
+      JOIN pg_class table_record ON table_record.oid = publication_relation.prrelid
+      JOIN pg_namespace schema_record ON schema_record.oid = table_record.relnamespace
+      JOIN pg_publication publication ON publication.oid = publication_relation.prpubid
+      WHERE publication.pubname = 'supabase_realtime'
+        AND schema_record.nspname = 'public'
+        AND table_record.relname = table_name
+    ) THEN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE public.%I', table_name);
+    END IF;
+  END LOOP;
+END
+$$;
