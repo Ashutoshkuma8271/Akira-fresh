@@ -680,6 +680,21 @@ app.put(['/api/users/me', '/api/users/profile'], requireCustomer, async (req, re
   }
 });
 
+// Customer User Self-Deletion Endpoint
+app.delete(['/api/users/me', '/api/users/profile', '/api/users/delete-account'], requireCustomer, async (req, res) => {
+  try {
+    const user = req.user;
+    await db.deleteUserAsync(user.id);
+    return res.json({
+      success: true,
+      message: 'Account permanently deleted.'
+    });
+  } catch (err) {
+    console.error('Delete account error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to delete account' });
+  }
+});
+
 // Customer & Scoped Orders API
 app.get('/api/orders', requireCustomer, async (req, res) => {
   try {

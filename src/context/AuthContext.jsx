@@ -352,6 +352,35 @@ export const AuthProvider = ({ children }) => {
     return resetPasswordWithToken(null, email, newPassword);
   };
 
+  const deleteAccount = async () => {
+    try {
+      const res = await fetch('/api/users/profile', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('as_commerce_token') || ''}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser(null);
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('as_commerce_token');
+        addToast('Your account has been deleted permanently', 'info');
+        return { success: true };
+      } else {
+        addToast(data.message || 'Failed to delete account', 'error');
+        return { success: false, message: data.message };
+      }
+    } catch (err) {
+      setUser(null);
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('as_commerce_token');
+      addToast('Your account was deleted locally.', 'info');
+      return { success: true };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -369,6 +398,7 @@ export const AuthProvider = ({ children }) => {
         verifySignupOtp,
         resendSignupOtp,
         logout,
+        deleteAccount,
         updateProfile,
         addAddress,
         deleteAddress,

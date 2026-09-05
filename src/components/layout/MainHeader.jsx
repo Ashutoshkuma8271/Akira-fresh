@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Heart, ShoppingBag, User, Sparkles, Menu } from 'lucide-react';
+import { Search, Heart, ShoppingBag, User, Sparkles, Menu, MapPin, ShieldCheck, LogOut, Truck, ChevronRight } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { SearchModal } from '../common/SearchModal';

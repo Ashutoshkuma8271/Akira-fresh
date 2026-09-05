@@ -26,6 +26,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import { formatINR } from '../../utils/currency';
+import { generateInvoice } from '../../utils/invoiceGenerator';
 import { OrderCardSkeleton } from '../common/SkeletonLoader';
 
 export const MyOrders = ({ limit = null, showHeader = true }) => {
@@ -220,111 +221,7 @@ export const MyOrders = ({ limit = null, showHeader = true }) => {
   };
 
   const handlePrintInvoice = (order) => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      addToast('Please allow popups to download/print tax invoice', 'error');
-      return;
-    }
-
-    const itemsHtml = (order.items || [])
-      .map(
-        (it) => `
-        <tr style="border-bottom: 1px solid #E2E8F0;">
-          <td style="padding: 12px 8px; font-weight: 600;">${it.name}</td>
-          <td style="padding: 12px 8px; text-align: center;">${it.quantity}</td>
-          <td style="padding: 12px 8px; text-align: right;">₹${Number(it.price).toLocaleString('en-IN')}</td>
-          <td style="padding: 12px 8px; text-align: right; font-weight: 600;">₹${(Number(it.price) * Number(it.quantity)).toLocaleString('en-IN')}</td>
-        </tr>
-      `
-      )
-      .join('');
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Tax Invoice - ${order.id} - A_S FOODY</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; color: #0F172A; max-width: 800px; margin: 0 auto; }
-          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #10B981; padding-bottom: 20px; }
-          .logo { font-size: 24px; font-weight: 800; letter-spacing: 2px; }
-          .logo span { color: #10B981; }
-          .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; padding: 16px; background: #F8FAFC; border-radius: 12px; }
-          table { width: 100%; border-collapse: collapse; margin: 24px 0; }
-          th { background: #0E3723; color: white; padding: 12px 8px; text-align: left; font-size: 12px; }
-          .total-box { margin-left: auto; width: 280px; padding: 16px; background: #F1F5F9; border-radius: 12px; }
-          .total-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }
-          .grand-total { font-size: 18px; font-weight: 800; color: #0E3723; border-top: 1px solid #CBD5E1; padding-top: 8px; margin-top: 8px; }
-          .footer { margin-top: 40px; font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid #E2E8F0; padding-top: 16px; }
-          @media print { body { padding: 0; } }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div>
-            <div class="logo">A_S <span>FOODY</span></div>
-            <p style="margin: 4px 0; font-size: 12px; color: #64748B;">Luxury Gourmet Meat Lab & Frozen Delicacies</p>
-            <p style="margin: 0; font-size: 12px; color: #64748B;">GSTIN: 07AAACG0000A1Z5 | FSSAI: 10020011000123</p>
-          </div>
-          <div style="text-align: right;">
-            <h2 style="margin: 0; font-size: 20px; color: #0E3723;">TAX INVOICE / RECEIPT</h2>
-            <p style="margin: 4px 0; font-weight: 700; font-family: monospace;">#${order.id}</p>
-            <p style="margin: 0; font-size: 12px; color: #64748B;">Date: ${order.date || new Date().toLocaleDateString()}</p>
-          </div>
-        </div>
-
-        <div class="meta-grid">
-          <div>
-            <div style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase;">Billed & Shipped To</div>
-            <div style="font-weight: 700; margin-top: 4px;">${order.customerName || order.shippingAddress?.name || user?.name}</div>
-            <div style="font-size: 13px; color: #475569; margin-top: 2px;">
-              ${order.shippingAddress?.street || 'Customer Address'}<br/>
-              ${order.shippingAddress?.city || ''} ${order.shippingAddress?.pincode ? `- ${order.shippingAddress.pincode}` : ''}
-            </div>
-            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">📞 ${order.customerPhone || order.shippingAddress?.phone || 'N/A'}</div>
-          </div>
-          <div>
-            <div style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase;">Payment & Logistics</div>
-            <div style="margin-top: 4px; font-size: 13px;"><strong>Payment Mode:</strong> ${order.paymentMethod || 'Online Gateway'}</div>
-            <div style="font-size: 13px;"><strong>Payment Status:</strong> <span style="color: #10B981; font-weight: 700;">${order.paymentStatus || 'Paid'}</span></div>
-            <div style="font-size: 13px;"><strong>Carrier:</strong> ${order.carrier || 'Bluedart Express'}</div>
-            <div style="font-size: 13px;"><strong>Tracking Consignment:</strong> ${order.trackingNumber || 'Pending'}</div>
-          </div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ITEM DESCRIPTION</th>
-              <th style="text-align: center;">QTY</th>
-              <th style="text-align: right;">UNIT PRICE</th>
-              <th style="text-align: right;">TOTAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
-
-        <div class="total-box">
-          <div class="total-row"><span>Subtotal</span><span>₹${Number(order.subtotal || order.total).toLocaleString('en-IN')}</span></div>
-          <div class="total-row"><span>GST / Tax (Included)</span><span>₹0</span></div>
-          <div class="total-row"><span>Cold-Chain Shipping</span><span style="color: #10B981; font-weight: 700;">FREE</span></div>
-          <div class="total-row grand-total"><span>Grand Total</span><span>₹${Number(order.total).toLocaleString('en-IN')}</span></div>
-        </div>
-
-        <div class="footer">
-          <p>Thank you for choosing A_S FOODY Gourmet Meat Lab. For queries, contact concierge at +91 63862 56770 or ashutoshgifthamper9334@gmail.com.</p>
-          <p>This is a computer-generated tax invoice verified from Supabase cloud database.</p>
-        </div>
-
-        <script>
-          window.onload = function() { window.print(); }
-        </script>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
+    generateInvoice(order);
   };
 
   // Filter & Search Logic
