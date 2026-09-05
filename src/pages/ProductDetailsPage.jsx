@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 import { AnimatedSection } from '../components/common/AnimatedSection';
+import { ProductDetailSkeleton } from '../components/common/SkeletonLoader';
 
 const RECENTLY_VIEWED_KEY = 'as_commerce_recently_viewed';
 
@@ -41,6 +42,14 @@ export const ProductDetailsPage = () => {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToast } = useToast();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const t = setTimeout(() => setIsLoading(false), 200);
+    return () => clearTimeout(t);
+  }, [id]);
 
   const product = PRODUCTS.find((p) => p.id === id) || PRODUCTS[0];
 
@@ -158,6 +167,10 @@ export const ProductDetailsPage = () => {
     setReviewRating(5);
     addToast('Thank you! Your verified patron review has been published.', 'success');
   };
+
+  if (isLoading) {
+    return <ProductDetailSkeleton />;
+  }
 
   return (
     <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-charcoal-900 dark:text-ivory-100">

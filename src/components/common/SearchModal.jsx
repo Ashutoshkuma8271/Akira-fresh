@@ -4,10 +4,12 @@ import { Search, X, Sparkles, Clock, ArrowRight, Tag, Flame, ShieldCheck } from 
 import { PRODUCTS } from '../../data/products';
 import { CATEGORIES } from '../../data/categories';
 import { formatINR } from '../../utils/currency';
+import { SearchItemSkeleton } from './SkeletonLoader';
 
 export const SearchModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const [recentSearches, setRecentSearches] = useState([
     'Chicken Galouti Kebabs',
     'Afghani Malai Tikka',
@@ -15,6 +17,17 @@ export const SearchModal = ({ isOpen, onClose }) => {
     'Peri-Peri Wings'
   ]);
   const inputRef = useRef(null);
+
+  // Debounce search term to show shimmer skeleton effect like YouTube/Shopify
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      setIsSearching(true);
+      const timer = setTimeout(() => setIsSearching(false), 140);
+      return () => clearTimeout(timer);
+    } else {
+      setIsSearching(false);
+    }
+  }, [searchTerm]);
 
   // Auto focus input when modal opens
   useEffect(() => {
@@ -133,7 +146,13 @@ export const SearchModal = ({ isOpen, onClose }) => {
                   </button>
                 </div>
 
-                {searchResults.length > 0 ? (
+                {isSearching ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <SearchItemSkeleton key={i} />
+                    ))}
+                  </div>
+                ) : searchResults.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {searchResults.map((product) => (
                       <div

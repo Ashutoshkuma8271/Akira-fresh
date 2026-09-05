@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CATEGORIES } from '../data/categories';
 import { PRODUCTS } from '../data/products';
@@ -13,6 +13,13 @@ export const CategoryPage = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [sortBy, setSortBy] = useState('popular');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const t = setTimeout(() => setIsLoading(false), 180);
+    return () => clearTimeout(t);
+  }, [slug, selectedSubcategory, sortBy]);
 
   const category = CATEGORIES.find((c) => c.slug === slug) || {
     name: slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Collection',
@@ -148,8 +155,10 @@ export const CategoryPage = () => {
         </div>
       </div>
 
-      {/* Product Grid */}
-      {paginatedProducts.length > 0 ? (
+      {/* Product Grid / Skeleton */}
+      {isLoading ? (
+        <ProductGallerySkeleton count={6} className="lg:grid-cols-3" />
+      ) : paginatedProducts.length > 0 ? (
         <div className="space-y-10">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {paginatedProducts.map((product) => (

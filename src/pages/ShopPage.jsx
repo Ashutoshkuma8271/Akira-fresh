@@ -39,6 +39,13 @@ export const ShopPage = () => {
     setSelectedSub(urlSub);
   }, [searchParams]);
 
+  // Smooth shimmer loading transition on filter/category switch
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => setIsLoading(false), 180);
+    return () => clearTimeout(timer);
+  }, [selectedCategory, selectedSub, searchQuery, priceRange, selectedBrands, minRating, inStockOnly, minDiscount, sortBy, currentPage]);
+
   // Extract unique brands
   const brandsList = useMemo(() => {
     return Array.from(new Set(PRODUCTS.map((p) => p.brand).filter(Boolean)));

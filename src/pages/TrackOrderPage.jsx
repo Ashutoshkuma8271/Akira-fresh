@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 import { AnimatedSection } from '../components/common/AnimatedSection';
-
+import { TimelineSkeleton } from '../components/common/SkeletonLoader';
 import { supabase } from '../lib/supabase';
 
 export const TrackOrderPage = () => {
@@ -162,8 +162,10 @@ export const TrackOrderPage = () => {
         </form>
       </div>
 
-      {/* Order Status Display */}
-      {activeOrder ? (
+      {/* Order Status Display / Skeleton */}
+      {searching ? (
+        <TimelineSkeleton />
+      ) : activeOrder ? (
         <AnimatedSection className="space-y-6">
           
           {/* Status Card */}

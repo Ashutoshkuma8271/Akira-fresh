@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/common/ProductCard';
 import { QuickViewModal } from '../components/common/QuickViewModal';
+import { ProductGallerySkeleton } from '../components/common/SkeletonLoader';
 import { Flame, Star, Award, Sparkles, Filter } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 import { AnimatedSection } from '../components/common/AnimatedSection';
@@ -9,6 +10,13 @@ import { AnimatedSection } from '../components/common/AnimatedSection';
 export const BestsellersPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const t = setTimeout(() => setIsLoading(false), 150);
+    return () => clearTimeout(t);
+  }, [activeFilter]);
 
   // Top bestsellers
   const bestsellers = useMemo(() => {
@@ -64,17 +72,21 @@ export const BestsellersPage = () => {
         ))}
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid / Skeleton */}
       <AnimatedSection>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {bestsellers.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onQuickView={(p) => setQuickViewProduct(p)}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <ProductGallerySkeleton count={8} className="md:grid-cols-3 lg:grid-cols-4" />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+            {bestsellers.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onQuickView={(p) => setQuickViewProduct(p)}
+              />
+            ))}
+          </div>
+        )}
       </AnimatedSection>
 
       {/* Quick View Modal */}
